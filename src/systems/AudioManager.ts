@@ -104,6 +104,37 @@ export class AudioManager {
     }
 
     /**
+     * Plays a procedural audio blip using Web Audio API.
+     * Useful for character voices or UI feedback without external assets.
+     */
+    public playBlip(pitch: number = 440, type: OscillatorType = 'square', duration: number = 50): void {
+        try {
+            if (this.scene.sound instanceof Phaser.Sound.NoAudioSoundManager) return;
+
+            const context = (this.scene.sound as Phaser.Sound.WebAudioSoundManager).context;
+            if (!context) return;
+
+            const osc = context.createOscillator();
+            const gain = context.createGain();
+
+            osc.type = type;
+            osc.frequency.setValueAtTime(pitch, context.currentTime);
+
+            /* Envelope */
+            gain.gain.setValueAtTime(this.sfxVolume * 0.1, context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + duration / 1000);
+
+            osc.connect(gain);
+            gain.connect(context.destination);
+
+            osc.start();
+            osc.stop(context.currentTime + duration / 1000);
+        } catch (e) {
+            console.warn('Web Audio API not supported or error:', e);
+        }
+    }
+
+    /**
      * Sets music volume (0.0 to 1.0).
      */
     public setMusicVolume(value: number): void {

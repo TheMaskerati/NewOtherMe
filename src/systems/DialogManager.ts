@@ -3,6 +3,7 @@ import { COLORS, GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
 import { Dialog, DialogLine, DialogChoice } from '@/types/dialog';
 import { DIALOGS } from '@/config/constants';
 import { KarmaSystem } from '@/systems/KarmaSystem';
+import { AudioManager } from '@/systems/AudioManager';
 
 /**
  * Manages the dialogue system, including displaying text, character portraits,
@@ -155,6 +156,12 @@ export class DialogManager {
                 if (charIndex < this.fullText.length) {
                     this.displayedText += this.fullText[charIndex];
                     this.contentText.setText(this.displayedText);
+
+                    /* Play voice blip every 2 characters to avoid audio spam */
+                    if (charIndex % 2 === 0) {
+                        this.playVoiceBlip(line.speaker);
+                    }
+
                     charIndex++;
                 } else {
                     this.isTyping = false;
@@ -221,8 +228,16 @@ export class DialogManager {
             }
         });
 
+        const validChoices = this.currentDialog.choices.filter(c => this.checkCondition(c.condition));
+
+        if (validChoices.length === 0) {
+            /* No valid choices, just close or default? */
+            this.complete();
+            return;
+        }
+
         const startY = GAME_HEIGHT - 100;
-        this.currentDialog.choices.forEach((choice, index) => {
+        validChoices.forEach((choice, index) => {
             const text = this.scene.add.text(
                 140,
                 startY + index * 30,
@@ -235,9 +250,29 @@ export class DialogManager {
             );
             text.setScrollFactor(0);
             text.setDepth(1001);
+            /* Store original index for correct callback */
+            text.setData('originalIndex', this.currentDialog?.choices?.indexOf(choice));
             this.choiceTexts.push(text);
-            this.container.add(text); /* Fix visibility by adding to container */
+            this.container.add(text);
         });
+    }
+
+    private checkCondition(condition?: string): boolean {
+        if (!condition) return true;
+
+        const karma = KarmaSystem.getKarmaScore();
+
+        if (condition.startsWith('karma>')) {
+            const val = parseInt(condition.split('>')[1]);
+            return karma > val;
+        }
+        if (condition.startsWith('karma<')) {
+            const val = parseInt(condition.split('<')[1]);
+            return karma < val;
+        }
+        if (condition === 'hasItem:mask') return true; /* Placeholder */
+
+        return true;
     }
 
     private updateChoiceSelection(): void {
@@ -339,5 +374,38 @@ export class DialogManager {
      */
     isActive(): boolean {
         return this.container.visible;
+    }
+
+    private playVoiceBlip(speaker?: string): void {
+        const audio = AudioManager.getInstance(this.scene);
+        let pitch = 300;
+        let type: OscillatorType = 'square';
+
+        switch (speaker) {
+            case 'ELISA':
+                pitch = 500;
+                type = 'sine';
+                break;
+            case 'DARIO':
+                pitch = 150;
+                type = 'sawtooth';
+                break;
+            case 'OMBRA':
+                pitch = 100;
+                type = 'sawtooth';
+                break;
+            case 'BULLO':
+                pitch = 120;
+                type = 'square';
+                break;
+            default:
+                pitch = 300;
+                type = 'square';
+                break;
+        }
+
+        /* Randomize pitch slightly for natural feel */
+        const variation = Phaser.Math.Between(-20, 20);
+        audio.playBlip(pitch + variation, type, 40);
     }
 }
