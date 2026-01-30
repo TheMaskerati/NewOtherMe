@@ -7,11 +7,13 @@ interface SaveData {
     completedActs: string[];
     defeatedBosses: string[];
     seenEndings: Ending[];
+    visitedMaps: string[];
     stats: {
         resistCount: number;
         fightCount: number;
         playTime: number;
         deaths: number;
+        minigameFailures: number;
     };
     achievements: string[];
     settings: {
@@ -32,11 +34,13 @@ const DEFAULT_SAVE: SaveData = {
     completedActs: [],
     defeatedBosses: [],
     seenEndings: [],
+    visitedMaps: ['apartment'],
     stats: {
         resistCount: 0,
         fightCount: 0,
         playTime: 0,
         deaths: 0,
+        minigameFailures: 0,
     },
     achievements: [],
     settings: {
@@ -123,6 +127,12 @@ class SaveSystemClass {
     setPosition(map: MapKey, x: number, y: number): void {
         this.data.currentMap = map;
         this.data.playerPosition = { x, y };
+
+        if (!this.data.visitedMaps.includes(map)) {
+            this.data.visitedMaps.push(map);
+            this.checkAchievements();
+        }
+
         this.save();
     }
 
@@ -180,27 +190,78 @@ class SaveSystemClass {
         this.save();
     }
 
+    incrementMinigameFailure(): void {
+        this.data.stats.minigameFailures++;
+        this.save();
+    }
+
     private checkAchievements(): string[] {
         const newAchievements: string[] = [];
+        const stats = this.data.stats;
 
-        if (this.data.stats.resistCount >= 1 && !this.data.achievements.includes('first_resist')) {
+        /* Dignita: First resist */
+        if (stats.resistCount >= 1 && !this.data.achievements.includes('first_resist')) {
             this.data.achievements.push('first_resist');
             newAchievements.push('Dignita');
         }
 
-        if (this.data.stats.resistCount >= 3 && !this.data.achievements.includes('true_hero')) {
+        /* Eroe Vero: 3 resists */
+        if (stats.resistCount >= 3 && !this.data.achievements.includes('true_hero')) {
             this.data.achievements.push('true_hero');
             newAchievements.push('Eroe Vero');
         }
 
+        /* Dualita: 2 endings */
         if (this.data.seenEndings.length >= 2 && !this.data.achievements.includes('duality')) {
             this.data.achievements.push('duality');
             newAchievements.push('Dualita');
         }
 
-        if (this.data.stats.playTime >= 3600000 && !this.data.achievements.includes('devoted')) {
+        /* Tutti i finali: 3 endings */
+        if (this.data.seenEndings.length >= 3 && !this.data.achievements.includes('all_endings')) {
+            this.data.achievements.push('all_endings');
+            newAchievements.push('Tutti i finali');
+        }
+
+        /* Devoto: 1 hour playtime */
+        if (stats.playTime >= 3600000 && !this.data.achievements.includes('devoted')) {
             this.data.achievements.push('devoted');
             newAchievements.push('Devoto');
+        }
+
+        /* Esploratore: Visit all 4 maps */
+        const allMaps: MapKey[] = ['apartment', 'naplesAlley', 'theater', 'fatherHouse'];
+        const visitedAll = allMaps.every(m => this.data.visitedMaps.includes(m));
+        if (visitedAll && !this.data.achievements.includes('explorer')) {
+            this.data.achievements.push('explorer');
+            newAchievements.push('Esploratore');
+        }
+
+        /* Checks triggered only on game completion (Endings) */
+        if (this.data.seenEndings.length > 0) {
+            /* Pacifista: No fights */
+            if (stats.fightCount === 0 && !this.data.achievements.includes('pacifist')) {
+                this.data.achievements.push('pacifist');
+                newAchievements.push('Pacifista');
+            }
+
+            /* Dominatore: No resists (Full mask) */
+            if (stats.resistCount === 0 && !this.data.achievements.includes('dominator')) {
+                this.data.achievements.push('dominator');
+                newAchievements.push('Dominatore');
+            }
+
+            /* Velocista: < 30 mins (1800000 ms) */
+            if (stats.playTime < 1800000 && !this.data.achievements.includes('speedrun')) {
+                this.data.achievements.push('speedrun');
+                newAchievements.push('Velocista');
+            }
+
+            /* Perfezionista: No minigame failures */
+            if (stats.minigameFailures === 0 && !this.data.achievements.includes('perfectionist')) {
+                this.data.achievements.push('perfectionist');
+                newAchievements.push('Perfezionista');
+            }
         }
 
         return newAchievements;

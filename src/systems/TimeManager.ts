@@ -45,6 +45,7 @@ class TimeManagerClass {
 
     initialize(scene: Phaser.Scene): void {
         this.scene = scene;
+        this.listeners = []; /* Reset listeners to prevent memory leaks/crashes on scene restart */
 
         /* Create ambient overlay */
         this.overlay = scene.add.rectangle(

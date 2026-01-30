@@ -40,7 +40,7 @@ export class AudioManager {
 
         /* Check if the audio file exists */
         if (!this.scene.cache.audio.exists(key)) {
-            console.warn(`Audio file not found: ${key}`);
+            // console.debug(`Audio file not found: ${key}`);
             return;
         }
 
@@ -138,6 +138,20 @@ export class AudioManager {
         } catch (e) {
             console.warn('Web Audio API not supported or error:', e);
         }
+    }
+
+    /**
+     * Updates audio dynamics based on game state (e.g. mask score).
+     * @param score Current mask score (-100 to 100)
+     */
+    public updateDynamicAudio(score: number): void {
+        /* Adjust rate/pitch based on tension */
+        /* Score > 0 = High Tension -> Faster, Higher pitch */
+        /* Score < 0 = Control -> Slower, Lower pitch */
+
+        /* Map score -100..100 to rate 0.8..1.2 */
+        const rate = 1.0 + (score / 500);
+        this.setRate(Phaser.Math.Clamp(rate, 0.8, 1.5));
     }
 
     /**

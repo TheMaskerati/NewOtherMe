@@ -50,7 +50,6 @@ export class MinigameManager {
 
     /* Focus Props */
     private focusTarget: Phaser.GameObjects.Star;
-    private focusCrosshair: Phaser.GameObjects.Sprite;
     /* Using rectangle/primitive */
     private focusScore: number = 0;
     private focusMaxScore: number = 1000;
@@ -160,14 +159,7 @@ export class MinigameManager {
         this.container.add([this.breathCircleOuter, this.breathCircleInner]);
 
         this.focusTarget = this.scene.add.star(GAME_WIDTH / 2, GAME_HEIGHT / 2, 5, 10, 20, 0xffff00);
-        this.focusCrosshair = this.scene.add.sprite(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'crosshair');
-
-        const crosshair = this.scene.add.graphics();
-        crosshair.lineStyle(2, 0x00ff00);
-        crosshair.strokeRect(-20, -20, 40, 40);
-        crosshair.lineBetween(0, -10, 0, 10);
-        crosshair.lineBetween(-10, 0, 10, 0);
-        this.container.add([this.focusTarget]);
+        this.container.add(this.focusTarget);
     }
 
     startRandom(difficulty: number, onComplete: (success: boolean) => void): void {

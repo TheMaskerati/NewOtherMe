@@ -1,4 +1,5 @@
 import { BaseScene } from './BaseScene';
+import { GameScene } from './GameScene';
 import { SCENES, COLORS, GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
 import { SaveSystem } from '@/systems/SaveSystem';
 import { KarmaSystem } from '@/systems/KarmaSystem';
@@ -107,6 +108,7 @@ export class MenuScene extends BaseScene {
 
         this.createButton(GAME_WIDTH / 2, buttonY, 'NUOVA PARTITA', () => {
             SaveSystem.reset();
+            GameScene.resetState();
             this.startGame();
         });
 
@@ -234,13 +236,13 @@ export class MenuScene extends BaseScene {
             });
         }
 
-        const credits = this.add.text(GAME_WIDTH - 20, GAME_HEIGHT - 20,
+        const credits = this.add.text(20, GAME_HEIGHT - 20,
             'Global Game Jam 2026 | The Maskerati', {
             fontFamily: 'monospace',
             fontSize: '11px',
             color: '#333333',
         });
-        credits.setOrigin(1, 0.5);
+        credits.setOrigin(0, 0.5);
     }
 
     private startGame(continueGame = false): void {

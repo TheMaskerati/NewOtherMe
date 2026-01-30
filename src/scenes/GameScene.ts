@@ -47,6 +47,10 @@ export class GameScene extends BaseScene {
     /** Cycle of maps for Endless Mode progression */
     private readonly MAP_CYCLE: MapKey[] = ['theater', 'naplesAlley', 'fatherHouse'];
 
+    public static resetState(): void {
+        GameScene.tutorialDone = false;
+    }
+
     constructor() {
         super(SCENES.GAME);
     }
@@ -139,7 +143,7 @@ export class GameScene extends BaseScene {
         }
         const defaults: Record<string, { x: number; y: number }> = {
             apartment: { x: 10 * TILE_SIZE * SCALE, y: 10 * TILE_SIZE * SCALE },
-            theater: { x: 5 * TILE_SIZE * SCALE, y: 20 * TILE_SIZE * SCALE },
+            theater: { x: 5 * TILE_SIZE * SCALE, y: 18 * TILE_SIZE * SCALE },
             naplesAlley: { x: 8 * TILE_SIZE * SCALE, y: 15 * TILE_SIZE * SCALE },
             fatherHouse: { x: 12 * TILE_SIZE * SCALE, y: 15 * TILE_SIZE * SCALE },
         };
@@ -325,32 +329,28 @@ export class GameScene extends BaseScene {
      * @param door The door configuration interacting with.
      */
     private handleDoor(door: DoorConfig): void {
-        let nextMap: MapKey = 'theater';
+        const nextMap = door.targetMap;
+        const targetX = door.targetX * TILE_SIZE * SCALE + (TILE_SIZE * SCALE) / 2;
+        const targetY = door.targetY * TILE_SIZE * SCALE + (TILE_SIZE * SCALE) / 2;
 
-        if (this.currentMap === 'apartment') {
-            nextMap = 'theater';
-        } else {
-            const currentIndex = this.MAP_CYCLE.findIndex(m => m === this.currentMap);
-            const nextIndex = (currentIndex + 1) % this.MAP_CYCLE.length;
-            nextMap = this.MAP_CYCLE[nextIndex];
-
-            /* Increment stage ONLY when completing a cycle (returning to Theater) */
-            if (nextIndex === 0) {
-                this.stage++;
-            }
+        /* Increment stage if returning to Theater from the last map in the cycle */
+        /* Cycle: theater -> naplesAlley -> fatherHouse -> naplesAlley -> theater */
+        /* If we are entering theater and we are not coming from apartment */
+        if (nextMap === 'theater' && this.currentMap !== 'apartment') {
+            this.stage++;
         }
 
-        this.transitionToMap(nextMap);
+        this.transitionToMap(nextMap, targetX, targetY);
     }
 
-    private transitionToMap(nextMap: MapKey): void {
+    private transitionToMap(nextMap: MapKey, x: number, y: number): void {
         TimeManager.advanceTime();
         this.transitionManager.close().then(() => {
             this.scene.start(SCENES.GAME, {
                 map: nextMap,
                 stage: this.stage,
-                playerX: 100,
-                playerY: 100
+                playerX: x,
+                playerY: y
             });
         });
     }
