@@ -354,11 +354,14 @@
 - [x] Logging errori (console + file?)
 - [x] Messaggio user-friendly in caso di crash
 - [x] Auto-recovery quando possibile
+- [x] **Rewrite Texture Generation**: Sostituito `graphics.generateTexture` con `CanvasTexture` per stabilità 100%
+- [x] **Safe Animation Playback**: Prevenzione crash per frame mancanti
 
 #### Files da modificare
 
 - Tutti i manager principali
 - `src/systems/ErrorHandler.ts` (nuovo)
+- `src/scenes/BootScene.ts` (refactor completo)
 
 ---
 

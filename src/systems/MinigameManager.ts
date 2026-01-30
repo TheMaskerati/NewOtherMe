@@ -701,6 +701,18 @@ export class MinigameManager {
             if (isPerfect) {
                 /* Show perfect message or similar */
                 console.log('PERFECT PERFORMANCE!');
+
+                /* Particle/Visual effect for perfect */
+                const particles = this.scene.add.particles(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'star', {
+                    speed: { min: 100, max: 300 },
+                    angle: { min: 0, max: 360 },
+                    scale: { start: 0.5, end: 0 },
+                    blendMode: 'ADD',
+                    lifespan: 1000,
+                    gravityY: 200,
+                    quantity: 20
+                });
+                this.scene.time.delayedCall(1000, () => particles.destroy());
             }
 
             /* Save High Score */

@@ -13,6 +13,7 @@ import { HUD } from '@/ui/HUD';
 import { KarmaSystem } from '@/systems/KarmaSystem';
 import { TransitionManager } from '@/effects/TransitionManager';
 import { TimeManager } from '@/systems/TimeManager';
+import { VirtualJoystick } from '@/ui/VirtualJoystick';
 
 interface GameSceneData {
     map?: MapKey;
@@ -38,6 +39,7 @@ export class GameScene extends BaseScene {
     private transitionManager!: TransitionManager;
     private interactionPrompt!: Phaser.GameObjects.Text;
     private mapNameText!: Phaser.GameObjects.Text;
+    private joystick!: VirtualJoystick;
 
     private stage: number = 1;
     private static tutorialDone = false;
@@ -67,6 +69,13 @@ export class GameScene extends BaseScene {
         const { walls, mapWidth, mapHeight } = this.mapManager.create();
 
         const startPos = this.getStartPosition(data);
+
+        if (!this.textures.exists('player')) {
+            console.error('CRITICAL: Player texture missing in GameScene! Returning to BootScene.');
+            this.scene.start(SCENES.BOOT);
+            return;
+        }
+
         this.player = new Player(this, startPos.x, startPos.y);
 
         this.createNPCs();
@@ -80,6 +89,7 @@ export class GameScene extends BaseScene {
         this.transitionManager.open();
         MaskSystem.getInstance().init(this);
         TimeManager.initialize(this);
+        this.joystick = new VirtualJoystick(this);
 
         this.physics.add.collider(this.player.getSprite(), walls);
         this.setupNPCCollisions();
@@ -95,6 +105,13 @@ export class GameScene extends BaseScene {
 
         this.setupAudio();
         this.setupPauseMenu();
+
+        /* Day/Night Cycle Handling */
+        TimeManager.onTimeChange((time) => {
+            this.npcs.forEach(npc => npc.checkAvailability(time));
+        });
+        /* Initial check */
+        this.npcs.forEach(npc => npc.checkAvailability(TimeManager.getCurrentTime()));
     }
 
     private setupAudio(): void {
@@ -135,10 +152,21 @@ export class GameScene extends BaseScene {
 
     private createUI(): void {
         /* Prompt */
-        this.interactionPrompt = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 60, '[E] Interagisci', {
-            fontFamily: 'monospace', fontSize: '14px',
-            color: '#ffffff', backgroundColor: '#000000cc', padding: { x: 12, y: 6 }
+        this.interactionPrompt = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 80, '[E] INTERAGISCI', {
+            fontFamily: 'monospace', fontSize: '20px', fontStyle: 'bold',
+            color: '#ffd700', backgroundColor: '#000000ee', padding: { x: 16, y: 8 },
+            stroke: '#000000', strokeThickness: 4
         }).setOrigin(0.5).setScrollFactor(0).setDepth(500).setVisible(false);
+
+        /* Pulse Animation */
+        this.tweens.add({
+            targets: this.interactionPrompt,
+            scaleX: 1.1,
+            scaleY: 1.1,
+            duration: 600,
+            yoyo: true,
+            repeat: -1
+        });
 
         /* Map Name */
         this.mapNameText = this.add.text(GAME_WIDTH / 2, 30, '', {
@@ -176,8 +204,17 @@ export class GameScene extends BaseScene {
             return;
         }
 
+        /* Input Handling (Keyboard + Mobile) */
         const input = this.getMovementInput();
+        if (this.joystick && this.joystick.isActive()) {
+            if (this.joystick.left) input.x = -1;
+            if (this.joystick.right) input.x = 1;
+            if (this.joystick.up) input.y = -1;
+            if (this.joystick.down) input.y = 1;
+        }
+
         const interactPressed = Phaser.Input.Keyboard.JustDown(this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E));
+        /* Mobile Touch Interaction (Simple tap on prompt region) */
 
         this.player.update(input, delta);
         this.npcs.forEach(npc => npc.update(delta, this.player.getPosition()));

@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { SaveSystem } from './SaveSystem';
 
 /**
  * Centralized Audio Manager system.
@@ -9,20 +8,21 @@ export class AudioManager {
     private static instance: AudioManager;
     private scene: Phaser.Scene;
     private music: Map<string, Phaser.Sound.BaseSound> = new Map();
-    private sfx: Map<string, Phaser.Sound.BaseSound> = new Map();
     private currentMusic: string | null = null;
     private musicVolume: number = 0.5;
-    private sfxVolume: number = 0.7;
+    private sfxVolume: number = 0.5;
 
     private constructor(scene: Phaser.Scene) {
         this.scene = scene;
-        const settings = SaveSystem.getSettings();
-        this.musicVolume = settings.musicVolume;
-        this.sfxVolume = settings.sfxVolume;
+        /* Load saved preferences if available */
+        const savedMusic = localStorage.getItem('musicVolume');
+        const savedSfx = localStorage.getItem('sfxVolume');
+        if (savedMusic) this.musicVolume = parseFloat(savedMusic);
+        if (savedSfx) this.sfxVolume = parseFloat(savedSfx);
     }
 
-    public static getInstance(scene?: Phaser.Scene): AudioManager {
-        if (!AudioManager.instance && scene) {
+    public static getInstance(scene: Phaser.Scene): AudioManager {
+        if (!AudioManager.instance) {
             AudioManager.instance = new AudioManager(scene);
         }
         return AudioManager.instance;
@@ -52,7 +52,9 @@ export class AudioManager {
                     targets: current,
                     volume: 0,
                     duration: 1000,
-                    onComplete: () => current.stop()
+                    onComplete: () => {
+                        current.stop();
+                    }
                 });
             }
         }
@@ -100,7 +102,11 @@ export class AudioManager {
         if (!this.scene.cache.audio.exists(key)) {
             return; /* Silently skip missing SFX */
         }
-        this.scene.sound.play(key, { volume });
+        try {
+            this.scene.sound.play(key, { volume });
+        } catch (e) {
+            console.warn('SFX Error:', e);
+        }
     }
 
     /**
@@ -135,28 +141,27 @@ export class AudioManager {
     }
 
     /**
-     * Sets music volume (0.0 to 1.0).
+     * Settings: Set Music Volume
      */
     public setMusicVolume(value: number): void {
         this.musicVolume = Phaser.Math.Clamp(value, 0, 1);
+        localStorage.setItem('musicVolume', this.musicVolume.toString());
+
         if (this.currentMusic) {
             const current = this.music.get(this.currentMusic);
-            if (current) (current as any).setVolume(this.musicVolume);
+            if (current) {
+                /* Update currently playing music volume immediately */
+                (current as any).volume = this.musicVolume;
+            }
         }
     }
 
     /**
-     * Sets SFX volume (0.0 to 1.0).
+     * Settings: Set SFX Volume
      */
     public setSFXVolume(value: number): void {
         this.sfxVolume = Phaser.Math.Clamp(value, 0, 1);
-    }
-
-    /**
-     * Updates audio based on karma/intensity score.
-     */
-    public updateDynamicAudio(score: number): void {
-        /* TODO: Implement dynamic filters/pitch based on score */
+        localStorage.setItem('sfxVolume', this.sfxVolume.toString());
     }
 
     /**
@@ -165,7 +170,5 @@ export class AudioManager {
     public destroy(): void {
         this.music.forEach(s => s.destroy());
         this.music.clear();
-        this.sfx.forEach(s => s.destroy());
-        this.sfx.clear();
     }
 }

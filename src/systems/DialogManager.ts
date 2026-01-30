@@ -4,6 +4,7 @@ import { Dialog, DialogLine, DialogChoice } from '@/types/dialog';
 import { DIALOGS } from '@/config/constants';
 import { KarmaSystem } from '@/systems/KarmaSystem';
 import { AudioManager } from '@/systems/AudioManager';
+import { SaveSystem } from '@/systems/SaveSystem';
 
 /**
  * Manages the dialogue system, including displaying text, character portraits,
@@ -150,8 +151,9 @@ export class DialogManager {
         this.continuePrompt.setVisible(false);
 
         let charIndex = 0;
+        const speed = SaveSystem.getSettings().textSpeed || 1;
         this.typewriterEvent = this.scene.time.addEvent({
-            delay: 25,
+            delay: 25 / speed,
             callback: () => {
                 if (charIndex < this.fullText.length) {
                     this.displayedText += this.fullText[charIndex];
