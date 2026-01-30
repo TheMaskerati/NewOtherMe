@@ -367,17 +367,19 @@
 
 ### 16. PERFORMANCE OPTIMIZATION
 
-**Status:** Non ottimizzato
+**Status:** [COMPLETATO]
 **Tempo stimato:** 2 giorni
 
 #### Ottimizzazioni
 
-- [ ] Object pooling per particelle
-- [ ] Destroy automatico oggetti fuori schermo
-- [ ] Texture atlas per ridurre draw calls
-- [ ] Limit particelle simultanee (max 100)
-- [ ] Riuso sprite invece di creare/distruggere
-- [ ] Profiling e identificazione bottleneck
+- [x] Object pooling per particelle (EffectsManager)
+- [x] Destroy automatico oggetti fuori schermo
+- [x] Texture atlas per ridurre draw calls
+- [x] Limit particelle simultanee (max 100)
+- [x] Riuso sprite invece di creare/distruggere
+- [x] Profiling e identificazione bottleneck
+- [x] Game Config: FPS limit (60) e batch size incrementato
+- [x] BootScene: Texture cleanup on shutdown
 
 #### Tools
 
@@ -415,12 +417,12 @@
 
 #### Sezioni
 
-- [ ] Sviluppatore/Team
-- [ ] Musica e sound effects (con licenze)
-- [ ] Assets grafici utilizzati
-- [ ] Librerie (Phaser, TypeScript)
-- [ ] Playtester e ringraziamenti
-- [ ] Link social/website
+- [x] Sviluppatore/Team
+- [x] Musica e sound effects (con licenze)
+- [x] Assets grafici utilizzati
+- [x] Librerie (Phaser, TypeScript)
+- [x] Playtester e ringraziamenti
+- [x] Link social/website
 
 #### Style
 
@@ -437,20 +439,20 @@
 
 ### 19. GAME DESIGN DOCUMENT
 
-**Status:** Non creato
+**Status:** [COMPLETATO]
 **Tempo stimato:** Ongoing
 **Per te come riferimento**
 
 #### Sezioni
 
-- [ ] Storia completa e lore
-- [ ] Albero delle scelte completo
-- [ ] Bilanciamento karma e endings
-- [ ] Mappa della progressione
-- [ ] Lista completa dialoghi
-- [ ] Meccaniche di gioco dettagliate
-- [ ] Art direction e mood board
-- [ ] Sound design plan
+- [x] Storia completa e lore
+- [x] Albero delle scelte completo
+- [x] Bilanciamento karma e endings
+- [x] Mappa della progressione
+- [x] Lista completa dialoghi
+- [x] Meccaniche di gioco dettagliate
+- [x] Art direction e mood board
+- [x] Sound design plan
 
 #### File
 

@@ -12,6 +12,15 @@ const config: Phaser.Types.Core.GameConfig = {
     ...PHASER_CONFIG,
     parent: 'game',
     scene: [BootScene, MenuScene, GameScene, PauseScene, SettingsScene, AchievementsScene, CreditsScene],
+    fps: {
+        target: 60,
+        forceSetTimeOut: true
+    },
+    render: {
+        batchSize: 2000,
+        pixelArt: true,
+        roundPixels: true
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {

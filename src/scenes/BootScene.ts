@@ -12,6 +12,17 @@ export class BootScene extends Phaser.Scene {
         super(SCENES.BOOT);
     }
 
+    /**
+     * Clean up textures when shutting down to prevent memory leaks.
+     */
+    shutdown(): void {
+        this.textures.each((texture: Phaser.Textures.Texture) => {
+            if (texture.key.startsWith('furn_') || texture.key.startsWith('tile_')) {
+                texture.destroy();
+            }
+        }, this);
+    }
+
     preload(): void {
         ErrorHandler.initialize(this);
         this.createLoadingBar();
