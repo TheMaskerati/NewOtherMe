@@ -45,12 +45,12 @@ export class CreditsScene extends BaseScene {
         this.scrollingText = this.add.container(GAME_WIDTH / 2, GAME_HEIGHT + 50);
 
         const content = [
-            { text: 'IL TEATRO DELLE OMBRE', style: 'title' },
+            { text: 'Il teatro delle ombre', style: 'title' },
             { text: '', style: 'spacer' },
             { text: 'Un gioco creato per', style: 'subtitle' },
             { text: 'Global Game Jam 2026', style: 'normal' },
             { text: '', style: 'spacer' },
-            { text: 'THE MASKERATI TEAM', style: 'section' },
+            { text: 'The Maskerati', style: 'section' },
             { text: '', style: 'spacer' },
             { text: 'Alessio Attilio', style: 'name' },
             { text: 'Francesco Pio Russo', style: 'name' },
@@ -58,10 +58,10 @@ export class CreditsScene extends BaseScene {
             { text: 'Jose Emmanuel Gallero', style: 'name' },
             { text: 'Martina Cozzolino', style: 'name' },
             { text: '', style: 'spacer' },
-            { text: 'TECNOLOGIE', style: 'section' },
+            { text: 'Tech stack', style: 'section' },
             { text: '', style: 'spacer' },
-            { text: 'Electron e Vite', style: 'normal' },
             { text: 'Maya', style: 'normal' },
+            { text: 'Electron e Vite', style: 'normal' },
             { text: 'Phaser.js', style: 'normal' },
             { text: 'Typescript', style: 'normal' },
             { text: '', style: 'spacer' },
