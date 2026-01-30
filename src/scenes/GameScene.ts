@@ -8,6 +8,9 @@ import { DialogManager } from '@/systems/DialogManager';
 import { MaskSystem } from '@/systems/MaskSystem';
 import { MinigameManager } from '@/systems/MinigameManager';
 import { MapKey } from '@/types/game';
+import { AudioManager } from '@/systems/AudioManager';
+import { HUD } from '@/ui/HUD';
+import { KarmaSystem } from '@/systems/KarmaSystem';
 
 interface GameSceneData {
     map?: MapKey;
@@ -28,6 +31,8 @@ export class GameScene extends BaseScene {
     private mapManager!: MapManager;
     private dialogManager!: DialogManager;
     private minigameManager!: MinigameManager;
+    private audioManager!: AudioManager;
+    private hud!: HUD;
     private interactionPrompt!: Phaser.GameObjects.Text;
     private mapNameText!: Phaser.GameObjects.Text;
     private stageText!: Phaser.GameObjects.Text;
@@ -67,6 +72,8 @@ export class GameScene extends BaseScene {
 
         this.dialogManager = new DialogManager(this);
         this.minigameManager = new MinigameManager(this);
+        this.audioManager = new AudioManager(this);
+        this.hud = new HUD(this);
         MaskSystem.getInstance().init(this);
 
         this.physics.add.collider(this.player.getSprite(), walls);
@@ -80,6 +87,20 @@ export class GameScene extends BaseScene {
             this.showMapName();
             MaskSystem.getInstance().updateTask('TROVA L\'USCITA');
         }
+
+        this.setupAudio();
+        this.setupPauseMenu();
+    }
+
+    private setupAudio(): void {
+        this.audioManager.playMusic(`bgm_${this.currentMap}`);
+    }
+
+    private setupPauseMenu(): void {
+        this.input.keyboard.on('keydown-ESC', () => {
+            this.scene.pause();
+            this.scene.launch(SCENES.PAUSE);
+        });
     }
 
     private getStartPosition(data?: GameSceneData): { x: number; y: number } {
@@ -184,6 +205,11 @@ export class GameScene extends BaseScene {
         }
 
         if (!nearTarget) this.interactionPrompt.setVisible(false);
+
+        // Update HUD
+        if (this.hud) {
+            this.hud.updateKarma(KarmaSystem.getKarmaScore());
+        }
     }
 
     private startEncounter(npc: NPC): void {
@@ -195,10 +221,10 @@ export class GameScene extends BaseScene {
             // Gestisce le azioni dalle scelte del dialogo
             if (action?.includes('battle_') || action === 'start_minigame' || npc.isBoss()) {
                 const difficulty = 1.0 + (this.stage * 0.2);
-                
+
                 // Determina il tipo di minigame in base alla scelta
                 let minigameType: 'dodge' | 'timing' | 'mash' = 'dodge';
-                
+
                 if (action?.includes('_calm') || action?.includes('_peaceful')) {
                     minigameType = 'timing'; // Approccio pacifico = timing preciso
                 } else if (action?.includes('_rage') || action?.includes('_aggressive')) {

@@ -10,6 +10,8 @@ export const SCENES: Record<string, SceneKey> = {
     BOOT: 'BootScene',
     MENU: 'MenuScene',
     GAME: 'GameScene',
+    PAUSE: 'PauseScene',
+    SETTINGS: 'SettingsScene',
 };
 
 export const MAPS: Record<string, MapKey> = {

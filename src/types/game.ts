@@ -9,6 +9,8 @@ export type SceneKey =
     | 'BootScene'
     | 'MenuScene'
     | 'GameScene'
+    | 'PauseScene'
+    | 'SettingsScene'
     | 'EndingScene';
 
 export type MapKey =

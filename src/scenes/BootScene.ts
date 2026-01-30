@@ -12,6 +12,16 @@ export class BootScene extends Phaser.Scene {
 
     preload(): void {
         this.createLoadingBar();
+
+        // Audio Loading Scaffold
+        // In a real scenario, these files would exist in public/audio/
+        this.load.audio('bgm_apartment', 'audio/bgm/apartment.mp3');
+        this.load.audio('bgm_theater', 'audio/bgm/theater.mp3');
+        this.load.audio('bgm_naplesAlley', 'audio/bgm/alley.mp3');
+        this.load.audio('bgm_fatherHouse', 'audio/bgm/house.mp3');
+        this.load.audio('sfx_click', 'audio/sfx/click.mp3');
+        this.load.audio('sfx_interact', 'audio/sfx/interact.mp3');
+
         this.load.on('complete', () => {
             this.generatePlaceholderAssets();
         });
@@ -217,29 +227,29 @@ export class BootScene extends Phaser.Scene {
     ): void {
         const width = 16;
         const height = 24;
-        
+
         // Rimuovi texture esistenti
         if (this.textures.exists(key)) {
             this.textures.remove(key);
         }
-        
+
         // Crea uno sprite semplice (1 frame solo) per ora
         const graphics = this.make.graphics({});
-        
+
         // Disegna un personaggio semplice in idle down (frame 0)
         const baseX = 0;
         const baseY = 0;
-        
+
         // Corpo/Torso
         const shirtColor = features.shirt || this.darkenColor(features.body, 0.8);
         graphics.fillStyle(shirtColor);
         graphics.fillRect(baseX + 4, baseY + 10, 8, 7);
-        
+
         // Braccia
         graphics.fillStyle(features.body);
         graphics.fillRect(baseX + 3, baseY + 11, 2, 5);
         graphics.fillRect(baseX + 11, baseY + 11, 2, 5);
-        
+
         // Gambe
         const pantsColor = features.shirt ? this.darkenColor(features.shirt, 0.6) : this.darkenColor(features.body, 0.7);
         graphics.fillStyle(pantsColor);
@@ -247,20 +257,20 @@ export class BootScene extends Phaser.Scene {
         graphics.fillRect(baseX + 9, baseY + 16, 2, 5);
         graphics.fillRect(baseX + 5, baseY + 21, 2, 3);
         graphics.fillRect(baseX + 9, baseY + 21, 2, 3);
-        
+
         // Testa
         graphics.fillStyle(features.body);
         graphics.fillRect(baseX + 5, baseY + 3, 6, 8);
         graphics.fillRect(baseX + 4, baseY + 5, 8, 4);
-        
+
         // Occhi (guardano verso il basso)
         graphics.fillStyle(0x000000);
         graphics.fillRect(baseX + 6, baseY + 7, 1, 2);
         graphics.fillRect(baseX + 9, baseY + 7, 1, 2);
-        
+
         // Capelli
         graphics.fillStyle(features.hair);
-        switch(features.hairStyle) {
+        switch (features.hairStyle) {
             case 'short':
                 graphics.fillRect(baseX + 4, baseY + 3, 8, 3);
                 graphics.fillRect(baseX + 3, baseY + 4, 2, 2);
@@ -285,19 +295,19 @@ export class BootScene extends Phaser.Scene {
                 graphics.fillRect(baseX + 11, baseY + 5, 2, 2);
                 break;
         }
-        
+
         // Barba
         if (features.beard) {
             graphics.fillStyle(features.beard);
             graphics.fillRect(baseX + 5, baseY + 9, 6, 2);
         }
-        
+
         // Rossetto
         if (features.lips) {
             graphics.fillStyle(features.lips);
             graphics.fillRect(baseX + 6, baseY + 9, 4, 1);
         }
-        
+
         graphics.generateTexture(key, width, height);
         graphics.destroy();
     }
