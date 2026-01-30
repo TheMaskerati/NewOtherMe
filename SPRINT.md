@@ -1,8 +1,8 @@
-# 🎭 IL TEATRO DELLE OMBRE - Roadmap di Sviluppo
+# IL TEATRO DELLE OMBRE - Roadmap di Sviluppo
 
-## 📊 Stato Attuale del Progetto
+## Stato Attuale del Progetto
 
-### ✅ Sistemi Implementati
+### Sistemi Implementati
 - [x] Sistema di movimento (WASD)
 - [x] Sistema di dialogo con typewriter effect
 - [x] Sistema di scelte con karma
@@ -17,27 +17,27 @@
 
 ---
 
-## 🎯 FEATURES DA IMPLEMENTARE
+## FEATURES DA IMPLEMENTARE
 
-### 1. ⭐⭐⭐⭐⭐ SISTEMA AUDIO - **[PRIORITÀ ALTA]**
-**Status:** ❌ Non iniziato  
-**Tempo stimato:** 2-3 giorni  
+### 1. SISTEMA AUDIO - **[PRIORITÀ ALTA]**
+**Status:** Non iniziato 
+**Tempo stimato:** 2-3 giorni 
 **Critico per l'atmosfera teatrale**
 
 #### Cosa implementare:
 - [ ] AudioManager class centrale
 - [ ] Musica di sottofondo per ogni scena:
-  - Menu principale (orchestrale, misteriosa)
-  - Teatro (drammatica, crescendo)
-  - Vicolo (tesa, inquietante)
-  - Casa del padre (malinconica)
+ - Menu principale (orchestrale, misteriosa)
+ - Teatro (drammatica, crescendo)
+ - Vicolo (tesa, inquietante)
+ - Casa del padre (malinconica)
 - [ ] Effetti sonori:
-  - Dialoghi (typewriter tick)
-  - Selezione menu (click elegante)
-  - Minigame (feedback successo/fallimento)
-  - Transizioni tra mappe (whoosh)
-  - Passi del personaggio
-  - Apertura/chiusura porte
+ - Dialoghi (typewriter tick)
+ - Selezione menu (click elegante)
+ - Minigame (feedback successo/fallimento)
+ - Transizioni tra mappe (whoosh)
+ - Passi del personaggio
+ - Apertura/chiusura porte
 
 #### Files da creare:
 - `src/systems/AudioManager.ts`
@@ -51,19 +51,19 @@
 
 ---
 
-### 2. ⭐⭐⭐⭐⭐ SISTEMA DI PAUSA - **[PRIORITÀ ALTA]**
-**Status:** ❌ Non iniziato  
-**Tempo stimato:** 1 giorno  
+### 2. SISTEMA DI PAUSA - **[PRIORITÀ ALTA]**
+**Status:** Non iniziato 
+**Tempo stimato:** 1 giorno 
 **Standard per ogni gioco**
 
 #### Cosa implementare:
 - [ ] PauseScene con overlay trasparente
 - [ ] Tasto ESC per attivare/disattivare
 - [ ] Menu pausa con opzioni:
-  - Riprendi
-  - Impostazioni
-  - Torna al menu principale
-  - Esci dal gioco
+ - Riprendi
+ - Impostazioni
+ - Torna al menu principale
+ - Esci dal gioco
 - [ ] Pausa automatica quando finestra perde focus
 - [ ] Salvataggio automatico quando si mette in pausa
 
@@ -72,19 +72,19 @@
 
 ---
 
-### 3. ⭐⭐⭐⭐ IMPOSTAZIONI/OPZIONI
-**Status:** ❌ Non iniziato  
-**Tempo stimato:** 2 giorni  
+### 3. IMPOSTAZIONI/OPZIONI
+**Status:** Non iniziato 
+**Tempo stimato:** 2 giorni 
 **Accessibilità importante**
 
 #### Cosa implementare:
 - [ ] SettingsScene completa
 - [ ] Controlli:
-  - Slider volume musica (0-100%)
-  - Slider volume effetti (0-100%)
-  - Slider velocità testo dialoghi
-  - Toggle schermo intero
-  - Selector lingua (IT/EN)
+ - Slider volume musica (0-100%)
+ - Slider volume effetti (0-100%)
+ - Slider velocità testo dialoghi
+ - Toggle schermo intero
+ - Selector lingua (IT/EN)
 - [ ] Salvataggio preferenze persistente
 - [ ] Preview in tempo reale delle modifiche
 
@@ -95,17 +95,17 @@
 
 ---
 
-### 4. ⭐⭐⭐⭐ FEEDBACK VISIVO
-**Status:** ⚠️ Parziale (solo tint su movimento)  
-**Tempo stimato:** 2-3 giorni  
+### 4. FEEDBACK VISIVO
+**Status:** Parziale (solo tint su movimento) 
+**Tempo stimato:** 2-3 giorni 
 **Migliora la "game feel"**
 
 #### UI Mancante:
 - [ ] Barra della salute/energia (se implementi sistema vita)
 - [ ] **Indicatore Karma visuale** (medaglione che cambia colore)
-  - Bianco/dorato = karma positivo
-  - Grigio/nero = karma negativo
-  - Animazione pulse quando cambia
+ - Bianco/dorato = karma positivo
+ - Grigio/nero = karma negativo
+ - Animazione pulse quando cambia
 - [ ] Contatore stage/round migliorato
 - [ ] Minimappa (opzionale)
 
@@ -123,39 +123,11 @@
 
 ---
 
-### 5. ⭐⭐⭐⭐ TUTORIAL MIGLIORATO
-**Status:** ⚠️ Basico implementato  
-**Tempo stimato:** 2 giorni  
-**Attualmente troppo basilare**
-
-#### Miglioramenti:
-- [ ] Tutorial interattivo step-by-step
-- [ ] Overlay che evidenzia i controlli
-- [ ] "Prima volta" per ogni meccanica (salvato in SaveSystem)
-- [ ] Tooltip che appaiono sopra oggetti interattivi
-- [ ] Frecce indicatrici
-- [ ] Non bloccante ma sempre accessibile (menu aiuto)
-
-#### Struttura suggerita:
-```typescript
-class TutorialStep {
-    text: string;
-    highlight?: GameObject;
-    waitForAction?: 'move' | 'interact' | 'dialog' | 'choice';
-    arrow?: {x: number, y: number};
-    canSkip: boolean;
-}
-```
-
-#### Files da modificare:
-- `src/scenes/GameScene.ts`
-- `src/systems/TutorialManager.ts` (nuovo)
-
 ---
 
-### 6. ⭐⭐⭐ ANIMAZIONI PERSONAGGI
-**Status:** ⚠️ Sprite statici con tint  
-**Tempo stimato:** 3-5 giorni  
+### 6. ANIMAZIONI PERSONAGGI
+**Status:** Sprite statici con tint 
+**Tempo stimato:** 3-5 giorni 
 **Migliora l'aspetto visivo**
 
 #### Opzioni:
@@ -175,22 +147,22 @@ class TutorialStep {
 
 ---
 
-### 7. ⭐⭐⭐ MENU PRINCIPALE MIGLIORATO
-**Status:** ⚠️ Funzionale ma basilare  
-**Tempo stimato:** 1-2 giorni  
+### 7. MENU PRINCIPALE MIGLIORATO
+**Status:** Funzionale ma basilare 
+**Tempo stimato:** 1-2 giorni 
 
 #### Miglioramenti:
 - [ ] Animazione titolo (fade in/pulse/lettere una alla volta)
 - [ ] Preview del salvataggio:
-  - Data e ora
-  - Tempo totale giocato
-  - Karma attuale
-  - Mappa corrente
+ - Data e ora
+ - Tempo totale giocato
+ - Karma attuale
+ - Mappa corrente
 - [ ] Opzioni menu aggiuntive:
-  - Crediti
-  - Come giocare
-  - Achievements/Trofei
-  - Galleria (unlock con progressione)
+ - Crediti
+ - Come giocare
+ - Achievements/Trofei
+ - Galleria (unlock con progressione)
 - [ ] Transizione animata tra menu e gioco
 
 #### Files da modificare:
@@ -198,19 +170,19 @@ class TutorialStep {
 
 ---
 
-### 8. ⭐⭐⭐⭐ HUD IN-GAME
-**Status:** ⚠️ Solo prompt interazione  
-**Tempo stimato:** 2 giorni  
+### 8. HUD IN-GAME
+**Status:** Solo prompt interazione 
+**Tempo stimato:** 2 giorni 
 
 #### Elementi da aggiungere:
 ```
-┌─────────────────────────────────────────┐
-│ ❤️ Vita: ████████░░ 80%               │
-│ ⚖️ Karma: ●●●●○ (Buono)                │
-│ 🎭 Controllo Maschera: [======---] 60% │
-│ 📍 Atto II - Teatro San Carlo           │
-│ 🎯 Obiettivo: Trova l'uscita            │
-└─────────────────────────────────────────┘
+─────────────────────────────────────────
+ Vita: ████████░░ 80%        
+ Karma: ●●●●○ (Buono)        
+ Controllo Maschera: [======---] 60% 
+ Atto II - Teatro San Carlo      
+ Obiettivo: Trova l'uscita      
+─────────────────────────────────────────
 ```
 
 - [ ] Barra vita (se implementi sistema combattimento con HP)
@@ -225,9 +197,9 @@ class TutorialStep {
 
 ---
 
-### 9. ⭐⭐⭐ TRANSIZIONI TEATRALI
-**Status:** ⚠️ Fade semplice  
-**Tempo stimato:** 2 giorni  
+### 9. TRANSIZIONI TEATRALI
+**Status:** Fade semplice 
+**Tempo stimato:** 2 giorni 
 **Perfetto per il tema teatro!**
 
 #### Transizioni da implementare:
@@ -242,27 +214,11 @@ class TutorialStep {
 
 ---
 
-### 10. ⭐⭐⭐ SISTEMA INVENTARIO
-**Status:** ⚠️ Presente ma non usato  
-**Tempo stimato:** 2-3 giorni  
-
-#### Da implementare:
-- [ ] UI inventario (griglia 4x6)
-- [ ] Categorie: Chiavi, Oggetti, Lettere, Ricordi
-- [ ] Descrizioni oggetti con lore
-- [ ] Uso oggetti (consumabili se aggiungi HP)
-- [ ] Oggetti chiave per sbloccare progressione
-- [ ] Icone visive per ogni oggetto
-
-#### Files da creare:
-- `src/scenes/InventoryScene.ts`
-- `src/types/items.ts`
-
 ---
 
-### 11. ⭐⭐⭐ ACHIEVEMENTS/TROFEI
-**Status:** ❌ Non implementato  
-**Tempo stimato:** 2 giorni  
+### 11. ACHIEVEMENTS/TROFEI
+**Status:** Non implementato 
+**Tempo stimato:** 2 giorni 
 
 #### Achievements suggeriti:
 - [ ] "Pacifista" - Completa il gioco senza scegliere opzioni aggressive
@@ -280,12 +236,11 @@ class TutorialStep {
 
 ---
 
-### 12. ⭐⭐⭐ MINIGAME PIÙ RAFFINATI
-**Status:** ⚠️ Funzionali ma basilari  
-**Tempo stimato:** 3-4 giorni  
+### 12. MINIGAME PIÙ RAFFINATI
+**Status:** Funzionali ma basilari 
+**Tempo stimato:** 3-4 giorni 
 
 #### Miglioramenti per ogni minigame:
-- [ ] Tutorial visivo prima volta
 - [ ] Difficoltà più bilanciata
 - [ ] Feedback audio/visivo più chiaro
 - [ ] Combo system (bonus per sequenze perfette)
@@ -302,16 +257,16 @@ class TutorialStep {
 
 ---
 
-### 13. ⭐⭐⭐ DIALOGHI PIÙ RICCHI
-**Status:** ⚠️ Funzionali ma minimal  
-**Tempo stimato:** 3-4 giorni  
+### 13. DIALOGHI PIÙ RICCHI
+**Status:** Funzionali ma minimal 
+**Tempo stimato:** 3-4 giorni 
 
 #### Miglioramenti:
 - [ ] **Ritratti dei personaggi** (anche semplici, stile visual novel)
 - [ ] **Animazioni emotive** del ritratto:
-  - Shake per rabbia
-  - Bounce per gioia
-  - Fade per tristezza
+ - Shake per rabbia
+ - Bounce per gioia
+ - Fade per tristezza
 - [ ] **Scelte con timer** (10 secondi per decidere)
 - [ ] **Memoria delle scelte** (NPC ricordano cosa hai detto)
 - [ ] **Branching più complesso** (albero decisionale profondo)
@@ -323,18 +278,18 @@ class TutorialStep {
 
 ---
 
-### 14. ⭐⭐ SISTEMA GIORNO/NOTTE
-**Status:** ❌ Non implementato  
-**Tempo stimato:** 2-3 giorni  
+### 14. SISTEMA GIORNO/NOTTE
+**Status:** Non implementato 
+**Tempo stimato:** 2-3 giorni 
 **Opzionale ma interessante**
 
 #### Features:
 - [ ] Ciclo giorno/notte basato su progressione
 - [ ] Lighting diverso per ogni fase:
-  - Mattina (luce calda)
-  - Pomeriggio (luce neutra)
-  - Sera (arancione)
-  - Notte (blu scuro, lanterne)
+ - Mattina (luce calda)
+ - Pomeriggio (luce neutra)
+ - Sera (arancione)
+ - Notte (blu scuro, lanterne)
 - [ ] NPC diversi in orari diversi
 - [ ] Eventi speciali notturni
 - [ ] Negozi/luoghi aperti solo in certi orari
@@ -344,9 +299,9 @@ class TutorialStep {
 
 ---
 
-### 15. ⭐⭐⭐⭐ GESTIONE ERRORI
-**Status:** ⚠️ Minimale  
-**Tempo stimato:** 1 giorno  
+### 15. GESTIONE ERRORI
+**Status:** Minimale 
+**Tempo stimato:** 1 giorno 
 
 #### Da implementare:
 - [ ] Try-catch su tutte le operazioni critiche
@@ -362,9 +317,9 @@ class TutorialStep {
 
 ---
 
-### 16. ⭐⭐⭐ PERFORMANCE OPTIMIZATION
-**Status:** ⚠️ Non ottimizzato  
-**Tempo stimato:** 2 giorni  
+### 16. PERFORMANCE OPTIMIZATION
+**Status:** Non ottimizzato 
+**Tempo stimato:** 2 giorni 
 
 #### Ottimizzazioni:
 - [ ] Object pooling per particelle
@@ -380,9 +335,9 @@ class TutorialStep {
 
 ---
 
-### 17. ⭐⭐ MOBILE SUPPORT
-**Status:** ❌ Non implementato  
-**Tempo stimato:** 3-4 giorni  
+### 17. MOBILE SUPPORT
+**Status:** Non implementato 
+**Tempo stimato:** 3-4 giorni 
 **Solo se vuoi pubblicare su mobile**
 
 #### Da implementare:
@@ -399,9 +354,9 @@ class TutorialStep {
 
 ---
 
-### 18. ⭐⭐⭐ CREDITS SCENE
-**Status:** ❌ Non implementato  
-**Tempo stimato:** 1 giorno  
+### 18. CREDITS SCENE
+**Status:** Non implementato 
+**Tempo stimato:** 1 giorno 
 
 #### Sezioni:
 - [ ] Sviluppatore/Team
@@ -422,9 +377,9 @@ class TutorialStep {
 
 ---
 
-### 19. ⭐⭐⭐ GAME DESIGN DOCUMENT
-**Status:** ❌ Non creato  
-**Tempo stimato:** Ongoing  
+### 19. GAME DESIGN DOCUMENT
+**Status:** Non creato 
+**Tempo stimato:** Ongoing 
 **Per te come riferimento**
 
 #### Sezioni:
@@ -442,88 +397,86 @@ class TutorialStep {
 
 ---
 
-## 🎯 ROADMAP SUGGERITA
+## ROADMAP SUGGERITA
 
-### 📅 FASE 1 - CORE (2-3 settimane)
+### FASE 1 - CORE (2-3 settimane)
 **Obiettivo:** Rendere il gioco giocabile e completo
 
-1. ✅ AudioManager + musiche/SFX base
-2. ✅ PauseScene funzionale
-3. ✅ SettingsScene con controlli
-4. ✅ HUD con karma e obiettivi visibili
-5. ✅ Feedback visivo base (shake, flash, particles)
+1. AudioManager + musiche/SFX base
+2. PauseScene funzionale
+3. SettingsScene con controlli
+4. HUD con karma e obiettivi visibili
+5. Feedback visivo base (shake, flash, particles)
 
 **Deliverable:** Gioco giocabile dall'inizio alla fine con audio
 
 ---
 
-### 📅 FASE 2 - POLISH (2 settimane)
+### FASE 2 - POLISH (2 settimane)
 **Obiettivo:** Migliorare la presentazione
 
-6. ✅ Transizioni teatrali (sipario)
-7. ✅ Tutorial interattivo
-8. ✅ Dialoghi con ritratti
-9. ✅ Menu principale migliorato
-10. ✅ Minigame refinement
+6. Transizioni teatrali (sipario)
+8. Dialoghi con ritratti
+9. Menu principale migliorato
+10. Minigame refinement
 
 **Deliverable:** Gioco rifinito e presentabile
 
 ---
 
-### 📅 FASE 3 - CONTENT (Ongoing)
+### FASE 3 - CONTENT (Ongoing)
 **Obiettivo:** Aggiungere contenuto e rigiocabilità
 
-11. ✅ Più dialoghi e branching
-12. ✅ Achievement system
-13. ✅ Sistema inventario usabile
-14. ✅ Endings multipli ben differenziati
+11. Più dialoghi e branching
+12. Achievement system
+14. Endings multipli ben differenziati
 
 **Deliverable:** Gioco con contenuto sostanzioso
 
 ---
 
-### 📅 FASE 4 - FINAL (1-2 settimane pre-release)
+### FASE 4 - FINAL (1-2 settimane pre-release)
 **Obiettivo:** Preparare per il rilascio
 
-15. ✅ Bug fixing completo
-16. ✅ Performance optimization
-17. ✅ Playtesting estensivo
-18. ✅ Credits e polish finale
-19. ✅ Build e packaging
+15. Bug fixing completo
+16. Performance optimization
+17. Playtesting estensivo
+18. Credits e polish finale
+19. Build e packaging
 
 **Deliverable:** Gioco pronto per release
 
 ---
 
-## 📝 NOTE IMPLEMENTAZIONE
+## NOTE IMPLEMENTAZIONE
 
 ### Priority Legend:
-- ⭐⭐⭐⭐⭐ = Critico (devi farlo)
-- ⭐⭐⭐⭐ = Molto importante (migliora molto l'esperienza)
-- ⭐⭐⭐ = Importante (aggiunge valore)
-- ⭐⭐ = Nice to have (se hai tempo)
+- = Critico (devi farlo)
+- = Molto importante (migliora molto l'esperienza)
+- = Importante (aggiunge valore)
+- = Nice to have (se hai tempo)
 
 ### Status Legend:
-- ✅ = Completato
-- ⚠️ = Parzialmente implementato
-- ❌ = Non iniziato
-- 🚧 = In lavorazione
+- = Completato
+- = Parzialmente implementato
+- = Non iniziato
+- = In lavorazione
 
 ---
 
-## 🎮 COME USARE QUESTA ROADMAP
+## COME USARE QUESTA ROADMAP
 
 1. **Scegli un item** dalla lista
 2. **Leggi i requisiti** e stima il tempo
 3. **Crea un branch** git (es: `feature/audio-system`)
 4. **Implementa** seguendo le note
 5. **Testa** la feature
-6. **Aggiorna questo file** con ✅
+6. **Aggiorna questo file** con 
 7. **Merge** e passa al prossimo
 
 ---
 
-## 📞 PROSSIMI PASSI IMMEDIATI
+## PROSSIMI PASSI IMMEDIATI
 
 **Consiglio di partire con questi 3:**
 
@@ -531,4 +484,4 @@ class TutorialStep {
 2. **PauseScene** (standard necessario per ogni gioco)
 3. **HUD con karma** (gameplay feedback essenziale)
 
-**Vuoi che implementiamo uno di questi insieme?** 🎭
+**Vuoi che implementiamo uno di questi insieme?** 
