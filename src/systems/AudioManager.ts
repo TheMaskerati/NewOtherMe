@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { SaveSystem } from './SaveSystem';
 
 /**
  * Centralized Audio Manager system.
@@ -9,20 +8,21 @@ export class AudioManager {
     private static instance: AudioManager;
     private scene: Phaser.Scene;
     private music: Map<string, Phaser.Sound.BaseSound> = new Map();
-    private sfx: Map<string, Phaser.Sound.BaseSound> = new Map();
     private currentMusic: string | null = null;
     private musicVolume: number = 0.5;
-    private sfxVolume: number = 0.7;
+    private sfxVolume: number = 0.5;
 
     private constructor(scene: Phaser.Scene) {
         this.scene = scene;
-        const settings = SaveSystem.getSettings();
-        this.musicVolume = settings.musicVolume;
-        this.sfxVolume = settings.sfxVolume;
+        /* Load saved preferences if available */
+        const savedMusic = localStorage.getItem('musicVolume');
+        const savedSfx = localStorage.getItem('sfxVolume');
+        if (savedMusic) this.musicVolume = parseFloat(savedMusic);
+        if (savedSfx) this.sfxVolume = parseFloat(savedSfx);
     }
 
-    public static getInstance(scene?: Phaser.Scene): AudioManager {
-        if (!AudioManager.instance && scene) {
+    public static getInstance(scene: Phaser.Scene): AudioManager {
+        if (!AudioManager.instance) {
             AudioManager.instance = new AudioManager(scene);
         }
         return AudioManager.instance;
@@ -40,7 +40,7 @@ export class AudioManager {
 
         /* Check if the audio file exists */
         if (!this.scene.cache.audio.exists(key)) {
-            console.warn(`Audio file not found: ${key}`);
+            // console.debug(`Audio file not found: ${key}`);
             return;
         }
 
@@ -52,7 +52,9 @@ export class AudioManager {
                     targets: current,
                     volume: 0,
                     duration: 1000,
-                    onComplete: () => current.stop()
+                    onComplete: () => {
+                        current.stop();
+                    }
                 });
             }
         }
@@ -100,32 +102,92 @@ export class AudioManager {
         if (!this.scene.cache.audio.exists(key)) {
             return; /* Silently skip missing SFX */
         }
-        this.scene.sound.play(key, { volume });
-    }
-
-    /**
-     * Sets music volume (0.0 to 1.0).
-     */
-    public setMusicVolume(value: number): void {
-        this.musicVolume = Phaser.Math.Clamp(value, 0, 1);
-        if (this.currentMusic) {
-            const current = this.music.get(this.currentMusic);
-            if (current) (current as any).setVolume(this.musicVolume);
+        try {
+            this.scene.sound.play(key, { volume });
+        } catch (e) {
+            console.warn('SFX Error:', e);
         }
     }
 
     /**
-     * Sets SFX volume (0.0 to 1.0).
+     * Plays a procedural audio blip using Web Audio API.
+     * Useful for character voices or UI feedback without external assets.
      */
-    public setSFXVolume(value: number): void {
-        this.sfxVolume = Phaser.Math.Clamp(value, 0, 1);
+    public playBlip(pitch: number = 440, type: OscillatorType = 'square', duration: number = 50): void {
+        try {
+            if (this.scene.sound instanceof Phaser.Sound.NoAudioSoundManager) return;
+
+            const context = (this.scene.sound as Phaser.Sound.WebAudioSoundManager).context;
+            if (!context) return;
+
+            const osc = context.createOscillator();
+            const gain = context.createGain();
+
+            osc.type = type;
+            osc.frequency.setValueAtTime(pitch, context.currentTime);
+
+            /* Envelope */
+            gain.gain.setValueAtTime(this.sfxVolume * 0.1, context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + duration / 1000);
+
+            osc.connect(gain);
+            gain.connect(context.destination);
+
+            osc.start();
+            osc.stop(context.currentTime + duration / 1000);
+        } catch (e) {
+            console.warn('Web Audio API not supported or error:', e);
+        }
     }
 
     /**
-     * Updates audio based on karma/intensity score.
+     * Updates audio dynamics based on game state (e.g. mask score).
+     * @param score Current mask score (-100 to 100)
      */
     public updateDynamicAudio(score: number): void {
-        /* TODO: Implement dynamic filters/pitch based on score */
+        /* Adjust rate/pitch based on tension */
+        /* Score > 0 = High Tension -> Faster, Higher pitch */
+        /* Score < 0 = Control -> Slower, Lower pitch */
+
+        /* Map score -100..100 to rate 0.8..1.2 */
+        const rate = 1.0 + (score / 500);
+        this.setRate(Phaser.Math.Clamp(rate, 0.8, 1.5));
+    }
+
+    /**
+     * Settings: Set Music Pitch/Rate
+     */
+    public setRate(value: number): void {
+        if (this.currentMusic) {
+            const current = this.music.get(this.currentMusic);
+            if (current) {
+                (current as any).setRate(value);
+            }
+        }
+    }
+
+    /**
+     * Settings: Set Music Volume
+     */
+    public setMusicVolume(value: number): void {
+        this.musicVolume = Phaser.Math.Clamp(value, 0, 1);
+        localStorage.setItem('musicVolume', this.musicVolume.toString());
+
+        if (this.currentMusic) {
+            const current = this.music.get(this.currentMusic);
+            if (current) {
+                /* Update currently playing music volume immediately */
+                (current as any).volume = this.musicVolume;
+            }
+        }
+    }
+
+    /**
+     * Settings: Set SFX Volume
+     */
+    public setSFXVolume(value: number): void {
+        this.sfxVolume = Phaser.Math.Clamp(value, 0, 1);
+        localStorage.setItem('sfxVolume', this.sfxVolume.toString());
     }
 
     /**
@@ -134,7 +196,5 @@ export class AudioManager {
     public destroy(): void {
         this.music.forEach(s => s.destroy());
         this.music.clear();
-        this.sfx.forEach(s => s.destroy());
-        this.sfx.clear();
     }
 }

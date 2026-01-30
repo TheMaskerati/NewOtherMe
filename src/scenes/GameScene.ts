@@ -13,6 +13,7 @@ import { HUD } from '@/ui/HUD';
 import { KarmaSystem } from '@/systems/KarmaSystem';
 import { TransitionManager } from '@/effects/TransitionManager';
 import { TimeManager } from '@/systems/TimeManager';
+import { VirtualJoystick } from '@/ui/VirtualJoystick';
 
 interface GameSceneData {
     map?: MapKey;
@@ -38,12 +39,17 @@ export class GameScene extends BaseScene {
     private transitionManager!: TransitionManager;
     private interactionPrompt!: Phaser.GameObjects.Text;
     private mapNameText!: Phaser.GameObjects.Text;
+    private joystick!: VirtualJoystick;
 
     private stage: number = 1;
     private static tutorialDone = false;
 
     /** Cycle of maps for Endless Mode progression */
     private readonly MAP_CYCLE: MapKey[] = ['theater', 'naplesAlley', 'fatherHouse'];
+
+    public static resetState(): void {
+        GameScene.tutorialDone = false;
+    }
 
     constructor() {
         super(SCENES.GAME);
@@ -67,6 +73,13 @@ export class GameScene extends BaseScene {
         const { walls, mapWidth, mapHeight } = this.mapManager.create();
 
         const startPos = this.getStartPosition(data);
+
+        if (!this.textures.exists('player')) {
+            console.error('CRITICAL: Player texture missing in GameScene! Returning to BootScene.');
+            this.scene.start(SCENES.BOOT);
+            return;
+        }
+
         this.player = new Player(this, startPos.x, startPos.y);
 
         this.createNPCs();
@@ -80,6 +93,7 @@ export class GameScene extends BaseScene {
         this.transitionManager.open();
         MaskSystem.getInstance().init(this);
         TimeManager.initialize(this);
+        this.joystick = new VirtualJoystick(this);
 
         this.physics.add.collider(this.player.getSprite(), walls);
         this.setupNPCCollisions();
@@ -95,10 +109,25 @@ export class GameScene extends BaseScene {
 
         this.setupAudio();
         this.setupPauseMenu();
+
+        /* Day/Night Cycle Handling */
+        TimeManager.onTimeChange((time) => {
+            this.npcs.forEach(npc => npc.checkAvailability(time));
+        });
+        /* Initial check */
+        this.npcs.forEach(npc => npc.checkAvailability(TimeManager.getCurrentTime()));
     }
 
     private setupAudio(): void {
         this.audioManager.playMusic(`bgm_${this.currentMap}`);
+
+        /* Speed up music in later stages */
+        if (this.stage > 1) {
+            const rate = Math.min(1.0 + (this.stage - 1) * 0.05, 1.5);
+            this.audioManager.setRate(rate);
+        } else {
+            this.audioManager.setRate(1.0);
+        }
     }
 
     private setupPauseMenu(): void {
@@ -114,7 +143,7 @@ export class GameScene extends BaseScene {
         }
         const defaults: Record<string, { x: number; y: number }> = {
             apartment: { x: 10 * TILE_SIZE * SCALE, y: 10 * TILE_SIZE * SCALE },
-            theater: { x: 5 * TILE_SIZE * SCALE, y: 20 * TILE_SIZE * SCALE },
+            theater: { x: 5 * TILE_SIZE * SCALE, y: 18 * TILE_SIZE * SCALE },
             naplesAlley: { x: 8 * TILE_SIZE * SCALE, y: 15 * TILE_SIZE * SCALE },
             fatherHouse: { x: 12 * TILE_SIZE * SCALE, y: 15 * TILE_SIZE * SCALE },
         };
@@ -135,10 +164,21 @@ export class GameScene extends BaseScene {
 
     private createUI(): void {
         /* Prompt */
-        this.interactionPrompt = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 60, '[E] Interagisci', {
-            fontFamily: 'monospace', fontSize: '14px',
-            color: '#ffffff', backgroundColor: '#000000cc', padding: { x: 12, y: 6 }
+        this.interactionPrompt = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 80, '[E] INTERAGISCI', {
+            fontFamily: 'monospace', fontSize: '20px', fontStyle: 'bold',
+            color: '#ffd700', backgroundColor: '#000000ee', padding: { x: 16, y: 8 },
+            stroke: '#000000', strokeThickness: 4
         }).setOrigin(0.5).setScrollFactor(0).setDepth(500).setVisible(false);
+
+        /* Pulse Animation */
+        this.tweens.add({
+            targets: this.interactionPrompt,
+            scaleX: 1.1,
+            scaleY: 1.1,
+            duration: 600,
+            yoyo: true,
+            repeat: -1
+        });
 
         /* Map Name */
         this.mapNameText = this.add.text(GAME_WIDTH / 2, 30, '', {
@@ -176,8 +216,17 @@ export class GameScene extends BaseScene {
             return;
         }
 
+        /* Input Handling (Keyboard + Mobile) */
         const input = this.getMovementInput();
+        if (this.joystick && this.joystick.isActive()) {
+            if (this.joystick.left) input.x = -1;
+            if (this.joystick.right) input.x = 1;
+            if (this.joystick.up) input.y = -1;
+            if (this.joystick.down) input.y = 1;
+        }
+
         const interactPressed = Phaser.Input.Keyboard.JustDown(this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E));
+        /* Mobile Touch Interaction (Simple tap on prompt region) */
 
         this.player.update(input, delta);
         this.npcs.forEach(npc => npc.update(delta, this.player.getPosition()));
@@ -206,6 +255,20 @@ export class GameScene extends BaseScene {
         }
 
         if (!nearTarget) this.interactionPrompt.setVisible(false);
+
+        /* Visual Madness (Endless Mode) */
+        if (this.stage > 3) {
+            const madness = Math.min((this.stage - 3) * 0.05, 0.5); /* Cap madness */
+            this.cameras.main.setRotation(Math.sin(time / 2000) * madness * 0.2);
+            this.cameras.main.setZoom(1.0 + Math.sin(time / 1500) * madness * 0.1);
+
+            if (this.stage > 7) {
+                /* Color Tint Panic */
+                const red = 255;
+                const others = Math.floor(255 - (Math.sin(time / 500) * 50 * madness));
+                this.cameras.main.setBackgroundColor(Phaser.Display.Color.GetColor(red, others, others));
+            }
+        }
 
         /* Update HUD */
         if (this.hud) {
@@ -266,32 +329,28 @@ export class GameScene extends BaseScene {
      * @param door The door configuration interacting with.
      */
     private handleDoor(door: DoorConfig): void {
-        let nextMap: MapKey = 'theater';
+        const nextMap = door.targetMap;
+        const targetX = door.targetX * TILE_SIZE * SCALE + (TILE_SIZE * SCALE) / 2;
+        const targetY = door.targetY * TILE_SIZE * SCALE + (TILE_SIZE * SCALE) / 2;
 
-        if (this.currentMap === 'apartment') {
-            nextMap = 'theater';
-        } else {
-            const currentIndex = this.MAP_CYCLE.findIndex(m => m === this.currentMap);
-            const nextIndex = (currentIndex + 1) % this.MAP_CYCLE.length;
-            nextMap = this.MAP_CYCLE[nextIndex];
-
-            /* Increment stage ONLY when completing a cycle (returning to Theater) */
-            if (nextIndex === 0) {
-                this.stage++;
-            }
+        /* Increment stage if returning to Theater from the last map in the cycle */
+        /* Cycle: theater -> naplesAlley -> fatherHouse -> naplesAlley -> theater */
+        /* If we are entering theater and we are not coming from apartment */
+        if (nextMap === 'theater' && this.currentMap !== 'apartment') {
+            this.stage++;
         }
 
-        this.transitionToMap(nextMap);
+        this.transitionToMap(nextMap, targetX, targetY);
     }
 
-    private transitionToMap(nextMap: MapKey): void {
+    private transitionToMap(nextMap: MapKey, x: number, y: number): void {
         TimeManager.advanceTime();
         this.transitionManager.close().then(() => {
             this.scene.start(SCENES.GAME, {
                 map: nextMap,
                 stage: this.stage,
-                playerX: 100,
-                playerY: 100
+                playerX: x,
+                playerY: y
             });
         });
     }
