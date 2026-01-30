@@ -116,6 +116,14 @@ export class GameScene extends BaseScene {
 
     private setupAudio(): void {
         this.audioManager.playMusic(`bgm_${this.currentMap}`);
+
+        /* Speed up music in later stages */
+        if (this.stage > 1) {
+            const rate = Math.min(1.0 + (this.stage - 1) * 0.05, 1.5);
+            this.audioManager.setRate(rate);
+        } else {
+            this.audioManager.setRate(1.0);
+        }
     }
 
     private setupPauseMenu(): void {
@@ -243,6 +251,20 @@ export class GameScene extends BaseScene {
         }
 
         if (!nearTarget) this.interactionPrompt.setVisible(false);
+
+        /* Visual Madness (Endless Mode) */
+        if (this.stage > 3) {
+            const madness = Math.min((this.stage - 3) * 0.05, 0.5); /* Cap madness */
+            this.cameras.main.setRotation(Math.sin(time / 2000) * madness * 0.2);
+            this.cameras.main.setZoom(1.0 + Math.sin(time / 1500) * madness * 0.1);
+
+            if (this.stage > 7) {
+                /* Color Tint Panic */
+                const red = 255;
+                const others = Math.floor(255 - (Math.sin(time / 500) * 50 * madness));
+                this.cameras.main.setBackgroundColor(Phaser.Display.Color.GetColor(red, others, others));
+            }
+        }
 
         /* Update HUD */
         if (this.hud) {

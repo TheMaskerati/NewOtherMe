@@ -329,7 +329,7 @@ export class MinigameManager {
             this.container.add(card);
         });
 
-        this.startTimer(30000 - difficulty * 2000, false);
+        this.startTimer(Math.max(10000, 30000 - difficulty * 2000), false);
     }
 
     private flipCard(idx: number): void {

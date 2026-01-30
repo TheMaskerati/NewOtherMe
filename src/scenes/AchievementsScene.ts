@@ -86,7 +86,7 @@ export class AchievementsScene extends BaseScene {
         this.scrollContainer.setMask(this.scrollMask);
 
         achievements.forEach((ach, i) => {
-            const y = i * (cardH + gap);
+            const y = i * (cardH + gap) + cardH / 2;
             this.createAchievementCard(GAME_WIDTH / 2, y, ach, cardH);
         });
 

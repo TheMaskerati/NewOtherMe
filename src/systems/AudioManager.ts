@@ -141,6 +141,18 @@ export class AudioManager {
     }
 
     /**
+     * Settings: Set Music Pitch/Rate
+     */
+    public setRate(value: number): void {
+        if (this.currentMusic) {
+            const current = this.music.get(this.currentMusic);
+            if (current) {
+                (current as any).setRate(value);
+            }
+        }
+    }
+
+    /**
      * Settings: Set Music Volume
      */
     public setMusicVolume(value: number): void {
