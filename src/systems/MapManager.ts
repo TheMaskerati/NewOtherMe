@@ -103,6 +103,10 @@ export const MAP_CONFIGS: Record<MapKey, MapConfig> = {
     },
 };
 
+/**
+ * Manages map creation, including walls, objects, and doors.
+ * Handles the visual representation based on configuration.
+ */
 export class MapManager {
     private scene: Phaser.Scene;
     private currentMap: MapKey;
@@ -115,6 +119,10 @@ export class MapManager {
         this.walls = scene.physics.add.staticGroup();
     }
 
+    /**
+     * Creates the map visuals and physics boundaries.
+     * @returns Object containing the walls static group and map dimensions.
+     */
     create(): { walls: Phaser.Physics.Arcade.StaticGroup; mapWidth: number; mapHeight: number } {
         const config = MAP_CONFIGS[this.currentMap];
         const mapWidth = config.width * TILE_SIZE * SCALE;
@@ -190,10 +198,6 @@ export class MapManager {
 
             if (obj.label && textureMap[obj.label]) {
                 const sprite = this.scene.add.image(x, y, textureMap[obj.label]);
-                // Scale sprite to fit object dimensions if needed, or just use generated size
-                // Generated sizes are roughly matching map sizes in tiles, but we might want to be precise?
-                // For now, let's keep original size or safeguard
-                // sprite.setDisplaySize(width, height); // Optional: force fit?
                 sprite.setDepth(obj.label === 'PALCO' ? 0 : 1); // Stage floor should be lower
                 gameObject = sprite;
             } else {
@@ -207,7 +211,6 @@ export class MapManager {
             }
 
             if (obj.label && !textureMap[obj.label]) {
-                // Label only for non-textured objects or debug
                 const label = this.scene.add.text(x, y, obj.label, {
                     fontFamily: 'monospace',
                     fontSize: '10px',
@@ -216,8 +219,6 @@ export class MapManager {
                 label.setOrigin(0.5);
                 label.setDepth(2);
             }
-            // Keep label for debug if needed? Or remove it for textured ones to clean up "squares with names".
-            // User said "invece dei quadratini con i nomi", so remove name if textured.
 
             this.objects.push(gameObject);
         });

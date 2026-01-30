@@ -1,6 +1,10 @@
 import Phaser from 'phaser';
 import { SCENES, COLORS, GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
 
+/**
+ * Boot Scene
+ * Handles asset preloading, including procedural generation of sprites and tiles.
+ */
 export class BootScene extends Phaser.Scene {
     constructor() {
         super(SCENES.BOOT);
@@ -11,6 +15,9 @@ export class BootScene extends Phaser.Scene {
         this.generatePlaceholderAssets();
     }
 
+    /**
+     * Creates a simple progress bar to visualize loading status.
+     */
     private createLoadingBar(): void {
         const width = GAME_WIDTH;
         const height = GAME_HEIGHT;
@@ -39,6 +46,10 @@ export class BootScene extends Phaser.Scene {
         });
     }
 
+    /**
+     * Generates all procedural assets for characters, furniture, and tiles.
+     * This replaces static asset loading for prototyping/visual style.
+     */
     private generatePlaceholderAssets(): void {
         // Genera personaggi con diverse caratteristiche
         this.generateCharacterSprite('player', {
@@ -81,6 +92,9 @@ export class BootScene extends Phaser.Scene {
         this.generateTileset();
     }
 
+    /**
+     * Generates textures for map furniture/objects based on type.
+     */
     private generateFurnitureAssets(): void {
         // Apartment
         this.generateFurnitureSprite('furn_bed', 80, 64, 0x654321, 'bed');
@@ -107,6 +121,14 @@ export class BootScene extends Phaser.Scene {
         this.generateFurnitureSprite('furn_generic', 32, 32, 0x555555, 'box');
     }
 
+    /**
+     * Helper to draw a furniture item onto a texture.
+     * @param key Texture key
+     * @param width Width in pixels
+     * @param height Height in pixels
+     * @param color Base color
+     * @param type Furniture type descriptor
+     */
     private generateFurnitureSprite(key: string, width: number, height: number, color: number, type: string): void {
         const graphics = this.make.graphics({});
 
@@ -174,6 +196,11 @@ export class BootScene extends Phaser.Scene {
         graphics.destroy();
     }
 
+    /**
+     * Procedurally generates a character sprite sheet.
+     * @param key Texture key
+     * @param features Configuration for character appearance (colors, hair style, etc.)
+     */
     private generateCharacterSprite(
         key: string,
         features: {
