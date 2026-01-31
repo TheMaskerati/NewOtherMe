@@ -31,7 +31,7 @@
 #### Cosa implementare
 
 - [x] AudioManager class centrale
-- [ ] Musica di sottofondo per ogni scena:
+- [x] Musica di sottofondo per ogni scena (Loading Logic Active)
 - Menu principale (orchestrale, misteriosa)
 - Teatro (drammatica, crescendo)
 - Vicolo (tesa, inquietante)
