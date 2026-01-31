@@ -1,5 +1,5 @@
-import { MapKey } from '@/types/game';
-import { OBJECTIVES, OBJECTIVE_TRIGGERS } from '@/config/objectives';
+import { OBJECTIVE_TRIGGERS, OBJECTIVES } from "@/config/objectives";
+import type { MapKey } from "@/types/game";
 
 type ObjectiveListener = (objective: string) => void;
 
@@ -13,11 +13,11 @@ type ObjectiveListener = (objective: string) => void;
  */
 export class ObjectiveManager {
     private static _instance: ObjectiveManager;
-    private currentObjective: string = 'SOPRAVVIVI';
-    private currentMap: MapKey | string = 'apartment';
+    private currentObjective: string = "SOPRAVVIVI";
+    private currentMap: MapKey | string = "apartment";
     private listeners: ObjectiveListener[] = [];
 
-    private constructor() { }
+    private constructor() {}
 
     static getInstance(): ObjectiveManager {
         if (!ObjectiveManager._instance) {
@@ -102,14 +102,14 @@ export class ObjectiveManager {
     }
 
     private notifyListeners(): void {
-        this.listeners.forEach(listener => listener(this.currentObjective));
+        this.listeners.forEach((listener) => listener(this.currentObjective));
     }
 
     /**
      * Reset del manager (utile per nuova partita).
      */
     reset(): void {
-        this.currentObjective = 'SOPRAVVIVI';
-        this.currentMap = 'apartment';
+        this.currentObjective = "SOPRAVVIVI";
+        this.currentMap = "apartment";
     }
 }

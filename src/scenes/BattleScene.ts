@@ -1,8 +1,8 @@
-import Phaser from 'phaser';
-import { SCENES, COLORS, GAME_WIDTH, GAME_HEIGHT, BATTLE_CONFIG } from '@/config/gameConfig';
-import { BattleState, BattleActionType, BATTLE_ACTIONS } from '@/types/combat';
-import { ENEMIES } from '@/config/constants';
-import { EnemyConfig } from '@/types/entities';
+import Phaser from "phaser";
+import { ENEMIES } from "@/config/constants";
+import { BATTLE_CONFIG, COLORS, GAME_HEIGHT, GAME_WIDTH, SCENES } from "@/config/gameConfig";
+import { BATTLE_ACTIONS, type BattleActionType, type BattleState } from "@/types/combat";
+import type { EnemyConfig } from "@/types/entities";
 
 interface BattleSceneData {
     enemyId: string;
@@ -32,7 +32,7 @@ export class BattleScene extends Phaser.Scene {
             enemyHp: this.enemy.maxHp,
             enemyMaxHp: this.enemy.maxHp,
             temptation: 0,
-            turn: 'player',
+            turn: "player",
             isOver: false,
             result: null,
         };
@@ -67,67 +67,73 @@ export class BattleScene extends Phaser.Scene {
         const enemySprite = this.add.image(GAME_WIDTH / 2, 150, this.enemy.sprite);
         enemySprite.setScale(6);
 
-        this.add.text(GAME_WIDTH / 2, 40, this.enemy.name, {
-            fontFamily: 'monospace',
-            fontSize: '20px',
-            color: '#ffffff',
-        }).setOrigin(0.5);
+        this.add
+            .text(GAME_WIDTH / 2, 40, this.enemy.name, {
+                fontFamily: "monospace",
+                fontSize: "20px",
+                color: "#ffffff",
+            })
+            .setOrigin(0.5);
 
         this.add.rectangle(GAME_WIDTH / 2, 70, 200, 16, 0x333333);
         this.enemyHpBar = this.add.rectangle(GAME_WIDTH / 2 - 98, 70, 196, 12, COLORS.red);
         this.enemyHpBar.setOrigin(0, 0.5);
 
         const playerY = GAME_HEIGHT - 180;
-        this.add.text(50, playerY, 'GENNARO', {
-            fontFamily: 'monospace',
-            fontSize: '16px',
-            color: '#e0d5c0',
+        this.add.text(50, playerY, "GENNARO", {
+            fontFamily: "monospace",
+            fontSize: "16px",
+            color: "#e0d5c0",
         });
 
-        this.add.text(50, playerY + 25, 'HP', {
-            fontFamily: 'monospace',
-            fontSize: '12px',
-            color: '#888888',
+        this.add.text(50, playerY + 25, "HP", {
+            fontFamily: "monospace",
+            fontSize: "12px",
+            color: "#888888",
         });
         this.add.rectangle(100, playerY + 28, 150, 12, 0x333333);
         this.playerHpBar = this.add.rectangle(26, playerY + 28, 146, 8, 0x00aa00);
         this.playerHpBar.setOrigin(0, 0.5);
 
-        this.add.text(50, playerY + 45, 'TENTAZIONE', {
-            fontFamily: 'monospace',
-            fontSize: '12px',
-            color: '#888888',
+        this.add.text(50, playerY + 45, "TENTAZIONE", {
+            fontFamily: "monospace",
+            fontSize: "12px",
+            color: "#888888",
         });
         this.add.rectangle(150, playerY + 48, 100, 12, 0x333333);
         this.temptationBar = this.add.rectangle(101, playerY + 48, 0, 8, COLORS.purple);
         this.temptationBar.setOrigin(0, 0.5);
 
-        this.messageText = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 250, '', {
-            fontFamily: 'monospace',
-            fontSize: '16px',
-            color: '#ffffff',
-            align: 'center',
-            wordWrap: { width: 600 },
-        }).setOrigin(0.5);
+        this.messageText = this.add
+            .text(GAME_WIDTH / 2, GAME_HEIGHT - 250, "", {
+                fontFamily: "monospace",
+                fontSize: "16px",
+                color: "#ffffff",
+                align: "center",
+                wordWrap: { width: 600 },
+            })
+            .setOrigin(0.5);
     }
 
     private createMenu(): void {
         const menuY = GAME_HEIGHT - 120;
-        const actions: BattleActionType[] = ['fight', 'resist', 'item', 'flee'];
+        const actions: BattleActionType[] = ["fight", "resist", "item", "flee"];
 
         this.add.rectangle(GAME_WIDTH / 2, menuY + 40, GAME_WIDTH - 40, 100, 0x1a1a1a);
-        this.add.rectangle(GAME_WIDTH / 2, menuY + 40, GAME_WIDTH - 40, 100).setStrokeStyle(2, COLORS.gold);
+        this.add
+            .rectangle(GAME_WIDTH / 2, menuY + 40, GAME_WIDTH - 40, 100)
+            .setStrokeStyle(2, COLORS.gold);
 
         actions.forEach((action, index) => {
             const x = 80 + (index % 2) * 200;
             const y = menuY + 20 + Math.floor(index / 2) * 40;
 
             const text = this.add.text(x, y, BATTLE_ACTIONS[action].name, {
-                fontFamily: 'monospace',
-                fontSize: '18px',
-                color: '#e0d5c0',
+                fontFamily: "monospace",
+                fontSize: "18px",
+                color: "#e0d5c0",
             });
-            text.setData('action', action);
+            text.setData("action", action);
             this.menuItems.push(text);
         });
 
@@ -136,13 +142,13 @@ export class BattleScene extends Phaser.Scene {
 
     private updateMenuSelection(): void {
         this.menuItems.forEach((item, index) => {
-            const action = item.getData('action') as BattleActionType;
+            const action = item.getData("action") as BattleActionType;
             if (index === this.selectedIndex) {
-                item.setColor('#ffd700');
-                item.setText('> ' + BATTLE_ACTIONS[action].name);
+                item.setColor("#ffd700");
+                item.setText("> " + BATTLE_ACTIONS[action].name);
             } else {
-                item.setColor('#e0d5c0');
-                item.setText('  ' + BATTLE_ACTIONS[action].name);
+                item.setColor("#e0d5c0");
+                item.setText("  " + BATTLE_ACTIONS[action].name);
             }
         });
     }
@@ -159,7 +165,7 @@ export class BattleScene extends Phaser.Scene {
     }
 
     private showMessage(text: string): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             this.messageText.setText(text);
             this.time.delayedCall(1500, resolve);
         });
@@ -168,22 +174,31 @@ export class BattleScene extends Phaser.Scene {
     update(): void {
         if (this.isAnimating || this.state.isOver) return;
 
-        if (this.state.turn === 'player') {
+        if (this.state.turn === "player") {
             this.handlePlayerInput();
         }
     }
 
     private handlePlayerInput(): void {
-        if (Phaser.Input.Keyboard.JustDown(this.keys.UP) || Phaser.Input.Keyboard.JustDown(this.keys.W)) {
+        if (
+            Phaser.Input.Keyboard.JustDown(this.keys.UP) ||
+            Phaser.Input.Keyboard.JustDown(this.keys.W)
+        ) {
             this.selectedIndex = Math.max(0, this.selectedIndex - 2);
             this.updateMenuSelection();
         }
-        if (Phaser.Input.Keyboard.JustDown(this.keys.DOWN) || Phaser.Input.Keyboard.JustDown(this.keys.S)) {
+        if (
+            Phaser.Input.Keyboard.JustDown(this.keys.DOWN) ||
+            Phaser.Input.Keyboard.JustDown(this.keys.S)
+        ) {
             this.selectedIndex = Math.min(3, this.selectedIndex + 2);
             this.updateMenuSelection();
         }
-        if (Phaser.Input.Keyboard.JustDown(this.keys.SPACE) || Phaser.Input.Keyboard.JustDown(this.keys.ENTER)) {
-            const action = this.menuItems[this.selectedIndex].getData('action') as BattleActionType;
+        if (
+            Phaser.Input.Keyboard.JustDown(this.keys.SPACE) ||
+            Phaser.Input.Keyboard.JustDown(this.keys.ENTER)
+        ) {
+            const action = this.menuItems[this.selectedIndex].getData("action") as BattleActionType;
             this.executePlayerAction(action);
         }
     }
@@ -192,16 +207,16 @@ export class BattleScene extends Phaser.Scene {
         this.isAnimating = true;
 
         switch (action) {
-            case 'fight':
+            case "fight":
                 await this.playerFight();
                 break;
-            case 'resist':
+            case "resist":
                 await this.playerResist();
                 break;
-            case 'item':
-                await this.showMessage('Nessun oggetto disponibile.');
+            case "item":
+                await this.showMessage("Nessun oggetto disponibile.");
                 break;
-            case 'flee':
+            case "flee":
                 await this.playerFlee();
                 break;
         }
@@ -212,7 +227,7 @@ export class BattleScene extends Phaser.Scene {
         }
 
         if (!this.state.isOver) {
-            this.state.turn = 'enemy';
+            this.state.turn = "enemy";
             await this.enemyTurn();
 
             if (this.checkBattleEnd()) {
@@ -220,7 +235,7 @@ export class BattleScene extends Phaser.Scene {
                 return;
             }
 
-            this.state.turn = 'player';
+            this.state.turn = "player";
         }
 
         this.isAnimating = false;
@@ -229,7 +244,10 @@ export class BattleScene extends Phaser.Scene {
     private async playerFight(): Promise<void> {
         const damage = BATTLE_CONFIG.baseDamage + Math.floor(Math.random() * 10);
         this.state.enemyHp = Math.max(0, this.state.enemyHp - damage);
-        this.state.temptation = Math.min(100, this.state.temptation + BATTLE_CONFIG.temptationPerFight);
+        this.state.temptation = Math.min(
+            100,
+            this.state.temptation + BATTLE_CONFIG.temptationPerFight,
+        );
 
         this.cameras.main.shake(100, 0.01);
         await this.showMessage(`Attacchi! ${damage} danni!`);
@@ -239,7 +257,10 @@ export class BattleScene extends Phaser.Scene {
     private async playerResist(): Promise<void> {
         const heal = BATTLE_CONFIG.resistHeal;
         this.state.playerHp = Math.min(this.state.playerMaxHp, this.state.playerHp + heal);
-        this.state.temptation = Math.max(0, this.state.temptation + BATTLE_CONFIG.temptationPerResist);
+        this.state.temptation = Math.max(
+            0,
+            this.state.temptation + BATTLE_CONFIG.temptationPerResist,
+        );
 
         await this.showMessage(`Mantieni la calma. Recuperi ${heal} HP.`);
         this.updateUI();
@@ -248,11 +269,11 @@ export class BattleScene extends Phaser.Scene {
     private async playerFlee(): Promise<void> {
         if (Math.random() < BATTLE_CONFIG.fleeChance) {
             this.state.isOver = true;
-            this.state.result = 'fled';
-            await this.showMessage('Sei fuggito!');
+            this.state.result = "fled";
+            await this.showMessage("Sei fuggito!");
         } else {
             this.state.temptation = Math.min(100, this.state.temptation + 5);
-            await this.showMessage('Non riesci a fuggire!');
+            await this.showMessage("Non riesci a fuggire!");
             this.updateUI();
         }
     }
@@ -270,36 +291,36 @@ export class BattleScene extends Phaser.Scene {
     private checkBattleEnd(): boolean {
         if (this.state.playerHp <= 0) {
             this.state.isOver = true;
-            this.state.result = 'defeat';
+            this.state.result = "defeat";
             return true;
         }
         if (this.state.enemyHp <= 0) {
             this.state.isOver = true;
-            this.state.result = 'victory';
+            this.state.result = "victory";
             return true;
         }
         if (this.state.temptation >= 100) {
             this.state.isOver = true;
-            this.state.result = 'masked';
+            this.state.result = "masked";
             return true;
         }
         return false;
     }
 
     private async endBattle(): Promise<void> {
-        let message = '';
+        let message = "";
         switch (this.state.result) {
-            case 'victory':
-                message = 'Hai vinto il confronto.';
+            case "victory":
+                message = "Hai vinto il confronto.";
                 break;
-            case 'defeat':
-                message = 'Sei stato sopraffatto.';
+            case "defeat":
+                message = "Sei stato sopraffatto.";
                 break;
-            case 'masked':
-                message = 'La maschera ha preso il controllo.';
+            case "masked":
+                message = "La maschera ha preso il controllo.";
                 break;
-            case 'fled':
-                message = 'Ti sei allontanato.';
+            case "fled":
+                message = "Ti sei allontanato.";
                 break;
         }
 
@@ -307,7 +328,7 @@ export class BattleScene extends Phaser.Scene {
 
         this.time.delayedCall(1000, () => {
             this.scene.stop();
-            this.scene.get(SCENES.GAME).events.emit('battleComplete', this.state.result);
+            this.scene.get(SCENES.GAME).events.emit("battleComplete", this.state.result);
         });
     }
 }

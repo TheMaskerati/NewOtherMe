@@ -1,5 +1,5 @@
-import Phaser from 'phaser';
-import { AudioManager } from './AudioManager';
+import Phaser from "phaser";
+import { AudioManager } from "./AudioManager";
 
 export class MaskSystem {
     private static _instance: MaskSystem;
@@ -7,7 +7,7 @@ export class MaskSystem {
     private score: number = 0;
     private glitchTimer: Phaser.Time.TimerEvent | null = null;
 
-    private constructor() { }
+    private constructor() {}
 
     static getInstance(): MaskSystem {
         if (!MaskSystem._instance) {
@@ -55,7 +55,7 @@ export class MaskSystem {
                     }
                 }
             },
-            loop: true
+            loop: true,
         });
     }
 }

@@ -1,4 +1,4 @@
-import { Direction, Vector2 } from './game';
+import type { Direction, Vector2 } from "./game";
 
 export interface EntityConfig {
     id: string;
@@ -23,7 +23,7 @@ export interface NPCConfig extends EntityConfig {
     dialogId: string;
     faceDirection: Direction;
     isBoss: boolean;
-    availableTime?: ('morning' | 'afternoon' | 'evening' | 'night')[];
+    availableTime?: ("morning" | "afternoon" | "evening" | "night")[];
 }
 
 export interface NPCState {

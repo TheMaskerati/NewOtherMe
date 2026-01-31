@@ -1,11 +1,11 @@
-import Phaser from 'phaser';
-import { TimeManager, TimeOfDay } from '@/systems/TimeManager';
-import { LOCALE } from '@/config/locale';
+import Phaser from "phaser";
+import { LOCALE } from "@/config/locale";
+import { TimeManager, type TimeOfDay } from "@/systems/TimeManager";
 
 /* *
  * HUD System
  * Displays Karma, Mask Tension, Objective, Stage, and Time of Day.
-  */
+ */
 export class HUD {
     private scene: Phaser.Scene;
     private container: Phaser.GameObjects.Container;
@@ -42,45 +42,101 @@ export class HUD {
         const padding = 20;
 
         /* KARMA (Top Left) */
-        const karmaBg = this.scene.add.rectangle(padding, padding, 180, 40, 0x000000, 0.6).setOrigin(0);
-        this.karmaIndicator = this.scene.add.arc(padding + 20, padding + 20, 8, 0, 360, false, 0xffffff);
-        this.karmaText = this.scene.add.text(padding + 40, padding + 10, 'KARMA: 0', {
-            fontFamily: 'monospace', fontSize: '16px', color: '#ffffff'
+        const karmaBg = this.scene.add
+            .rectangle(padding, padding, 180, 40, 0x000000, 0.6)
+            .setOrigin(0);
+        this.karmaIndicator = this.scene.add.arc(
+            padding + 20,
+            padding + 20,
+            8,
+            0,
+            360,
+            false,
+            0xffffff,
+        );
+        this.karmaText = this.scene.add.text(padding + 40, padding + 10, "KARMA: 0", {
+            fontFamily: "monospace",
+            fontSize: "16px",
+            color: "#ffffff",
         });
 
         /* MASK TENSION (Top Center) */
-        const maskBg = this.scene.add.rectangle(Phaser.Math.Between(0, 0), padding, 220, 40, 0x000000, 0.6).setOrigin(0.5, 0);
+        const maskBg = this.scene.add
+            .rectangle(Phaser.Math.Between(0, 0), padding, 220, 40, 0x000000, 0.6)
+            .setOrigin(0.5, 0);
         maskBg.x = this.scene.cameras.main.width / 2;
 
         const barWidth = 150;
-        const barBg = this.scene.add.rectangle(maskBg.x - 30, padding + 20, barWidth, 12, 0x333333).setOrigin(0.5);
-        this.maskBar = this.scene.add.rectangle(maskBg.x - 30, padding + 20, 0, 12, 0xffffff).setOrigin(0.5);
-        this.maskText = this.scene.add.text(maskBg.x + 60, padding + 10, '0', {
-            fontFamily: 'monospace', fontSize: '16px', color: '#ffffff'
-        }).setOrigin(0.5, 0);
+        const barBg = this.scene.add
+            .rectangle(maskBg.x - 30, padding + 20, barWidth, 12, 0x333333)
+            .setOrigin(0.5);
+        this.maskBar = this.scene.add
+            .rectangle(maskBg.x - 30, padding + 20, 0, 12, 0xffffff)
+            .setOrigin(0.5);
+        this.maskText = this.scene.add
+            .text(maskBg.x + 60, padding + 10, "0", {
+                fontFamily: "monospace",
+                fontSize: "16px",
+                color: "#ffffff",
+            })
+            .setOrigin(0.5, 0);
 
         /* OBJECTIVE (Bottom Center) */
-        this.objectiveText = this.scene.add.text(this.scene.cameras.main.width / 2, this.scene.cameras.main.height - 40, LOCALE.UI.OBJECTIVE_PREFIX + '???', {
-            fontFamily: 'monospace', fontSize: '18px', color: '#ffd700',
-            backgroundColor: '#000000aa', padding: { x: 15, y: 8 }
-        }).setOrigin(0.5);
+        this.objectiveText = this.scene.add
+            .text(
+                this.scene.cameras.main.width / 2,
+                this.scene.cameras.main.height - 40,
+                LOCALE.UI.OBJECTIVE_PREFIX + "???",
+                {
+                    fontFamily: "monospace",
+                    fontSize: "18px",
+                    color: "#ffd700",
+                    backgroundColor: "#000000aa",
+                    padding: { x: 15, y: 8 },
+                },
+            )
+            .setOrigin(0.5);
 
         /* STAGE (Top Right) */
-        this.stageText = this.scene.add.text(this.scene.cameras.main.width - padding, padding, 'STAGE 1', {
-            fontFamily: 'monospace', fontSize: '20px', color: '#ffffff', fontStyle: 'bold'
-        }).setOrigin(1, 0);
+        this.stageText = this.scene.add
+            .text(this.scene.cameras.main.width - padding, padding, "STAGE 1", {
+                fontFamily: "monospace",
+                fontSize: "20px",
+                color: "#ffffff",
+                fontStyle: "bold",
+            })
+            .setOrigin(1, 0);
 
         /* TIME OF DAY (Top Right, below Stage) */
-        this.timeIcon = this.scene.add.arc(this.scene.cameras.main.width - padding - 100, padding + 35, 8, 0, 360, false, 0xffdd99);
-        this.timeText = this.scene.add.text(this.scene.cameras.main.width - padding - 85, padding + 28, 'POMERIGGIO', {
-            fontFamily: 'monospace', fontSize: '12px', color: '#aaaaaa'
-        }).setOrigin(0, 0);
+        this.timeIcon = this.scene.add.arc(
+            this.scene.cameras.main.width - padding - 100,
+            padding + 35,
+            8,
+            0,
+            360,
+            false,
+            0xffdd99,
+        );
+        this.timeText = this.scene.add
+            .text(this.scene.cameras.main.width - padding - 85, padding + 28, "POMERIGGIO", {
+                fontFamily: "monospace",
+                fontSize: "12px",
+                color: "#aaaaaa",
+            })
+            .setOrigin(0, 0);
 
         this.container.add([
-            karmaBg, this.karmaIndicator, this.karmaText,
-            maskBg, barBg, this.maskBar, this.maskText,
-            this.objectiveText, this.stageText,
-            this.timeIcon, this.timeText
+            karmaBg,
+            this.karmaIndicator,
+            this.karmaText,
+            maskBg,
+            barBg,
+            this.maskBar,
+            this.maskText,
+            this.objectiveText,
+            this.stageText,
+            this.timeIcon,
+            this.timeText,
         ]);
 
         /*  Initialize time display  */
@@ -92,13 +148,13 @@ export class HUD {
             morning: LOCALE.TIME.MORNING,
             afternoon: LOCALE.TIME.AFTERNOON,
             evening: LOCALE.TIME.EVENING,
-            night: LOCALE.TIME.NIGHT
+            night: LOCALE.TIME.NIGHT,
         };
         const colors: Record<TimeOfDay, number> = {
             morning: 0xffdd99,
             afternoon: 0xffffff,
             evening: 0xff8844,
-            night: 0x4466cc
+            night: 0x4466cc,
         };
 
         this.timeText.setText(labels[time]);
@@ -107,8 +163,13 @@ export class HUD {
 
     /* *
      * Updates the data displayed in the HUD.
-      */
-    public update(data: { karma: number, maskScore: number, stage: number, objective?: string }): void {
+     */
+    public update(data: {
+        karma: number;
+        maskScore: number;
+        stage: number;
+        objective?: string;
+    }): void {
         /*  Update Karma  */
         this.karmaText.setText(`KARMA: ${data.karma}`);
         if (data.karma > 0) this.karmaIndicator.setFillStyle(0xd4af37);

@@ -1,7 +1,7 @@
-import { BattleActionType } from '@/types/combat';
-import { KARMA_CONFIG } from '@/config/gameConfig';
+import { KARMA_CONFIG } from "@/config/gameConfig";
+import type { BattleActionType } from "@/types/combat";
 
-export type Ending = 'DAWN' | 'ETERNAL_NIGHT';
+export type Ending = "DAWN" | "ETERNAL_NIGHT";
 
 interface ChoiceRecord {
     id: string;
@@ -33,9 +33,9 @@ class KarmaSystemClass {
     }
 
     recordBattleAction(action: BattleActionType): void {
-        if (action === 'resist') {
+        if (action === "resist") {
             this.state.resistCount++;
-        } else if (action === 'fight') {
+        } else if (action === "fight") {
             this.state.fightCount++;
         }
     }
@@ -46,7 +46,7 @@ class KarmaSystemClass {
             karmaChange,
             choiceText,
             npcId,
-            timestamp: Date.now()
+            timestamp: Date.now(),
         });
     }
 
@@ -54,27 +54,27 @@ class KarmaSystemClass {
      * Check if a specific choice was made
      */
     hasChoice(id: string): boolean {
-        return this.state.choices.some(c => c.id === id);
+        return this.state.choices.some((c) => c.id === id);
     }
 
     /**
      * Get all choices made with a specific NPC
      */
     getChoicesWithNPC(npcId: string): ChoiceRecord[] {
-        return this.state.choices.filter(c => c.npcId === npcId);
+        return this.state.choices.filter((c) => c.npcId === npcId);
     }
 
     /**
      * Get the player's overall disposition towards an NPC based on choices
      */
-    getNPCRelation(npcId: string): 'positive' | 'negative' | 'neutral' {
+    getNPCRelation(npcId: string): "positive" | "negative" | "neutral" {
         const npcChoices = this.getChoicesWithNPC(npcId);
-        if (npcChoices.length === 0) return 'neutral';
+        if (npcChoices.length === 0) return "neutral";
 
         const total = npcChoices.reduce((sum, c) => sum + c.karmaChange, 0);
-        if (total > 0) return 'positive';
-        if (total < 0) return 'negative';
-        return 'neutral';
+        if (total > 0) return "positive";
+        if (total < 0) return "negative";
+        return "neutral";
     }
 
     getKarmaScore(): number {
@@ -84,7 +84,7 @@ class KarmaSystemClass {
     }
 
     getEnding(): Ending {
-        return this.getKarmaScore() >= KARMA_CONFIG.thresholdGoodEnding ? 'DAWN' : 'ETERNAL_NIGHT';
+        return this.getKarmaScore() >= KARMA_CONFIG.thresholdGoodEnding ? "DAWN" : "ETERNAL_NIGHT";
     }
 
     getResistCount(): number {

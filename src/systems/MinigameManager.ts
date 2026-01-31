@@ -1,9 +1,18 @@
-import Phaser from 'phaser';
-import { MaskSystem } from './MaskSystem';
-import { GAME_WIDTH, GAME_HEIGHT, COLORS } from '@/config/gameConfig';
-import { LOCALE } from '@/config/locale';
+import Phaser from "phaser";
+import { COLORS, GAME_HEIGHT, GAME_WIDTH } from "@/config/gameConfig";
+import { LOCALE } from "@/config/locale";
+import { MaskSystem } from "./MaskSystem";
 
-type MinigameType = 'qte' | 'balance' | 'rhythm' | 'hold' | 'breath' | 'focus' | 'memory' | 'reaction' | 'pattern';
+type MinigameType =
+    | "qte"
+    | "balance"
+    | "rhythm"
+    | "hold"
+    | "breath"
+    | "focus"
+    | "memory"
+    | "reaction"
+    | "pattern";
 
 export class MinigameManager {
     private scene: Phaser.Scene;
@@ -84,12 +93,12 @@ export class MinigameManager {
     }
 
     private loadHighScores(): void {
-        const saved = localStorage.getItem('tom_highscores');
+        const saved = localStorage.getItem("tom_highscores");
         if (saved) {
             try {
                 this.highScores = JSON.parse(saved);
             } catch (e) {
-                console.warn('Failed to parse high scores', e);
+                console.warn("Failed to parse high scores", e);
             }
         }
     }
@@ -98,20 +107,25 @@ export class MinigameManager {
         const current = this.highScores[type] || 0;
         if (score > current) {
             this.highScores[type] = score;
-            localStorage.setItem('tom_highscores', JSON.stringify(this.highScores));
+            localStorage.setItem("tom_highscores", JSON.stringify(this.highScores));
             /* Show "NEW RECORD" text */
             this.showNewRecord();
         }
     }
 
     private showNewRecord(): void {
-        const txt = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 50, LOCALE.MINIGAME.NEW_RECORD, {
-            fontFamily: 'Impact',
-            fontSize: '48px',
-            color: '#ffd700',
-            stroke: '#000000',
-            strokeThickness: 6
-        });
+        const txt = this.scene.add.text(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2 - 50,
+            LOCALE.MINIGAME.NEW_RECORD,
+            {
+                fontFamily: "Impact",
+                fontSize: "48px",
+                color: "#ffd700",
+                stroke: "#000000",
+                strokeThickness: 6,
+            },
+        );
         txt.setOrigin(0.5);
         txt.setDepth(1001);
 
@@ -120,8 +134,8 @@ export class MinigameManager {
             scale: { from: 0.5, to: 1.2 },
             alpha: { from: 1, to: 0 },
             duration: 2000,
-            ease: 'Back.out',
-            onComplete: () => txt.destroy()
+            ease: "Back.out",
+            onComplete: () => txt.destroy(),
         });
     }
 
@@ -131,18 +145,42 @@ export class MinigameManager {
         this.container.setScrollFactor(0);
         this.container.setVisible(false);
 
-        const bg = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x000000, 0.9);
+        const bg = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2,
+            GAME_WIDTH,
+            GAME_HEIGHT,
+            0x000000,
+            0.9,
+        );
         this.container.add(bg);
 
-        this.instructionText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 150, '', {
-            fontFamily: 'monospace', fontSize: '24px', color: '#ffffff', align: 'center'
-        }).setOrigin(0.5);
+        this.instructionText = this.scene.add
+            .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 150, "", {
+                fontFamily: "monospace",
+                fontSize: "24px",
+                color: "#ffffff",
+                align: "center",
+            })
+            .setOrigin(0.5);
         this.container.add(this.instructionText);
 
         this.container.add(this.instructionText);
 
-        this.balanceZone = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 50, 400, 30, 0x555555);
-        this.balanceCursor = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 50, 20, 40, 0x00ff00);
+        this.balanceZone = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2 + 50,
+            400,
+            30,
+            0x555555,
+        );
+        this.balanceCursor = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2 + 50,
+            20,
+            40,
+            0x00ff00,
+        );
         this.container.add([this.balanceZone, this.balanceCursor]);
 
         this.rhythmTarget = this.scene.add.circle(GAME_WIDTH / 2, GAME_HEIGHT / 2, 50);
@@ -150,39 +188,87 @@ export class MinigameManager {
         this.rhythmBeat = this.scene.add.circle(GAME_WIDTH / 2, GAME_HEIGHT / 2, 10, 0xff0000);
         this.container.add([this.rhythmTarget, this.rhythmBeat]);
 
-        this.holdBarBg = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, 40, 300, 0x333333);
+        this.holdBarBg = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2,
+            40,
+            300,
+            0x333333,
+        );
         this.holdBarBg.setStrokeStyle(2, 0xffffff);
-        this.holdBarFill = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 150, 36, 0, 0xff0000);
+        this.holdBarFill = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2 + 150,
+            36,
+            0,
+            0xff0000,
+        );
         this.holdBarFill.setOrigin(0.5, 1);
         this.container.add([this.holdBarBg, this.holdBarFill]);
 
-        this.breathCircleOuter = this.scene.add.circle(GAME_WIDTH / 2, GAME_HEIGHT / 2, 100, 0x0055ff, 0.3);
-        this.breathCircleInner = this.scene.add.circle(GAME_WIDTH / 2, GAME_HEIGHT / 2, 10, 0xaaddff);
+        this.breathCircleOuter = this.scene.add.circle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2,
+            100,
+            0x0055ff,
+            0.3,
+        );
+        this.breathCircleInner = this.scene.add.circle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2,
+            10,
+            0xaaddff,
+        );
         this.container.add([this.breathCircleOuter, this.breathCircleInner]);
 
-        this.focusTarget = this.scene.add.star(GAME_WIDTH / 2, GAME_HEIGHT / 2, 5, 10, 20, 0xffff00);
+        this.focusTarget = this.scene.add.star(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2,
+            5,
+            10,
+            20,
+            0xffff00,
+        );
         this.container.add(this.focusTarget);
     }
 
     startRandom(difficulty: number, onComplete: (success: boolean) => void): void {
-        const types: MinigameType[] = ['qte', 'balance', 'rhythm', 'hold', 'breath', 'focus', 'memory', 'reaction', 'pattern'];
+        const types: MinigameType[] = [
+            "qte",
+            "balance",
+            "rhythm",
+            "hold",
+            "breath",
+            "focus",
+            "memory",
+            "reaction",
+            "pattern",
+        ];
         const type = types[Math.floor(Math.random() * types.length)];
         this.startMinigame(type, difficulty, onComplete);
     }
 
-    start(type: 'dodge' | 'timing' | 'mash', difficulty: number, onComplete: (success: boolean) => void): void {
+    start(
+        type: "dodge" | "timing" | "mash",
+        difficulty: number,
+        onComplete: (success: boolean) => void,
+    ): void {
         /** Map simplified types to internal minigame types */
-        const typeMap: Record<'dodge' | 'timing' | 'mash', MinigameType> = {
-            'dodge': 'balance',    /** Dodge = maintain balance */
-            'timing': 'rhythm',    /** Timing = press at right time */
-            'mash': 'qte'          /** Mashing = press quickly */
+        const typeMap: Record<"dodge" | "timing" | "mash", MinigameType> = {
+            dodge: "balance" /** Dodge = maintain balance */,
+            timing: "rhythm" /** Timing = press at right time */,
+            mash: "qte" /** Mashing = press quickly */,
         };
 
         const minigameType = typeMap[type];
         this.startMinigame(minigameType, difficulty, onComplete);
     }
 
-    private startMinigame(type: MinigameType, difficulty: number, onComplete: (success: boolean) => void): void {
+    private startMinigame(
+        type: MinigameType,
+        difficulty: number,
+        onComplete: (success: boolean) => void,
+    ): void {
         this.isActive = true;
         this.currentType = type;
         this.currentDifficulty = difficulty;
@@ -191,30 +277,58 @@ export class MinigameManager {
         this.container.setVisible(true);
 
         switch (type) {
-            case 'qte': this.setupQTE(difficulty); break;
-            case 'balance': this.setupBalance(difficulty); break;
-            case 'rhythm': this.setupRhythm(difficulty); break;
-            case 'hold': this.setupHold(difficulty); break;
-            case 'breath': this.setupBreath(difficulty); break;
-            case 'focus': this.setupFocus(difficulty); break;
-            case 'memory': this.setupMemory(difficulty); break;
-            case 'reaction': this.setupReaction(difficulty); break;
-            case 'pattern': this.setupPattern(difficulty); break;
+            case "qte":
+                this.setupQTE(difficulty);
+                break;
+            case "balance":
+                this.setupBalance(difficulty);
+                break;
+            case "rhythm":
+                this.setupRhythm(difficulty);
+                break;
+            case "hold":
+                this.setupHold(difficulty);
+                break;
+            case "breath":
+                this.setupBreath(difficulty);
+                break;
+            case "focus":
+                this.setupFocus(difficulty);
+                break;
+            case "memory":
+                this.setupMemory(difficulty);
+                break;
+            case "reaction":
+                this.setupReaction(difficulty);
+                break;
+            case "pattern":
+                this.setupPattern(difficulty);
+                break;
         }
     }
 
     private hideAllUI(): void {
-        this.balanceZone.setVisible(false); this.balanceCursor.setVisible(false);
-        this.rhythmTarget.setVisible(false); this.rhythmBeat.setVisible(false);
-        this.holdBarBg.setVisible(false); this.holdBarFill.setVisible(false);
-        this.breathCircleOuter.setVisible(false); this.breathCircleInner.setVisible(false);
+        this.balanceZone.setVisible(false);
+        this.balanceCursor.setVisible(false);
+        this.rhythmTarget.setVisible(false);
+        this.rhythmBeat.setVisible(false);
+        this.holdBarBg.setVisible(false);
+        this.holdBarFill.setVisible(false);
+        this.breathCircleOuter.setVisible(false);
+        this.breathCircleInner.setVisible(false);
         this.focusTarget.setVisible(false);
-        this.memoryCards.forEach(c => { c.destroy(); });
+        this.memoryCards.forEach((c) => {
+            c.destroy();
+        });
         this.memoryCards = [];
-        this.reactionObstacles.forEach(o => { o.destroy(); });
+        this.reactionObstacles.forEach((o) => {
+            o.destroy();
+        });
         this.reactionObstacles = [];
         if (this.reactionPlayer) this.reactionPlayer.setVisible(false);
-        this.patternButtons.forEach(b => { b.destroy(); });
+        this.patternButtons.forEach((b) => {
+            b.destroy();
+        });
         this.patternButtons = [];
     }
 
@@ -240,7 +354,7 @@ export class MinigameManager {
         this.rhythmBeat.setVisible(true);
         this.rhythmHits = 0;
         this.rhythmGoal = Math.floor(3 + difficulty);
-        this.rhythmSpeed = 0.02 + (difficulty * 0.005);
+        this.rhythmSpeed = 0.02 + difficulty * 0.005;
         this.rhythmScale = 0;
         this.instructionText.setText(LOCALE.MINIGAME.INSTRUCTIONS.RHYTHM);
         /** No auto-win timer, win by hits */
@@ -250,8 +364,8 @@ export class MinigameManager {
         this.holdBarBg.setVisible(true);
         this.holdBarFill.setVisible(true);
         this.holdValue = 0;
-        this.holdDecay = 0.5 + (difficulty * 0.1);
-        this.instructionText.setText('TIENI PREMUTO SPAZIO PER RIEMPIRE!');
+        this.holdDecay = 0.5 + difficulty * 0.1;
+        this.instructionText.setText("TIENI PREMUTO SPAZIO PER RIEMPIRE!");
         this.startTimer(5000, false); /* Win if bar full */
     }
 
@@ -259,8 +373,8 @@ export class MinigameManager {
         this.breathCircleOuter.setVisible(true);
         this.breathCircleInner.setVisible(true);
         this.breathPhase = 0;
-        this.breathSpeed = 0.002 + (difficulty * 0.0005);
-        this.instructionText.setText('PREMI SPAZIO QUANDO IL CERCHIO SI ALARGA (INSPIRA/ESPIRA)');
+        this.breathSpeed = 0.002 + difficulty * 0.0005;
+        this.instructionText.setText("PREMI SPAZIO QUANDO IL CERCHIO SI ALARGA (INSPIRA/ESPIRA)");
         this.breathTargetSize = 50;
         this.startTimer(5000, true);
     }
@@ -268,12 +382,12 @@ export class MinigameManager {
     private setupFocus(difficulty: number): void {
         this.focusTarget.setVisible(true);
         this.focusScore = 0;
-        this.instructionText.setText('INSEGUI LA STELLA CON IL MOUSE!');
+        this.instructionText.setText("INSEGUI LA STELLA CON IL MOUSE!");
         this.startTimer(5000, false); /* Win if score high enough */
     }
 
     private setupMemory(difficulty: number): void {
-        this.instructionText.setText('TROVA LE COPPIE!');
+        this.instructionText.setText("TROVA LE COPPIE!");
         this.memoryMatches = 0;
         this.memoryFirstPick = -1;
         this.memoryLocked = false;
@@ -314,11 +428,11 @@ export class MinigameManager {
             const card = this.scene.add.rectangle(x, y, cardW - 8, cardH - 8, 0x333333);
             card.setStrokeStyle(2, 0xd4af37);
             card.setInteractive({ useHandCursor: true });
-            card.setData('idx', idx);
-            card.setData('value', val);
-            card.setData('color', colors[val % colors.length]);
+            card.setData("idx", idx);
+            card.setData("value", val);
+            card.setData("color", colors[val % colors.length]);
 
-            card.on('pointerdown', () => this.flipCard(idx));
+            card.on("pointerdown", () => this.flipCard(idx));
 
             this.memoryCards.push(card);
             this.memoryFlipped.push(false);
@@ -332,7 +446,7 @@ export class MinigameManager {
         if (this.memoryLocked || this.memoryFlipped[idx]) return;
 
         const card = this.memoryCards[idx];
-        const color = card.getData('color') as number;
+        const color = card.getData("color") as number;
         card.setFillStyle(color);
         this.memoryFlipped[idx] = true;
 
@@ -375,7 +489,13 @@ export class MinigameManager {
         this.reactionObstacles = [];
 
         /* Create player character at bottom */
-        this.reactionPlayer = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 100, 40, 40, 0x00ff00);
+        this.reactionPlayer = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2 + 100,
+            40,
+            40,
+            0x00ff00,
+        );
         this.reactionPlayer.setVisible(true);
         this.container.add(this.reactionPlayer);
 
@@ -391,21 +511,25 @@ export class MinigameManager {
                 this.reactionObstacles.push(obs);
                 this.container.add(obs);
             },
-            repeat: this.reactionGoal + 2
+            repeat: this.reactionGoal + 2,
         });
 
         /* Input handling */
-        this.scene.input.keyboard?.on('keydown-A', () => this.moveReactionPlayer(-1));
-        this.scene.input.keyboard?.on('keydown-D', () => this.moveReactionPlayer(1));
-        this.scene.input.keyboard?.on('keydown-LEFT', () => this.moveReactionPlayer(-1));
-        this.scene.input.keyboard?.on('keydown-RIGHT', () => this.moveReactionPlayer(1));
+        this.scene.input.keyboard?.on("keydown-A", () => this.moveReactionPlayer(-1));
+        this.scene.input.keyboard?.on("keydown-D", () => this.moveReactionPlayer(1));
+        this.scene.input.keyboard?.on("keydown-LEFT", () => this.moveReactionPlayer(-1));
+        this.scene.input.keyboard?.on("keydown-RIGHT", () => this.moveReactionPlayer(1));
 
         this.startTimer(15000, false);
     }
 
     private moveReactionPlayer(direction: number): void {
         if (!this.reactionPlayer) return;
-        const newX = Phaser.Math.Clamp(this.reactionPlayer.x + direction * 100, GAME_WIDTH / 2 - 100, GAME_WIDTH / 2 + 100);
+        const newX = Phaser.Math.Clamp(
+            this.reactionPlayer.x + direction * 100,
+            GAME_WIDTH / 2 - 100,
+            GAME_WIDTH / 2 + 100,
+        );
         this.reactionPlayer.x = newX;
     }
 
@@ -423,11 +547,18 @@ export class MinigameManager {
         const y = GAME_HEIGHT / 2 + 50;
 
         for (let i = 0; i < 4; i++) {
-            const btn = this.scene.add.rectangle(startX + i * (buttonSize + 10), y, buttonSize, buttonSize, colors[i], 0.5);
+            const btn = this.scene.add.rectangle(
+                startX + i * (buttonSize + 10),
+                y,
+                buttonSize,
+                buttonSize,
+                colors[i],
+                0.5,
+            );
             btn.setStrokeStyle(3, 0xffffff);
             btn.setInteractive({ useHandCursor: true });
-            btn.setData('index', i);
-            btn.on('pointerdown', () => this.patternButtonPress(i));
+            btn.setData("index", i);
+            btn.on("pointerdown", () => this.patternButtonPress(i));
             this.patternButtons.push(btn);
             this.container.add(btn);
         }
@@ -444,16 +575,16 @@ export class MinigameManager {
 
     private showPatternSequence(): void {
         this.patternShowingIndex = 0;
-        this.instructionText.setText('MEMORIZZA!');
+        this.instructionText.setText("MEMORIZZA!");
 
         /* Speed increases with difficulty: 300ms base - 20ms per difficulty level, min 100ms */
-        const showTime = Math.max(100, 300 - (this.currentDifficulty * 20));
-        const intervalTime = Math.max(50, 200 - (this.currentDifficulty * 15));
+        const showTime = Math.max(100, 300 - this.currentDifficulty * 20);
+        const intervalTime = Math.max(50, 200 - this.currentDifficulty * 15);
 
         const showNext = () => {
             if (this.patternShowingIndex >= this.patternSequence.length) {
                 this.patternInputMode = true;
-                this.instructionText.setText('RIPETI LA SEQUENZA!');
+                this.instructionText.setText("RIPETI LA SEQUENZA!");
                 return;
             }
 
@@ -511,21 +642,41 @@ export class MinigameManager {
         if (!this.isActive) return;
 
         switch (this.currentType) {
-            case 'qte': this.updateQTE(); break;
-            case 'balance': this.updateBalance(); break;
-            case 'rhythm': this.updateRhythm(delta); break;
-            case 'hold': this.updateHold(); break;
-            case 'breath': this.updateBreath(time, delta); break;
-            case 'focus': this.updateFocus(delta); break;
-            case 'reaction': this.updateReaction(delta); break;
+            case "qte":
+                this.updateQTE();
+                break;
+            case "balance":
+                this.updateBalance();
+                break;
+            case "rhythm":
+                this.updateRhythm(delta);
+                break;
+            case "hold":
+                this.updateHold();
+                break;
+            case "breath":
+                this.updateBreath(time, delta);
+                break;
+            case "focus":
+                this.updateFocus(delta);
+                break;
+            case "reaction":
+                this.updateReaction(delta);
+                break;
             /* pattern is event-driven, no update needed */
         }
     }
 
     private updateQTE(): void {
-        if (Phaser.Input.Keyboard.JustDown(this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE))) {
+        if (
+            Phaser.Input.Keyboard.JustDown(
+                this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+            )
+        ) {
             this.qteCount++;
-            this.instructionText.setText(LOCALE.MINIGAME.INSTRUCTIONS.QTE + `${this.qteCount}/${this.qteTarget}`);
+            this.instructionText.setText(
+                LOCALE.MINIGAME.INSTRUCTIONS.QTE + `${this.qteCount}/${this.qteTarget}`,
+            );
             this.scene.cameras.main.shake(50, 0.01);
             if (this.qteCount >= this.qteTarget) this.endMinigame(true);
         }
@@ -533,13 +684,22 @@ export class MinigameManager {
 
     private updateBalance(): void {
         const keys = this.scene.input.keyboard!.createCursorKeys();
-        if (keys.left.isDown || this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A).isDown) this.balanceVelocity -= 0.05;
-        if (keys.right.isDown || this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown) this.balanceVelocity += 0.05;
+        if (
+            keys.left.isDown ||
+            this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A).isDown
+        )
+            this.balanceVelocity -= 0.05;
+        if (
+            keys.right.isDown ||
+            this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown
+        )
+            this.balanceVelocity += 0.05;
         this.balanceVelocity += (Math.random() - 0.5) * 0.2;
         this.balanceValue += this.balanceVelocity;
 
         const maxOffset = 200;
-        this.balanceCursor.x = (GAME_WIDTH / 2) + Math.max(-maxOffset, Math.min(maxOffset, this.balanceValue * 2));
+        this.balanceCursor.x =
+            GAME_WIDTH / 2 + Math.max(-maxOffset, Math.min(maxOffset, this.balanceValue * 2));
 
         if (Math.abs(this.balanceValue) > 100) this.endMinigame(false);
     }
@@ -554,13 +714,20 @@ export class MinigameManager {
         this.rhythmBeat.radius += this.rhythmSpeed * delta * 20;
         if (this.rhythmBeat.radius > 70) this.rhythmBeat.radius = 0; /* Reset loop */
 
-        if (Phaser.Input.Keyboard.JustDown(this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE))) {
+        if (
+            Phaser.Input.Keyboard.JustDown(
+                this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+            )
+        ) {
             /* Check overlap */
             const diff = Math.abs(this.rhythmBeat.radius - 50); /* 50 is target radius */
             if (diff < 10) {
                 this.rhythmHits++;
                 if (diff < 5) this.combo++;
-                this.instructionText.setText(LOCALE.MINIGAME.RHYTHM_PREFIX + `${this.rhythmHits}/${this.rhythmGoal}${this.combo > 0 ? LOCALE.MINIGAME.COMBO_PREFIX + this.combo : ''}`);
+                this.instructionText.setText(
+                    LOCALE.MINIGAME.RHYTHM_PREFIX +
+                        `${this.rhythmHits}/${this.rhythmGoal}${this.combo > 0 ? LOCALE.MINIGAME.COMBO_PREFIX + this.combo : ""}`,
+                );
                 this.scene.cameras.main.flash(100, 0, 255, 0);
                 this.rhythmBeat.radius = 0; /* Reset immediately on hit */
                 if (this.rhythmHits >= this.rhythmGoal) this.endMinigame(true);
@@ -595,7 +762,11 @@ export class MinigameManager {
             this.breathCircleInner.setFillStyle(0xaaddff);
         }
 
-        if (Phaser.Input.Keyboard.JustDown(this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE))) {
+        if (
+            Phaser.Input.Keyboard.JustDown(
+                this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+            )
+        ) {
             if (scale > 0.9 && scale < 1.1) {
                 this.scene.cameras.main.flash(100, 0, 255, 255);
             } else {
@@ -616,7 +787,12 @@ export class MinigameManager {
 
         /* Mouse Tracking */
         const pointer = this.scene.input.activePointer;
-        const dist = Phaser.Math.Distance.Between(pointer.x, pointer.y, this.focusTarget.x, this.focusTarget.y);
+        const dist = Phaser.Math.Distance.Between(
+            pointer.x,
+            pointer.y,
+            this.focusTarget.x,
+            this.focusTarget.y,
+        );
 
         if (dist < 30) {
             this.focusScore += delta;
@@ -632,7 +808,7 @@ export class MinigameManager {
         if (!this.reactionPlayer) return;
 
         /* Speed scales with difficulty: base 0.3 + 0.05 per level */
-        const speed = delta * (0.3 + (this.currentDifficulty * 0.05));
+        const speed = delta * (0.3 + this.currentDifficulty * 0.05);
 
         /* Move obstacles down */
         for (let i = this.reactionObstacles.length - 1; i >= 0; i--) {
@@ -656,7 +832,9 @@ export class MinigameManager {
                 this.reactionObstacles.splice(i, 1);
                 this.reactionDodges++;
                 this.combo++;
-                this.instructionText.setText(LOCALE.MINIGAME.DODGES_PREFIX + `${this.reactionDodges}/${this.reactionGoal}`);
+                this.instructionText.setText(
+                    LOCALE.MINIGAME.DODGES_PREFIX + `${this.reactionDodges}/${this.reactionGoal}`,
+                );
 
                 if (this.reactionDodges >= this.reactionGoal) {
                     this.endMinigame(true);
@@ -693,7 +871,7 @@ export class MinigameManager {
             const isPerfect = this.combo >= 3;
             const mask = MaskSystem.getInstance();
 
-            if (['qte', 'rhythm', 'hold'].includes(this.currentType!)) {
+            if (["qte", "rhythm", "hold"].includes(this.currentType!)) {
                 mask.modifyScore(isPerfect ? 2 : 1); /* Anger/Mask boost */
             } else {
                 mask.modifyScore(isPerfect ? -2 : -1); /* Control/Calm boost */
@@ -701,35 +879,58 @@ export class MinigameManager {
 
             if (isPerfect) {
                 /* Show perfect message or similar */
-                console.log('PERFECT PERFORMANCE!');
+                console.log("PERFECT PERFORMANCE!");
 
                 /* Particle/Visual effect for perfect */
-                const particles = this.scene.add.particles(GAME_WIDTH / 2, GAME_HEIGHT / 2, 'star', {
-                    speed: { min: 100, max: 300 },
-                    angle: { min: 0, max: 360 },
-                    scale: { start: 0.5, end: 0 },
-                    blendMode: 'ADD',
-                    lifespan: 1000,
-                    gravityY: 200,
-                    quantity: 20
-                });
+                const particles = this.scene.add.particles(
+                    GAME_WIDTH / 2,
+                    GAME_HEIGHT / 2,
+                    "star",
+                    {
+                        speed: { min: 100, max: 300 },
+                        angle: { min: 0, max: 360 },
+                        scale: { start: 0.5, end: 0 },
+                        blendMode: "ADD",
+                        lifespan: 1000,
+                        gravityY: 200,
+                        quantity: 20,
+                    },
+                );
                 this.scene.time.delayedCall(1000, () => particles.destroy());
             }
 
             /* Save High Score */
             let score = 0;
             switch (this.currentType) {
-                case 'qte': score = this.qteCount; break;
-                case 'rhythm': score = this.rhythmHits + this.combo * 2; break;
-                case 'hold': score = Math.floor(this.holdValue); break;
-                case 'breath': score = 100; break; /* Breath is win/loss */
-                case 'focus': score = Math.floor(this.focusScore); break;
-                case 'memory': score = 1000 - (this.gameTimer ? this.gameTimer.getElapsed() : 0); break;
-                case 'reaction': score = this.reactionDodges; break;
-                case 'pattern': score = this.patternSequence.length * 100 + this.combo * 10; break;
-                default: score = 100; break;
+                case "qte":
+                    score = this.qteCount;
+                    break;
+                case "rhythm":
+                    score = this.rhythmHits + this.combo * 2;
+                    break;
+                case "hold":
+                    score = Math.floor(this.holdValue);
+                    break;
+                case "breath":
+                    score = 100;
+                    break; /* Breath is win/loss */
+                case "focus":
+                    score = Math.floor(this.focusScore);
+                    break;
+                case "memory":
+                    score = 1000 - (this.gameTimer ? this.gameTimer.getElapsed() : 0);
+                    break;
+                case "reaction":
+                    score = this.reactionDodges;
+                    break;
+                case "pattern":
+                    score = this.patternSequence.length * 100 + this.combo * 10;
+                    break;
+                default:
+                    score = 100;
+                    break;
             }
-            this.saveHighScore(this.currentType || 'unknown', score);
+            this.saveHighScore(this.currentType || "unknown", score);
         } else {
             this.scene.cameras.main.shake(300, 0.02);
             this.scene.cameras.main.flash(200, 100, 0, 0);

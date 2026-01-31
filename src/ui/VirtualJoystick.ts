@@ -1,6 +1,6 @@
-import Phaser from 'phaser';
-import { MobileDetector } from '@/utils/MobileDetector';
-import { GAME_HEIGHT } from '@/config/gameConfig';
+import Phaser from "phaser";
+import { GAME_HEIGHT } from "@/config/gameConfig";
+import { MobileDetector } from "@/utils/MobileDetector";
 
 /**
  * Virtual Joystick for mobile controls.
@@ -34,27 +34,32 @@ export class VirtualJoystick {
     }
 
     private create(): void {
-        this.base = this.scene.add.circle(this.x, this.y, this.radius, 0x000000, 0.5)
-            .setScrollFactor(0).setDepth(1000).setInteractive();
+        this.base = this.scene.add
+            .circle(this.x, this.y, this.radius, 0x000000, 0.5)
+            .setScrollFactor(0)
+            .setDepth(1000)
+            .setInteractive();
         this.base.setStrokeStyle(2, 0xd4af37);
 
-        this.thumb = this.scene.add.circle(this.x, this.y, this.thumbRadius, 0xd4af37, 0.8)
-            .setScrollFactor(0).setDepth(1001);
+        this.thumb = this.scene.add
+            .circle(this.x, this.y, this.thumbRadius, 0xd4af37, 0.8)
+            .setScrollFactor(0)
+            .setDepth(1001);
 
-        this.scene.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+        this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
             if (this.base.getBounds().contains(pointer.x, pointer.y)) {
                 this.pointerId = pointer.id;
                 this.updateThumb(pointer.x, pointer.y);
             }
         });
 
-        this.scene.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+        this.scene.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             if (this.pointerId === pointer.id) {
                 this.updateThumb(pointer.x, pointer.y);
             }
         });
 
-        this.scene.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+        this.scene.input.on("pointerup", (pointer: Phaser.Input.Pointer) => {
             if (this.pointerId === pointer.id) {
                 this.pointerId = null;
                 this.resetThumb();
@@ -91,10 +96,10 @@ export class VirtualJoystick {
         /* Convert angle to degrees (0 is right, 90 is down) */
         const deg = Phaser.Math.RadToDeg(angle);
 
-        this.right = (deg > -45 && deg <= 45);
-        this.down = (deg > 45 && deg <= 135);
-        this.left = (deg > 135 || deg <= -135);
-        this.up = (deg > -135 && deg <= -45);
+        this.right = deg > -45 && deg <= 45;
+        this.down = deg > 45 && deg <= 135;
+        this.left = deg > 135 || deg <= -135;
+        this.up = deg > -135 && deg <= -45;
     }
 
     public isActive(): boolean {

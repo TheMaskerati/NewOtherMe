@@ -1,6 +1,6 @@
-import Phaser from 'phaser';
-import { TILE_SIZE, SCALE, COLORS } from '@/config/gameConfig';
-import { MapKey } from '@/types/game';
+import type Phaser from "phaser";
+import { COLORS, SCALE, TILE_SIZE } from "@/config/gameConfig";
+import type { MapKey } from "@/types/game";
 
 export interface MapConfig {
     width: number;
@@ -38,14 +38,12 @@ export const MAP_CONFIGS: Record<MapKey, MapConfig> = {
         floorColor: 0x4a3728,
         wallColor: 0x2a2a2a,
         objects: [
-            { x: 3, y: 2, width: 5, height: 4, color: 0x654321, label: 'Letto', collision: true },
-            { x: 15, y: 2, width: 4, height: 3, color: 0x333333, label: 'TV', collision: true },
-            { x: 8, y: 6, width: 4, height: 3, color: 0x5a4a3a, label: 'Tavolo', collision: true },
-            { x: 2, y: 10, width: 3, height: 3, color: 0x4a4a5a, label: 'Frigo', collision: true },
+            { x: 3, y: 2, width: 5, height: 4, color: 0x654321, label: "Letto", collision: true },
+            { x: 15, y: 2, width: 4, height: 3, color: 0x333333, label: "TV", collision: true },
+            { x: 8, y: 6, width: 4, height: 3, color: 0x5a4a3a, label: "Tavolo", collision: true },
+            { x: 2, y: 10, width: 3, height: 3, color: 0x4a4a5a, label: "Frigo", collision: true },
         ],
-        doors: [
-            { x: 18, y: 7, targetMap: 'theater', targetX: 2, targetY: 15, label: 'Teatro' },
-        ],
+        doors: [{ x: 18, y: 7, targetMap: "theater", targetX: 2, targetY: 15, label: "Teatro" }],
         npcs: [],
     },
     theater: {
@@ -54,19 +52,35 @@ export const MAP_CONFIGS: Record<MapKey, MapConfig> = {
         floorColor: 0x3c1642,
         wallColor: 0x1a0a1a,
         objects: [
-            { x: 15, y: 2, width: 10, height: 6, color: 0x4a2652, label: 'PALCO', collision: false },
+            {
+                x: 15,
+                y: 2,
+                width: 10,
+                height: 6,
+                color: 0x4a2652,
+                label: "PALCO",
+                collision: false,
+            },
             { x: 5, y: 20, width: 3, height: 3, color: 0x654321, collision: true },
             { x: 12, y: 20, width: 3, height: 3, color: 0x654321, collision: true },
             { x: 19, y: 20, width: 3, height: 3, color: 0x654321, collision: true },
             { x: 26, y: 20, width: 3, height: 3, color: 0x654321, collision: true },
             { x: 33, y: 20, width: 3, height: 3, color: 0x654321, collision: true },
-            { x: 18, y: 10, width: 4, height: 2, color: 0xd4af37, label: 'Maschera', collision: false },
+            {
+                x: 18,
+                y: 10,
+                width: 4,
+                height: 2,
+                color: 0xd4af37,
+                label: "Maschera",
+                collision: false,
+            },
         ],
         doors: [
-            { x: 1, y: 15, targetMap: 'apartment', targetX: 16, targetY: 7, label: 'Casa' },
-            { x: 38, y: 15, targetMap: 'naplesAlley', targetX: 2, targetY: 20, label: 'Vicoli' },
+            { x: 1, y: 15, targetMap: "apartment", targetX: 16, targetY: 7, label: "Casa" },
+            { x: 38, y: 15, targetMap: "naplesAlley", targetX: 2, targetY: 20, label: "Vicoli" },
         ],
-        npcs: ['dario'],
+        npcs: ["dario"],
     },
     naplesAlley: {
         width: 30,
@@ -74,16 +88,47 @@ export const MAP_CONFIGS: Record<MapKey, MapConfig> = {
         floorColor: 0x5a5a5a,
         wallColor: 0x3a3a3a,
         objects: [
-            { x: 5, y: 5, width: 8, height: 6, color: 0x4a4a4a, label: 'Edificio', collision: true },
-            { x: 20, y: 5, width: 6, height: 8, color: 0x3a3a3a, label: 'Muro', collision: true },
-            { x: 3, y: 25, width: 4, height: 4, color: 0x2a4a2a, label: 'Panchina', collision: true },
-            { x: 22, y: 30, width: 5, height: 4, color: 0x5a3a2a, label: 'Negozio', collision: true },
+            {
+                x: 5,
+                y: 5,
+                width: 8,
+                height: 6,
+                color: 0x4a4a4a,
+                label: "Edificio",
+                collision: true,
+            },
+            { x: 20, y: 5, width: 6, height: 8, color: 0x3a3a3a, label: "Muro", collision: true },
+            {
+                x: 3,
+                y: 25,
+                width: 4,
+                height: 4,
+                color: 0x2a4a2a,
+                label: "Panchina",
+                collision: true,
+            },
+            {
+                x: 22,
+                y: 30,
+                width: 5,
+                height: 4,
+                color: 0x5a3a2a,
+                label: "Negozio",
+                collision: true,
+            },
         ],
         doors: [
-            { x: 1, y: 20, targetMap: 'theater', targetX: 36, targetY: 15, label: 'Teatro' },
-            { x: 28, y: 38, targetMap: 'fatherHouse', targetX: 12, targetY: 2, label: 'Casa Padre' },
+            { x: 1, y: 20, targetMap: "theater", targetX: 36, targetY: 15, label: "Teatro" },
+            {
+                x: 28,
+                y: 38,
+                targetMap: "fatherHouse",
+                targetX: 12,
+                targetY: 2,
+                label: "Casa Padre",
+            },
         ],
-        npcs: ['elisa', 'bully1', 'bully2'],
+        npcs: ["elisa", "bully1", "bully2"],
     },
     fatherHouse: {
         width: 25,
@@ -91,15 +136,31 @@ export const MAP_CONFIGS: Record<MapKey, MapConfig> = {
         floorColor: 0x3a3a4a,
         wallColor: 0x1a1a2a,
         objects: [
-            { x: 5, y: 3, width: 6, height: 4, color: 0x4a3a3a, label: 'Divano', collision: true },
-            { x: 18, y: 3, width: 4, height: 3, color: 0x2a2a3a, label: 'Libreria', collision: true },
-            { x: 10, y: 10, width: 5, height: 4, color: 0x3a3a3a, label: 'Tavolo', collision: true },
-            { x: 3, y: 15, width: 3, height: 3, color: 0x5a4a3a, label: 'Foto', collision: false },
+            { x: 5, y: 3, width: 6, height: 4, color: 0x4a3a3a, label: "Divano", collision: true },
+            {
+                x: 18,
+                y: 3,
+                width: 4,
+                height: 3,
+                color: 0x2a2a3a,
+                label: "Libreria",
+                collision: true,
+            },
+            {
+                x: 10,
+                y: 10,
+                width: 5,
+                height: 4,
+                color: 0x3a3a3a,
+                label: "Tavolo",
+                collision: true,
+            },
+            { x: 3, y: 15, width: 3, height: 3, color: 0x5a4a3a, label: "Foto", collision: false },
         ],
         doors: [
-            { x: 12, y: 1, targetMap: 'naplesAlley', targetX: 26, targetY: 36, label: 'Vicoli' },
+            { x: 12, y: 1, targetMap: "naplesAlley", targetX: 26, targetY: 36, label: "Vicoli" },
         ],
-        npcs: ['father_shadow'],
+        npcs: ["father_shadow"],
     },
 };
 
@@ -150,7 +211,7 @@ export class MapManager {
                         y + (TILE_SIZE * SCALE) / 2,
                         TILE_SIZE * SCALE - 2,
                         TILE_SIZE * SCALE - 2,
-                        color - 0x101010
+                        color - 0x101010,
                     );
                     variation.setDepth(-1);
                 }
@@ -161,12 +222,36 @@ export class MapManager {
     private createWalls(mapWidth: number, mapHeight: number, color: number): void {
         const thickness = TILE_SIZE * SCALE;
 
-        const topWall = this.scene.add.rectangle(mapWidth / 2, thickness / 2, mapWidth, thickness, color);
-        const bottomWall = this.scene.add.rectangle(mapWidth / 2, mapHeight - thickness / 2, mapWidth, thickness, color);
-        const leftWall = this.scene.add.rectangle(thickness / 2, mapHeight / 2, thickness, mapHeight, color);
-        const rightWall = this.scene.add.rectangle(mapWidth - thickness / 2, mapHeight / 2, thickness, mapHeight, color);
+        const topWall = this.scene.add.rectangle(
+            mapWidth / 2,
+            thickness / 2,
+            mapWidth,
+            thickness,
+            color,
+        );
+        const bottomWall = this.scene.add.rectangle(
+            mapWidth / 2,
+            mapHeight - thickness / 2,
+            mapWidth,
+            thickness,
+            color,
+        );
+        const leftWall = this.scene.add.rectangle(
+            thickness / 2,
+            mapHeight / 2,
+            thickness,
+            mapHeight,
+            color,
+        );
+        const rightWall = this.scene.add.rectangle(
+            mapWidth - thickness / 2,
+            mapHeight / 2,
+            thickness,
+            mapHeight,
+            color,
+        );
 
-        [topWall, bottomWall, leftWall, rightWall].forEach(wall => {
+        [topWall, bottomWall, leftWall, rightWall].forEach((wall) => {
             this.walls.add(wall);
             wall.setDepth(0);
         });
@@ -174,22 +259,22 @@ export class MapManager {
 
     private createObjects(objects: MapObject[]): void {
         const textureMap: Record<string, string> = {
-            'Letto': 'furn_bed',
-            'TV': 'furn_tv',
-            'Tavolo': 'furn_table',
-            'Frigo': 'furn_fridge',
-            'PALCO': 'furn_stage',
-            'Maschera': 'furn_mask',
-            'Edificio': 'furn_building',
-            'Muro': 'furn_wall',
-            'Panchina': 'furn_bench',
-            'Negozio': 'furn_shop',
-            'Divano': 'furn_sofa',
-            'Libreria': 'furn_bookshelf',
-            'Foto': 'furn_photo'
+            Letto: "furn_bed",
+            TV: "furn_tv",
+            Tavolo: "furn_table",
+            Frigo: "furn_fridge",
+            PALCO: "furn_stage",
+            Maschera: "furn_mask",
+            Edificio: "furn_building",
+            Muro: "furn_wall",
+            Panchina: "furn_bench",
+            Negozio: "furn_shop",
+            Divano: "furn_sofa",
+            Libreria: "furn_bookshelf",
+            Foto: "furn_photo",
         };
 
-        objects.forEach(obj => {
+        objects.forEach((obj) => {
             const x = obj.x * TILE_SIZE * SCALE + (obj.width * TILE_SIZE * SCALE) / 2;
             const y = obj.y * TILE_SIZE * SCALE + (obj.height * TILE_SIZE * SCALE) / 2;
             const width = obj.width * TILE_SIZE * SCALE;
@@ -199,7 +284,7 @@ export class MapManager {
             if (obj.label && textureMap[obj.label]) {
                 const sprite = this.scene.add.image(x, y, textureMap[obj.label]);
                 /* Stage floor should be lower */
-                sprite.setDepth(obj.label === 'PALCO' ? 0 : 1);
+                sprite.setDepth(obj.label === "PALCO" ? 0 : 1);
                 gameObject = sprite;
             } else {
                 const rect = this.scene.add.rectangle(x, y, width, height, obj.color);
@@ -213,9 +298,9 @@ export class MapManager {
 
             if (obj.label && !textureMap[obj.label]) {
                 const label = this.scene.add.text(x, y, obj.label, {
-                    fontFamily: 'monospace',
-                    fontSize: '10px',
-                    color: '#ffffff',
+                    fontFamily: "monospace",
+                    fontSize: "10px",
+                    color: "#ffffff",
                 });
                 label.setOrigin(0.5);
                 label.setDepth(2);
@@ -226,20 +311,26 @@ export class MapManager {
     }
 
     private createDoors(doors: DoorConfig[]): void {
-        doors.forEach(door => {
+        doors.forEach((door) => {
             const x = door.x * TILE_SIZE * SCALE + (TILE_SIZE * SCALE) / 2;
             const y = door.y * TILE_SIZE * SCALE + (TILE_SIZE * SCALE) / 2;
 
-            const doorRect = this.scene.add.rectangle(x, y, TILE_SIZE * SCALE * 2, TILE_SIZE * SCALE * 3, 0x8b4513);
+            const doorRect = this.scene.add.rectangle(
+                x,
+                y,
+                TILE_SIZE * SCALE * 2,
+                TILE_SIZE * SCALE * 3,
+                0x8b4513,
+            );
             doorRect.setDepth(1);
             doorRect.setStrokeStyle(2, 0x5a3a1a);
 
             if (door.label) {
                 const label = this.scene.add.text(x, y - TILE_SIZE * SCALE * 2, door.label, {
-                    fontFamily: 'monospace',
-                    fontSize: '10px',
-                    color: '#ffffff',
-                    backgroundColor: '#000000',
+                    fontFamily: "monospace",
+                    fontSize: "10px",
+                    color: "#ffffff",
+                    backgroundColor: "#000000",
                     padding: { x: 4, y: 2 },
                 });
                 label.setOrigin(0.5);

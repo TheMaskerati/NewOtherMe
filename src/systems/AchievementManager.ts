@@ -1,5 +1,5 @@
-import Phaser from 'phaser';
-import { SaveSystem } from './SaveSystem';
+import Phaser from "phaser";
+import { SaveSystem } from "./SaveSystem";
 
 export interface Achievement {
     id: string;
@@ -10,17 +10,77 @@ export interface Achievement {
     hidden: boolean;
 }
 
-const ACHIEVEMENT_DEFS: Omit<Achievement, 'unlocked'>[] = [
-    { id: 'first_resist', name: 'Dignita', description: 'Resisti per la prima volta alla tentazione', icon: 'shield', hidden: false },
-    { id: 'true_hero', name: 'Eroe Vero', description: 'Resisti 3 volte di fila', icon: 'star', hidden: false },
-    { id: 'duality', name: 'Dualita', description: 'Vedi almeno due finali diversi', icon: 'mask', hidden: false },
-    { id: 'pacifist', name: 'Pacifista', description: 'Completa il gioco senza opzioni aggressive', icon: 'dove', hidden: false },
-    { id: 'dominator', name: 'Dominatore', description: 'Scegli sempre l\'opzione maschera', icon: 'crown', hidden: false },
-    { id: 'speedrun', name: 'Velocista', description: 'Completa il gioco in meno di 30 minuti', icon: 'clock', hidden: false },
-    { id: 'all_endings', name: 'Tutti i finali', description: 'Vedi tutti e 3 i finali', icon: 'book', hidden: false },
-    { id: 'perfectionist', name: 'Perfezionista', description: 'Vinci tutti i minigame al primo tentativo', icon: 'trophy', hidden: true },
-    { id: 'explorer', name: 'Esploratore', description: 'Visita tutte le mappe', icon: 'compass', hidden: true },
-    { id: 'devoted', name: 'Devoto', description: 'Gioca per piu di un\'ora', icon: 'heart', hidden: false },
+const ACHIEVEMENT_DEFS: Omit<Achievement, "unlocked">[] = [
+    {
+        id: "first_resist",
+        name: "Dignita",
+        description: "Resisti per la prima volta alla tentazione",
+        icon: "shield",
+        hidden: false,
+    },
+    {
+        id: "true_hero",
+        name: "Eroe Vero",
+        description: "Resisti 3 volte di fila",
+        icon: "star",
+        hidden: false,
+    },
+    {
+        id: "duality",
+        name: "Dualita",
+        description: "Vedi almeno due finali diversi",
+        icon: "mask",
+        hidden: false,
+    },
+    {
+        id: "pacifist",
+        name: "Pacifista",
+        description: "Completa il gioco senza opzioni aggressive",
+        icon: "dove",
+        hidden: false,
+    },
+    {
+        id: "dominator",
+        name: "Dominatore",
+        description: "Scegli sempre l'opzione maschera",
+        icon: "crown",
+        hidden: false,
+    },
+    {
+        id: "speedrun",
+        name: "Velocista",
+        description: "Completa il gioco in meno di 30 minuti",
+        icon: "clock",
+        hidden: false,
+    },
+    {
+        id: "all_endings",
+        name: "Tutti i finali",
+        description: "Vedi tutti e 3 i finali",
+        icon: "book",
+        hidden: false,
+    },
+    {
+        id: "perfectionist",
+        name: "Perfezionista",
+        description: "Vinci tutti i minigame al primo tentativo",
+        icon: "trophy",
+        hidden: true,
+    },
+    {
+        id: "explorer",
+        name: "Esploratore",
+        description: "Visita tutte le mappe",
+        icon: "compass",
+        hidden: true,
+    },
+    {
+        id: "devoted",
+        name: "Devoto",
+        description: "Gioca per piu di un'ora",
+        icon: "heart",
+        hidden: false,
+    },
 ];
 
 class AchievementManagerClass {
@@ -36,7 +96,7 @@ class AchievementManagerClass {
         for (const def of ACHIEVEMENT_DEFS) {
             this.achievements.set(def.id, {
                 ...def,
-                unlocked: unlocked.includes(def.id)
+                unlocked: unlocked.includes(def.id),
             });
         }
     }
@@ -65,18 +125,18 @@ class AchievementManagerClass {
     }
 
     getUnlocked(): Achievement[] {
-        return this.getAll().filter(a => a.unlocked);
+        return this.getAll().filter((a) => a.unlocked);
     }
 
     getVisible(): Achievement[] {
-        return this.getAll().filter(a => !a.hidden || a.unlocked);
+        return this.getAll().filter((a) => !a.hidden || a.unlocked);
     }
 
     getProgress(): { unlocked: number; total: number } {
         const all = this.getAll();
         return {
-            unlocked: all.filter(a => a.unlocked).length,
-            total: all.length
+            unlocked: all.filter((a) => a.unlocked).length,
+            total: all.length,
         };
     }
 }

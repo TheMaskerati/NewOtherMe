@@ -1,7 +1,7 @@
-import Phaser from 'phaser';
-import { SCENES, COLORS, GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
-import { KarmaSystem, Ending } from '@/systems/KarmaSystem';
-import { SaveSystem } from '@/systems/SaveSystem';
+import Phaser from "phaser";
+import { COLORS, GAME_HEIGHT, GAME_WIDTH, SCENES } from "@/config/gameConfig";
+import { type Ending, KarmaSystem } from "@/systems/KarmaSystem";
+import { SaveSystem } from "@/systems/SaveSystem";
 
 export class EndingScene extends Phaser.Scene {
     private ending!: Ending;
@@ -17,7 +17,7 @@ export class EndingScene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(0x000000);
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
-        if (this.ending === 'DAWN') {
+        if (this.ending === "DAWN") {
             this.showDawnEnding();
         } else {
             this.showEternalNightEnding();
@@ -40,19 +40,12 @@ export class EndingScene extends Phaser.Scene {
             targets: sun,
             y: GAME_HEIGHT - 150,
             duration: 4000,
-            ease: 'Sine.easeOut',
+            ease: "Sine.easeOut",
         });
 
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
-            const ray = this.add.rectangle(
-                GAME_WIDTH / 2,
-                GAME_HEIGHT - 50,
-                6,
-                300,
-                0xffd700,
-                0.3
-            );
+            const ray = this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT - 50, 6, 300, 0xffd700, 0.3);
             ray.setOrigin(0.5, 1);
             ray.setRotation(angle);
             ray.setAlpha(0);
@@ -71,7 +64,7 @@ export class EndingScene extends Phaser.Scene {
                 Phaser.Math.Between(0, GAME_HEIGHT),
                 Phaser.Math.Between(2, 4),
                 0xffd700,
-                0.6
+                0.6,
             );
             particle.setDepth(10);
 
@@ -86,13 +79,16 @@ export class EndingScene extends Phaser.Scene {
         }
 
         this.time.delayedCall(3500, () => {
-            this.showText([
-                'L\'alba sorge su Napoli.',
-                'Hai scelto la dignita.',
-                'La maschera giace a terra, inerte.',
-                'Non sei tuo padre.',
-                'Sei libero.',
-            ], 0xffd700);
+            this.showText(
+                [
+                    "L'alba sorge su Napoli.",
+                    "Hai scelto la dignita.",
+                    "La maschera giace a terra, inerte.",
+                    "Non sei tuo padre.",
+                    "Sei libero.",
+                ],
+                0xffd700,
+            );
         });
     }
 
@@ -102,20 +98,40 @@ export class EndingScene extends Phaser.Scene {
         const mask = this.add.ellipse(GAME_WIDTH / 2, GAME_HEIGHT / 2, 150, 180, 0xf5f5dc);
         mask.setAlpha(0);
 
-        const leftEye = this.add.ellipse(GAME_WIDTH / 2 - 30, GAME_HEIGHT / 2 - 20, 25, 35, 0x000000);
+        const leftEye = this.add.ellipse(
+            GAME_WIDTH / 2 - 30,
+            GAME_HEIGHT / 2 - 20,
+            25,
+            35,
+            0x000000,
+        );
         leftEye.setAlpha(0);
-        const rightEye = this.add.ellipse(GAME_WIDTH / 2 + 30, GAME_HEIGHT / 2 - 20, 25, 35, 0x000000);
+        const rightEye = this.add.ellipse(
+            GAME_WIDTH / 2 + 30,
+            GAME_HEIGHT / 2 - 20,
+            25,
+            35,
+            0x000000,
+        );
         rightEye.setAlpha(0);
 
-        const smile = this.add.arc(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 30, 40, 0, 180, false, 0x000000);
+        const smile = this.add.arc(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2 + 30,
+            40,
+            0,
+            180,
+            false,
+            0x000000,
+        );
         smile.setAlpha(0);
 
-        [mask, leftEye, rightEye, smile].forEach(el => {
+        [mask, leftEye, rightEye, smile].forEach((el) => {
             this.tweens.add({
                 targets: el,
                 alpha: 1,
                 duration: 3000,
-                ease: 'Power2',
+                ease: "Power2",
             });
         });
 
@@ -146,7 +162,7 @@ export class EndingScene extends Phaser.Scene {
                 Phaser.Math.Between(20, 60),
                 Phaser.Math.Between(30, 80),
                 0x000000,
-                0.5
+                0.5,
             );
             shadow.setDepth(-1);
 
@@ -162,26 +178,29 @@ export class EndingScene extends Phaser.Scene {
         }
 
         this.time.delayedCall(4000, () => {
-            this.showText([
-                'La notte eterna cala.',
-                'La maschera ha vinto.',
-                'Sei diventato cio che odiavi.',
-                'Il ciclo si ripete.',
-                'Per sempre.',
-            ], COLORS.purple);
+            this.showText(
+                [
+                    "La notte eterna cala.",
+                    "La maschera ha vinto.",
+                    "Sei diventato cio che odiavi.",
+                    "Il ciclo si ripete.",
+                    "Per sempre.",
+                ],
+                COLORS.purple,
+            );
         });
     }
 
     private showText(lines: string[], color: number): void {
-        const colorStr = '#' + color.toString(16).padStart(6, '0');
+        const colorStr = "#" + color.toString(16).padStart(6, "0");
         let y = 80;
 
         lines.forEach((line, index) => {
-            const text = this.add.text(GAME_WIDTH / 2, y, '', {
-                fontFamily: 'Georgia, serif',
-                fontSize: '24px',
+            const text = this.add.text(GAME_WIDTH / 2, y, "", {
+                fontFamily: "Georgia, serif",
+                fontSize: "24px",
                 color: colorStr,
-                align: 'center',
+                align: "center",
                 wordWrap: { width: GAME_WIDTH - 100 },
             });
             text.setOrigin(0.5);
@@ -222,16 +241,21 @@ export class EndingScene extends Phaser.Scene {
 
         const y = GAME_HEIGHT - 180;
 
-        const statsText = this.add.text(GAME_WIDTH / 2, y, [
-            `Resistenze: ${summary.resistCount}`,
-            `Cedimenti: ${summary.fightCount}`,
-            `Karma: ${summary.karmaScore}`,
-        ].join('\n'), {
-            fontFamily: 'monospace',
-            fontSize: '16px',
-            color: '#888888',
-            align: 'center',
-        });
+        const statsText = this.add.text(
+            GAME_WIDTH / 2,
+            y,
+            [
+                `Resistenze: ${summary.resistCount}`,
+                `Cedimenti: ${summary.fightCount}`,
+                `Karma: ${summary.karmaScore}`,
+            ].join("\n"),
+            {
+                fontFamily: "monospace",
+                fontSize: "16px",
+                color: "#888888",
+                align: "center",
+            },
+        );
         statsText.setOrigin(0.5);
         statsText.setAlpha(0);
         statsText.setDepth(100);
@@ -248,22 +272,22 @@ export class EndingScene extends Phaser.Scene {
     }
 
     private createMenuButton(): void {
-        const btn = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 50, '[MENU]', {
-            fontFamily: 'monospace',
-            fontSize: '20px',
-            color: '#666666',
-            backgroundColor: '#111111',
+        const btn = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 50, "[MENU]", {
+            fontFamily: "monospace",
+            fontSize: "20px",
+            color: "#666666",
+            backgroundColor: "#111111",
             padding: { x: 20, y: 10 },
         });
         btn.setOrigin(0.5);
         btn.setDepth(100);
         btn.setInteractive({ useHandCursor: true });
 
-        btn.on('pointerover', () => btn.setColor('#ffffff'));
-        btn.on('pointerout', () => btn.setColor('#666666'));
-        btn.on('pointerdown', () => {
+        btn.on("pointerover", () => btn.setColor("#ffffff"));
+        btn.on("pointerout", () => btn.setColor("#666666"));
+        btn.on("pointerdown", () => {
             this.cameras.main.fadeOut(500, 0, 0, 0);
-            this.cameras.main.once('camerafadeoutcomplete', () => {
+            this.cameras.main.once("camerafadeoutcomplete", () => {
                 this.scene.start(SCENES.MENU);
             });
         });

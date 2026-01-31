@@ -1,17 +1,22 @@
-import Phaser from 'phaser';
-import { COLORS, GAME_WIDTH, GAME_HEIGHT, BATTLE_CONFIG } from '@/config/gameConfig';
-import { BattleState, BattleActionType, BATTLE_ACTIONS, BattleResult } from '@/types/combat';
-import { EnemyConfig } from '@/types/entities';
-import { InventoryManager, ItemEffect, ItemDefinition } from './InventoryManager';
+import Phaser from "phaser";
+import { BATTLE_CONFIG, COLORS, GAME_HEIGHT, GAME_WIDTH } from "@/config/gameConfig";
+import {
+    BATTLE_ACTIONS,
+    type BattleActionType,
+    type BattleResult,
+    type BattleState,
+} from "@/types/combat";
+import type { EnemyConfig } from "@/types/entities";
+import { InventoryManager, ItemDefinition, ItemEffect } from "./InventoryManager";
 
-type BattleMenuState = 'main' | 'items';
+type BattleMenuState = "main" | "items";
 
 export class BattleManager {
     private scene: Phaser.Scene;
     private container: Phaser.GameObjects.Container;
     private state: BattleState;
     private enemy: EnemyConfig;
-    private menuState: BattleMenuState = 'main';
+    private menuState: BattleMenuState = "main";
 
     private enemySprite: Phaser.GameObjects.Image;
     private enemyNameText: Phaser.GameObjects.Text;
@@ -48,38 +53,45 @@ export class BattleManager {
             enemyHp: 0,
             enemyMaxHp: 0,
             temptation: 0,
-            turn: 'player',
+            turn: "player",
             isOver: false,
             result: null,
         };
     }
 
     private createUI(): void {
-        const bg = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x0a0a0a, 0.98);
+        const bg = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2,
+            GAME_WIDTH,
+            GAME_HEIGHT,
+            0x0a0a0a,
+            0.98,
+        );
 
         // TOP PANEL - Player HP and Temptation (left)
         const topPanelPlayer = this.scene.add.rectangle(160, 55, 280, 80, 0x1a1a1a);
         topPanelPlayer.setStrokeStyle(2, COLORS.gold);
 
-        const playerNameLabel = this.scene.add.text(40, 25, 'GENNARO', {
-            fontFamily: 'monospace',
-            fontSize: '16px',
-            color: '#e0d5c0',
+        const playerNameLabel = this.scene.add.text(40, 25, "GENNARO", {
+            fontFamily: "monospace",
+            fontSize: "16px",
+            color: "#e0d5c0",
         });
 
-        const hpLabel = this.scene.add.text(40, 50, 'HP', {
-            fontFamily: 'monospace',
-            fontSize: '12px',
-            color: '#888888',
+        const hpLabel = this.scene.add.text(40, 50, "HP", {
+            fontFamily: "monospace",
+            fontSize: "12px",
+            color: "#888888",
         });
         this.playerHpBarBg = this.scene.add.rectangle(150, 53, 160, 14, 0x333333);
         this.playerHpBar = this.scene.add.rectangle(72, 53, 156, 10, 0x00aa00);
         this.playerHpBar.setOrigin(0, 0.5);
 
-        const temptLabel = this.scene.add.text(40, 72, 'Tentazione', {
-            fontFamily: 'monospace',
-            fontSize: '11px',
-            color: '#888888',
+        const temptLabel = this.scene.add.text(40, 72, "Tentazione", {
+            fontFamily: "monospace",
+            fontSize: "11px",
+            color: "#888888",
         });
         this.temptationBarBg = this.scene.add.rectangle(180, 75, 120, 12, 0x333333);
         this.temptationBar = this.scene.add.rectangle(121, 75, 0, 8, COLORS.purple);
@@ -89,72 +101,108 @@ export class BattleManager {
         const topPanelEnemy = this.scene.add.rectangle(GAME_WIDTH - 160, 55, 280, 80, 0x1a1a1a);
         topPanelEnemy.setStrokeStyle(2, COLORS.red);
 
-        this.enemyNameText = this.scene.add.text(GAME_WIDTH - 280, 25, '', {
-            fontFamily: 'monospace',
-            fontSize: '16px',
-            color: '#ff6666',
+        this.enemyNameText = this.scene.add.text(GAME_WIDTH - 280, 25, "", {
+            fontFamily: "monospace",
+            fontSize: "16px",
+            color: "#ff6666",
         });
 
-        const enemyHpLabel = this.scene.add.text(GAME_WIDTH - 280, 50, 'HP', {
-            fontFamily: 'monospace',
-            fontSize: '12px',
-            color: '#888888',
+        const enemyHpLabel = this.scene.add.text(GAME_WIDTH - 280, 50, "HP", {
+            fontFamily: "monospace",
+            fontSize: "12px",
+            color: "#888888",
         });
         this.enemyHpBarBg = this.scene.add.rectangle(GAME_WIDTH - 110, 53, 180, 14, 0x333333);
         this.enemyHpBar = this.scene.add.rectangle(GAME_WIDTH - 198, 53, 176, 10, COLORS.red);
         this.enemyHpBar.setOrigin(0, 0.5);
 
         // BATTLE AREA
-        const battleArea = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 30, GAME_WIDTH - 80, 320, COLORS.darkBlue);
+        const battleArea = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2 - 30,
+            GAME_WIDTH - 80,
+            320,
+            COLORS.darkBlue,
+        );
         battleArea.setStrokeStyle(3, COLORS.purple);
 
-        this.enemySprite = this.scene.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 30, 'dario');
+        this.enemySprite = this.scene.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 30, "dario");
         this.enemySprite.setScale(8);
 
         // MESSAGE BOX
-        this.messageText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 220, '', {
-            fontFamily: 'monospace',
-            fontSize: '18px',
-            color: '#ffffff',
-            align: 'center',
-            wordWrap: { width: 600 },
-        }).setOrigin(0.5);
+        this.messageText = this.scene.add
+            .text(GAME_WIDTH / 2, GAME_HEIGHT - 220, "", {
+                fontFamily: "monospace",
+                fontSize: "18px",
+                color: "#ffffff",
+                align: "center",
+                wordWrap: { width: 600 },
+            })
+            .setOrigin(0.5);
 
         // MAIN MENU (bottom)
-        const menuBg = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT - 80, GAME_WIDTH - 60, 120, 0x1a1a1a);
+        const menuBg = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT - 80,
+            GAME_WIDTH - 60,
+            120,
+            0x1a1a1a,
+        );
         menuBg.setStrokeStyle(2, COLORS.gold);
 
-        const actions: BattleActionType[] = ['fight', 'resist', 'item', 'flee'];
+        const actions: BattleActionType[] = ["fight", "resist", "item", "flee"];
         actions.forEach((action, index) => {
             const x = GAME_WIDTH / 2 - 200 + (index % 2) * 200;
             const y = GAME_HEIGHT - 115 + Math.floor(index / 2) * 40;
             const text = this.scene.add.text(x, y, BATTLE_ACTIONS[action].name, {
-                fontFamily: 'monospace',
-                fontSize: '20px',
-                color: '#e0d5c0',
+                fontFamily: "monospace",
+                fontSize: "20px",
+                color: "#e0d5c0",
             });
-            text.setData('action', action);
+            text.setData("action", action);
             this.menuItems.push(text);
         });
 
         // ITEM SUBMENU (initially hidden)
-        this.itemMenuBg = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, 400, 300, 0x1a1a1a, 0.98);
+        this.itemMenuBg = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2,
+            400,
+            300,
+            0x1a1a1a,
+            0.98,
+        );
         this.itemMenuBg.setStrokeStyle(3, COLORS.gold);
         this.itemMenuBg.setVisible(false);
 
         this.container.add([
             bg,
-            topPanelPlayer, playerNameLabel, hpLabel, this.playerHpBarBg, this.playerHpBar,
-            temptLabel, this.temptationBarBg, this.temptationBar,
-            topPanelEnemy, this.enemyNameText, enemyHpLabel, this.enemyHpBarBg, this.enemyHpBar,
-            battleArea, this.enemySprite,
-            this.messageText, menuBg,
+            topPanelPlayer,
+            playerNameLabel,
+            hpLabel,
+            this.playerHpBarBg,
+            this.playerHpBar,
+            temptLabel,
+            this.temptationBarBg,
+            this.temptationBar,
+            topPanelEnemy,
+            this.enemyNameText,
+            enemyHpLabel,
+            this.enemyHpBarBg,
+            this.enemyHpBar,
+            battleArea,
+            this.enemySprite,
+            this.messageText,
+            menuBg,
             ...this.menuItems,
             this.itemMenuBg,
         ]);
     }
 
-    start(enemy: EnemyConfig, onComplete: (result: BattleResult, lastAction?: BattleActionType) => void): void {
+    start(
+        enemy: EnemyConfig,
+        onComplete: (result: BattleResult, lastAction?: BattleActionType) => void,
+    ): void {
         this.enemy = enemy;
         this.onComplete = onComplete;
         this.state = {
@@ -164,7 +212,7 @@ export class BattleManager {
         };
         this.selectedIndex = 0;
         this.isAnimating = false;
-        this.menuState = 'main';
+        this.menuState = "main";
 
         this.enemySprite.setTexture(enemy.sprite);
         this.enemyNameText.setText(enemy.name);
@@ -178,7 +226,7 @@ export class BattleManager {
         this.enemyHpBar.width = 176 * (this.state.enemyHp / this.state.enemyMaxHp);
         this.temptationBar.width = 118 * (this.state.temptation / 100);
 
-        if (this.menuState === 'main') {
+        if (this.menuState === "main") {
             this.updateMenuSelection();
         } else {
             this.updateItemMenuSelection();
@@ -187,67 +235,79 @@ export class BattleManager {
 
     private updateMenuSelection(): void {
         this.menuItems.forEach((item, index) => {
-            const action = item.getData('action') as BattleActionType;
+            const action = item.getData("action") as BattleActionType;
             if (index === this.selectedIndex) {
-                item.setColor('#ffd700');
-                item.setText('> ' + BATTLE_ACTIONS[action].name);
+                item.setColor("#ffd700");
+                item.setText("> " + BATTLE_ACTIONS[action].name);
             } else {
-                item.setColor('#e0d5c0');
-                item.setText('  ' + BATTLE_ACTIONS[action].name);
+                item.setColor("#e0d5c0");
+                item.setText("  " + BATTLE_ACTIONS[action].name);
             }
         });
     }
 
     private showItemMenu(): void {
-        this.menuState = 'items';
+        this.menuState = "items";
         this.selectedIndex = 0;
         this.itemMenuBg.setVisible(true);
 
         // Clear old item menu
-        this.itemMenuItems.forEach(item => item.destroy());
+        this.itemMenuItems.forEach((item) => item.destroy());
         this.itemMenuItems = [];
 
         const items = InventoryManager.getBattleItems();
 
         if (items.length === 0) {
-            const noItemsText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 60, 'Nessun oggetto!', {
-                fontFamily: 'monospace',
-                fontSize: '18px',
-                color: '#888888',
-            }).setOrigin(0.5);
+            const noItemsText = this.scene.add
+                .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 60, "Nessun oggetto!", {
+                    fontFamily: "monospace",
+                    fontSize: "18px",
+                    color: "#888888",
+                })
+                .setOrigin(0.5);
             this.itemMenuItems.push(noItemsText);
             this.container.add(noItemsText);
         } else {
             items.forEach((item, index) => {
                 const y = GAME_HEIGHT / 2 - 80 + index * 45;
 
-                const text = this.scene.add.text(GAME_WIDTH / 2 - 150, y,
-                    `${item.definition.icon} ${item.definition.name} x${item.quantity}`, {
-                    fontFamily: 'monospace',
-                    fontSize: '16px',
-                    color: '#e0d5c0',
-                });
-                text.setData('itemId', item.itemId);
+                const text = this.scene.add.text(
+                    GAME_WIDTH / 2 - 150,
+                    y,
+                    `${item.definition.icon} ${item.definition.name} x${item.quantity}`,
+                    {
+                        fontFamily: "monospace",
+                        fontSize: "16px",
+                        color: "#e0d5c0",
+                    },
+                );
+                text.setData("itemId", item.itemId);
                 this.itemMenuItems.push(text);
                 this.container.add(text);
 
-                const desc = this.scene.add.text(GAME_WIDTH / 2 - 150, y + 18,
-                    item.definition.description, {
-                    fontFamily: 'monospace',
-                    fontSize: '11px',
-                    color: '#888888',
-                });
+                const desc = this.scene.add.text(
+                    GAME_WIDTH / 2 - 150,
+                    y + 18,
+                    item.definition.description,
+                    {
+                        fontFamily: "monospace",
+                        fontSize: "11px",
+                        color: "#888888",
+                    },
+                );
                 this.itemMenuItems.push(desc);
                 this.container.add(desc);
             });
         }
 
         // Back button
-        const backText = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 110, '[ESC] Indietro', {
-            fontFamily: 'monospace',
-            fontSize: '14px',
-            color: '#666666',
-        }).setOrigin(0.5);
+        const backText = this.scene.add
+            .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 110, "[ESC] Indietro", {
+                fontFamily: "monospace",
+                fontSize: "14px",
+                color: "#666666",
+            })
+            .setOrigin(0.5);
         this.itemMenuItems.push(backText);
         this.container.add(backText);
 
@@ -255,10 +315,10 @@ export class BattleManager {
     }
 
     private hideItemMenu(): void {
-        this.menuState = 'main';
+        this.menuState = "main";
         this.selectedIndex = 2; // Return to OGGETTO in main menu
         this.itemMenuBg.setVisible(false);
-        this.itemMenuItems.forEach(item => item.destroy());
+        this.itemMenuItems.forEach((item) => item.destroy());
         this.itemMenuItems = [];
         this.updateMenuSelection();
     }
@@ -268,14 +328,16 @@ export class BattleManager {
         let textIndex = 0;
 
         this.itemMenuItems.forEach((item, index) => {
-            if (item.getData('itemId')) {
+            if (item.getData("itemId")) {
                 if (textIndex === this.selectedIndex) {
-                    item.setColor('#ffd700');
-                    item.setText('> ' + item.text.substring(2));
+                    item.setColor("#ffd700");
+                    item.setText("> " + item.text.substring(2));
                 } else {
-                    item.setColor('#e0d5c0');
-                    const currentText = item.text.startsWith('> ') ? item.text.substring(2) : item.text;
-                    item.setText('  ' + currentText);
+                    item.setColor("#e0d5c0");
+                    const currentText = item.text.startsWith("> ")
+                        ? item.text.substring(2)
+                        : item.text;
+                    item.setText("  " + currentText);
                 }
                 textIndex++;
             }
@@ -283,16 +345,16 @@ export class BattleManager {
     }
 
     private showMessage(text: string): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             this.messageText.setText(text);
             this.scene.time.delayedCall(1200, resolve);
         });
     }
 
     async handleInput(keys: Record<string, Phaser.Input.Keyboard.Key>): Promise<void> {
-        if (!this.container.visible || this.isAnimating || this.state.turn !== 'player') return;
+        if (!this.container.visible || this.isAnimating || this.state.turn !== "player") return;
 
-        if (this.menuState === 'items') {
+        if (this.menuState === "items") {
             await this.handleItemMenuInput(keys);
             return;
         }
@@ -307,18 +369,25 @@ export class BattleManager {
             this.updateMenuSelection();
         }
         if (Phaser.Input.Keyboard.JustDown(keys.LEFT) || Phaser.Input.Keyboard.JustDown(keys.A)) {
-            this.selectedIndex = this.selectedIndex % 2 === 1 ? this.selectedIndex - 1 : this.selectedIndex;
+            this.selectedIndex =
+                this.selectedIndex % 2 === 1 ? this.selectedIndex - 1 : this.selectedIndex;
             this.updateMenuSelection();
         }
         if (Phaser.Input.Keyboard.JustDown(keys.RIGHT) || Phaser.Input.Keyboard.JustDown(keys.D)) {
-            this.selectedIndex = this.selectedIndex % 2 === 0 ? Math.min(3, this.selectedIndex + 1) : this.selectedIndex;
+            this.selectedIndex =
+                this.selectedIndex % 2 === 0
+                    ? Math.min(3, this.selectedIndex + 1)
+                    : this.selectedIndex;
             this.updateMenuSelection();
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keys.SPACE) || Phaser.Input.Keyboard.JustDown(keys.ENTER)) {
-            const action = this.menuItems[this.selectedIndex].getData('action') as BattleActionType;
+        if (
+            Phaser.Input.Keyboard.JustDown(keys.SPACE) ||
+            Phaser.Input.Keyboard.JustDown(keys.ENTER)
+        ) {
+            const action = this.menuItems[this.selectedIndex].getData("action") as BattleActionType;
 
-            if (action === 'item') {
+            if (action === "item") {
                 this.showItemMenu();
             } else {
                 await this.executeAction(action);
@@ -326,7 +395,9 @@ export class BattleManager {
         }
     }
 
-    private async handleItemMenuInput(keys: Record<string, Phaser.Input.Keyboard.Key>): Promise<void> {
+    private async handleItemMenuInput(
+        keys: Record<string, Phaser.Input.Keyboard.Key>,
+    ): Promise<void> {
         const items = InventoryManager.getBattleItems();
         const maxIndex = Math.max(0, items.length - 1);
 
@@ -346,7 +417,10 @@ export class BattleManager {
             return;
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keys.SPACE) || Phaser.Input.Keyboard.JustDown(keys.ENTER)) {
+        if (
+            Phaser.Input.Keyboard.JustDown(keys.SPACE) ||
+            Phaser.Input.Keyboard.JustDown(keys.ENTER)
+        ) {
             if (items.length === 0) {
                 this.hideItemMenu();
                 return;
@@ -375,15 +449,18 @@ export class BattleManager {
         let message = `Usi ${definition.name}!`;
 
         switch (effect.type) {
-            case 'heal':
-                const healAmount = Math.min(effect.value, this.state.playerMaxHp - this.state.playerHp);
+            case "heal": {
+                const healAmount = Math.min(
+                    effect.value,
+                    this.state.playerMaxHp - this.state.playerHp,
+                );
                 this.state.playerHp += healAmount;
                 message += ` +${healAmount} HP`;
 
                 // Special: Foto della Mamma also reduces temptation
-                if (itemId === 'foto_mamma') {
+                if (itemId === "foto_mamma") {
                     this.state.temptation = Math.max(0, this.state.temptation - 30);
-                    message += ', -30 Tentazione';
+                    message += ", -30 Tentazione";
                 }
 
                 this.scene.tweens.add({
@@ -393,8 +470,9 @@ export class BattleManager {
                     yoyo: true,
                 });
                 break;
+            }
 
-            case 'temptation_reduce':
+            case "temptation_reduce":
                 this.state.temptation = Math.max(0, this.state.temptation - effect.value);
                 message += ` -${effect.value} Tentazione`;
 
@@ -412,15 +490,15 @@ export class BattleManager {
 
         // Enemy turn after using item
         if (!this.state.isOver) {
-            this.state.turn = 'enemy';
+            this.state.turn = "enemy";
             await this.enemyTurn();
 
             if (this.checkEnd()) {
-                await this.endBattle('item');
+                await this.endBattle("item");
                 return;
             }
 
-            this.state.turn = 'player';
+            this.state.turn = "player";
         }
 
         this.isAnimating = false;
@@ -430,13 +508,13 @@ export class BattleManager {
         this.isAnimating = true;
 
         switch (action) {
-            case 'fight':
+            case "fight":
                 await this.playerFight();
                 break;
-            case 'resist':
+            case "resist":
                 await this.playerResist();
                 break;
-            case 'flee':
+            case "flee":
                 await this.playerFlee();
                 break;
         }
@@ -447,7 +525,7 @@ export class BattleManager {
         }
 
         if (!this.state.isOver) {
-            this.state.turn = 'enemy';
+            this.state.turn = "enemy";
             await this.enemyTurn();
 
             if (this.checkEnd()) {
@@ -455,7 +533,7 @@ export class BattleManager {
                 return;
             }
 
-            this.state.turn = 'player';
+            this.state.turn = "player";
         }
 
         this.isAnimating = false;
@@ -464,7 +542,10 @@ export class BattleManager {
     private async playerFight(): Promise<void> {
         const damage = BATTLE_CONFIG.baseDamage + Math.floor(Math.random() * 10);
         this.state.enemyHp = Math.max(0, this.state.enemyHp - damage);
-        this.state.temptation = Math.min(100, this.state.temptation + BATTLE_CONFIG.temptationPerFight);
+        this.state.temptation = Math.min(
+            100,
+            this.state.temptation + BATTLE_CONFIG.temptationPerFight,
+        );
 
         this.scene.cameras.main.shake(150, 0.02);
         this.scene.tweens.add({
@@ -482,7 +563,10 @@ export class BattleManager {
     private async playerResist(): Promise<void> {
         const heal = BATTLE_CONFIG.resistHeal;
         this.state.playerHp = Math.min(this.state.playerMaxHp, this.state.playerHp + heal);
-        this.state.temptation = Math.max(0, this.state.temptation + BATTLE_CONFIG.temptationPerResist);
+        this.state.temptation = Math.max(
+            0,
+            this.state.temptation + BATTLE_CONFIG.temptationPerResist,
+        );
 
         this.scene.tweens.add({
             targets: this.playerHpBar,
@@ -498,11 +582,11 @@ export class BattleManager {
     private async playerFlee(): Promise<void> {
         if (Math.random() < BATTLE_CONFIG.fleeChance) {
             this.state.isOver = true;
-            this.state.result = 'fled';
-            await this.showMessage('Scappi via...');
+            this.state.result = "fled";
+            await this.showMessage("Scappi via...");
         } else {
             this.state.temptation = Math.min(100, this.state.temptation + 5);
-            await this.showMessage('Non riesci a fuggire!');
+            await this.showMessage("Non riesci a fuggire!");
             this.updateUI();
         }
     }
@@ -513,24 +597,26 @@ export class BattleManager {
         this.state.temptation = Math.min(100, this.state.temptation + attack.temptationIncrease);
 
         this.scene.cameras.main.flash(150, 80, 0, 0);
-        await this.showMessage(`${this.enemy.name}: "${attack.description}"\n${attack.damage} danni!`);
+        await this.showMessage(
+            `${this.enemy.name}: "${attack.description}"\n${attack.damage} danni!`,
+        );
         this.updateUI();
     }
 
     private checkEnd(): boolean {
         if (this.state.playerHp <= 0) {
             this.state.isOver = true;
-            this.state.result = 'defeat';
+            this.state.result = "defeat";
             return true;
         }
         if (this.state.enemyHp <= 0) {
             this.state.isOver = true;
-            this.state.result = 'victory';
+            this.state.result = "victory";
             return true;
         }
         if (this.state.temptation >= 100) {
             this.state.isOver = true;
-            this.state.result = 'masked';
+            this.state.result = "masked";
             return true;
         }
         return false;
@@ -538,10 +624,10 @@ export class BattleManager {
 
     private async endBattle(lastAction: BattleActionType): Promise<void> {
         const messages: Record<BattleResult, string> = {
-            victory: 'Hai superato questa prova.',
-            defeat: 'Sei stato sopraffatto...',
-            masked: 'La maschera prende il controllo.',
-            fled: 'Ti allontani in silenzio.',
+            victory: "Hai superato questa prova.",
+            defeat: "Sei stato sopraffatto...",
+            masked: "La maschera prende il controllo.",
+            fled: "Ti allontani in silenzio.",
         };
 
         await this.showMessage(messages[this.state.result!]);

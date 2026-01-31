@@ -1,14 +1,21 @@
-import Phaser from 'phaser';
-import { Direction, Vector2 } from '@/types/game';
-import { PLAYER_CONFIG, SCALE, TILE_SIZE } from '@/config/gameConfig';
+import type Phaser from "phaser";
+import { PLAYER_CONFIG, SCALE, TILE_SIZE } from "@/config/gameConfig";
+import type { Direction, Vector2 } from "@/types/game";
 
-type AnimationKey = 'idle_down' | 'idle_up' | 'idle_left' | 'idle_right' |
-    'walk_down' | 'walk_up' | 'walk_left' | 'walk_right';
+type AnimationKey =
+    | "idle_down"
+    | "idle_up"
+    | "idle_left"
+    | "idle_right"
+    | "walk_down"
+    | "walk_up"
+    | "walk_left"
+    | "walk_right";
 
 export class Player {
     private scene: Phaser.Scene;
     private sprite: Phaser.Physics.Arcade.Sprite;
-    private direction: Direction = 'down';
+    private direction: Direction = "down";
     private isMoving = false;
     private canMove = true;
     private speed: number;
@@ -19,7 +26,7 @@ export class Player {
         this.scene = scene;
         this.speed = PLAYER_CONFIG.speed;
 
-        this.sprite = scene.physics.add.sprite(x, y, 'player');
+        this.sprite = scene.physics.add.sprite(x, y, "player");
         this.sprite.setScale(SCALE);
         this.sprite.setCollideWorldBounds(true);
         this.sprite.setDepth(10);
@@ -38,11 +45,11 @@ export class Player {
             16 * SCALE,
             6 * SCALE,
             0x000000,
-            0.3
+            0.3,
         );
         shadow.setDepth(9);
 
-        this.scene.events.on('update', () => {
+        this.scene.events.on("update", () => {
             shadow.setPosition(this.sprite.x, this.sprite.y + 12 * SCALE);
         });
     }
@@ -60,18 +67,19 @@ export class Player {
         this.sprite.setVelocity(velocityX, velocityY);
         this.isMoving = input.x !== 0 || input.y !== 0;
 
-        if (input.x < 0) this.direction = 'left';
-        else if (input.x > 0) this.direction = 'right';
-        else if (input.y < 0) this.direction = 'up';
-        else if (input.y > 0) this.direction = 'down';
+        if (input.x < 0) this.direction = "left";
+        else if (input.x > 0) this.direction = "right";
+        else if (input.y < 0) this.direction = "up";
+        else if (input.y > 0) this.direction = "down";
 
         if (this.isMoving) {
             this.safePlayAnimation(`player_walk_${this.direction}`, true);
 
             /* Trail Effect */
-            if (this.scene.time.now % 100 < 20) { /* Spawn trail every ~100ms */
-                const trail = this.scene.add.sprite(this.sprite.x, this.sprite.y, 'player');
-                if (trail.texture.key !== '__MISSING') {
+            if (this.scene.time.now % 100 < 20) {
+                /* Spawn trail every ~100ms */
+                const trail = this.scene.add.sprite(this.sprite.x, this.sprite.y, "player");
+                if (trail.texture.key !== "__MISSING") {
                     trail.setFrame(this.sprite.frame.name);
                     trail.setAlpha(0.5);
                     trail.setTint(0xffffff);
@@ -80,7 +88,7 @@ export class Player {
                         targets: trail,
                         alpha: 0,
                         duration: 200,
-                        onComplete: () => trail.destroy()
+                        onComplete: () => trail.destroy(),
                     });
                 } else {
                     trail.destroy();

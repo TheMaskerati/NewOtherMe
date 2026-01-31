@@ -1,11 +1,11 @@
-import Phaser from 'phaser';
-import { COLORS, GAME_WIDTH, GAME_HEIGHT, UI_CONFIG } from '@/config/gameConfig';
-import { LOCALE } from '@/config/locale';
-import { Dialog, DialogLine, DialogChoice } from '@/types/dialog';
-import { DIALOGS } from '@/config/constants';
-import { KarmaSystem } from '@/systems/KarmaSystem';
-import { AudioManager } from '@/systems/AudioManager';
-import { SaveSystem } from '@/systems/SaveSystem';
+import Phaser from "phaser";
+import { DIALOGS } from "@/config/constants";
+import { COLORS, GAME_HEIGHT, GAME_WIDTH, UI_CONFIG } from "@/config/gameConfig";
+import { LOCALE } from "@/config/locale";
+import { AudioManager } from "@/systems/AudioManager";
+import { KarmaSystem } from "@/systems/KarmaSystem";
+import { SaveSystem } from "@/systems/SaveSystem";
+import { type Dialog, type DialogChoice, DialogLine } from "@/types/dialog";
 
 /**
  * Manages the dialogue system, including displaying text, character portraits,
@@ -24,8 +24,8 @@ export class DialogManager {
     private currentDialog: Dialog | null = null;
     private lineIndex = 0;
     private isTyping = false;
-    private displayedText = '';
-    private fullText = '';
+    private displayedText = "";
+    private fullText = "";
     private selectedChoice = 0;
     private typewriterEvent: Phaser.Time.TimerEvent | null = null;
     private onComplete: ((action?: string) => void) | null = null;
@@ -50,24 +50,24 @@ export class DialogManager {
             GAME_WIDTH - 20,
             boxHeight,
             0x000000,
-            0.95
+            0.95,
         );
         bg.setStrokeStyle(3, 0xffffff);
 
         /* Change rectangle to Image */
-        this.portrait = this.scene.add.image(65, boxY - 10, 'player_portrait');
+        this.portrait = this.scene.add.image(65, boxY - 10, "player_portrait");
         this.portrait.setScale(1.2);
 
-        this.speakerText = this.scene.add.text(130, boxY - 65, '', {
-            fontFamily: 'monospace',
-            fontSize: '18px',
-            color: '#ffd700', // COLORS.gold
+        this.speakerText = this.scene.add.text(130, boxY - 65, "", {
+            fontFamily: "monospace",
+            fontSize: "18px",
+            color: "#ffd700", // COLORS.gold
         });
 
-        this.contentText = this.scene.add.text(130, boxY - 35, '', {
-            fontFamily: 'monospace',
-            fontSize: '16px',
-            color: '#ffffff',
+        this.contentText = this.scene.add.text(130, boxY - 35, "", {
+            fontFamily: "monospace",
+            fontSize: "16px",
+            color: "#ffffff",
             wordWrap: { width: GAME_WIDTH - 180 },
             lineSpacing: 8,
         });
@@ -76,10 +76,10 @@ export class DialogManager {
             boxY + boxHeight / 2 - 25,
             LOCALE.UI.CONTINUE_PROMPT,
             {
-                fontFamily: 'monospace',
-                fontSize: '12px',
-                color: '#888888',
-            }
+                fontFamily: "monospace",
+                fontSize: "12px",
+                color: "#888888",
+            },
         );
         this.continuePrompt.setOrigin(1, 0.5);
 
@@ -142,11 +142,11 @@ export class DialogManager {
         }
 
         const line = this.currentDialog.lines[this.lineIndex];
-        this.speakerText.setText(line.speaker || '');
+        this.speakerText.setText(line.speaker || "");
         this.updatePortrait(line.speaker);
         this.fullText = line.text;
-        this.displayedText = '';
-        this.contentText.setText('');
+        this.displayedText = "";
+        this.contentText.setText("");
         this.isTyping = true;
         this.continuePrompt.setVisible(false);
 
@@ -177,22 +177,22 @@ export class DialogManager {
 
     private updatePortrait(speaker?: string): void {
         const portraits: Record<string, string> = {
-            DARIO: 'dario_portrait',
-            ELISA: 'elisa_portrait',
-            GENNARO: 'player_portrait',
-            OMBRA: 'shadow_portrait',
-            BULLO: 'bully_portrait',
-            MASCHERA: 'mask',
+            DARIO: "dario_portrait",
+            ELISA: "elisa_portrait",
+            GENNARO: "player_portrait",
+            OMBRA: "shadow_portrait",
+            BULLO: "bully_portrait",
+            MASCHERA: "mask",
         };
 
-        const key = portraits[speaker || ''] || 'player_portrait';
+        const key = portraits[speaker || ""] || "player_portrait";
         if (this.scene.textures.exists(key)) {
             this.portrait.setTexture(key);
             this.scene.tweens.add({
                 targets: this.portrait,
                 scale: { from: 1.1, to: 1.2 },
                 duration: 200,
-                ease: 'Back.out'
+                ease: "Back.out",
             });
         }
     }
@@ -205,14 +205,21 @@ export class DialogManager {
 
         this.continuePrompt.setVisible(true);
         this.continuePrompt.setText(LOCALE.UI.CONFIRM_PROMPT);
-        this.speakerText.setText('');
+        this.speakerText.setText("");
         this.contentText.setText(LOCALE.DIALOG.CHOICE_QUESTION);
-        this.portrait.setTexture('player_portrait');
+        this.portrait.setTexture("player_portrait");
 
         /** Timer bar inside dialog box, above choices */
-        const boxY = GAME_HEIGHT - UI_CONFIG.DIALOG_BOX_HEIGHT / 2 - UI_CONFIG.DIALOG_BOX_BOTTOM_MARGIN;
+        const boxY =
+            GAME_HEIGHT - UI_CONFIG.DIALOG_BOX_HEIGHT / 2 - UI_CONFIG.DIALOG_BOX_BOTTOM_MARGIN;
         const timerDuration = UI_CONFIG.CHOICE_TIMER_DURATION;
-        this.timerBar = this.scene.add.rectangle(GAME_WIDTH / 2, boxY - 55, GAME_WIDTH - UI_CONFIG.TIMER_BAR_WIDTH_OFFSET, UI_CONFIG.TIMER_BAR_HEIGHT, 0xd4af37);
+        this.timerBar = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            boxY - 55,
+            GAME_WIDTH - UI_CONFIG.TIMER_BAR_WIDTH_OFFSET,
+            UI_CONFIG.TIMER_BAR_HEIGHT,
+            0xd4af37,
+        );
         this.timerBar.setScrollFactor(0);
         this.timerBar.setDepth(1002);
         this.container.add(this.timerBar);
@@ -221,17 +228,19 @@ export class DialogManager {
             targets: this.timerBar,
             scaleX: 0,
             duration: timerDuration,
-            ease: 'Linear',
+            ease: "Linear",
             onComplete: () => {
                 /* Auto-select first choice on timeout */
                 if (this.choiceTexts.length > 0) {
                     this.selectedChoice = 0;
                     this.selectChoice();
                 }
-            }
+            },
         });
 
-        const validChoices = this.currentDialog.choices.filter(c => this.checkCondition(c.condition));
+        const validChoices = this.currentDialog.choices.filter((c) =>
+            this.checkCondition(c.condition),
+        );
 
         if (validChoices.length === 0) {
             /* No valid choices, just close or default? */
@@ -244,17 +253,17 @@ export class DialogManager {
             const text = this.scene.add.text(
                 140,
                 startY + index * 30,
-                (index === 0 ? '> ' : '  ') + choice.text,
+                (index === 0 ? "> " : "  ") + choice.text,
                 {
-                    fontFamily: 'monospace',
-                    fontSize: '16px',
-                    color: index === 0 ? '#ffd700' : '#ffffff',
-                }
+                    fontFamily: "monospace",
+                    fontSize: "16px",
+                    color: index === 0 ? "#ffd700" : "#ffffff",
+                },
             );
             text.setScrollFactor(0);
             text.setDepth(1001);
             /* Store original index for correct callback */
-            text.setData('originalIndex', this.currentDialog?.choices?.indexOf(choice));
+            text.setData("originalIndex", this.currentDialog?.choices?.indexOf(choice));
             this.choiceTexts.push(text);
             this.container.add(text);
         });
@@ -265,15 +274,15 @@ export class DialogManager {
 
         const karma = KarmaSystem.getKarmaScore();
 
-        if (condition.startsWith('karma>')) {
-            const val = parseInt(condition.split('>')[1]);
+        if (condition.startsWith("karma>")) {
+            const val = parseInt(condition.split(">")[1]);
             return karma > val;
         }
-        if (condition.startsWith('karma<')) {
-            const val = parseInt(condition.split('<')[1]);
+        if (condition.startsWith("karma<")) {
+            const val = parseInt(condition.split("<")[1]);
             return karma < val;
         }
-        if (condition === 'hasItem:mask') return true; /* Placeholder */
+        if (condition === "hasItem:mask") return true; /* Placeholder */
 
         return true;
     }
@@ -283,13 +292,13 @@ export class DialogManager {
 
         this.choiceTexts.forEach((text, index) => {
             const isSelected = index === this.selectedChoice;
-            text.setColor(isSelected ? '#ffd700' : '#ffffff');
-            text.setText((isSelected ? '> ' : '  ') + this.currentDialog!.choices![index].text);
+            text.setColor(isSelected ? "#ffd700" : "#ffffff");
+            text.setText((isSelected ? "> " : "  ") + this.currentDialog!.choices![index].text);
         });
     }
 
     private clearChoices(): void {
-        this.choiceTexts.forEach(t => t.destroy());
+        this.choiceTexts.forEach((t) => t.destroy());
         this.choiceTexts = [];
         if (this.timerBar) {
             this.scene.tweens.killTweensOf(this.timerBar);
@@ -341,10 +350,13 @@ export class DialogManager {
                 this.selectedChoice = Math.max(0, this.selectedChoice - 1);
                 this.updateChoiceSelection();
             }
-            if (Phaser.Input.Keyboard.JustDown(keys.DOWN) || Phaser.Input.Keyboard.JustDown(keys.S)) {
+            if (
+                Phaser.Input.Keyboard.JustDown(keys.DOWN) ||
+                Phaser.Input.Keyboard.JustDown(keys.S)
+            ) {
                 this.selectedChoice = Math.min(
                     (this.currentDialog?.choices?.length || 1) - 1,
-                    this.selectedChoice + 1
+                    this.selectedChoice + 1,
                 );
                 this.updateChoiceSelection();
             }
@@ -356,7 +368,10 @@ export class DialogManager {
         }
 
         /* During standard dialogue, ENTER advances/skips */
-        if (Phaser.Input.Keyboard.JustDown(keys.ENTER) || Phaser.Input.Keyboard.JustDown(keys.SPACE)) {
+        if (
+            Phaser.Input.Keyboard.JustDown(keys.ENTER) ||
+            Phaser.Input.Keyboard.JustDown(keys.SPACE)
+        ) {
             if (this.isTyping) {
                 this.typewriterEvent?.destroy();
                 this.displayedText = this.fullText;
@@ -382,28 +397,28 @@ export class DialogManager {
     private playVoiceBlip(speaker?: string): void {
         const audio = AudioManager.getInstance(this.scene);
         let pitch = 300;
-        let type: OscillatorType = 'square';
+        let type: OscillatorType = "square";
 
         switch (speaker) {
-            case 'ELISA':
+            case "ELISA":
                 pitch = 500;
-                type = 'sine';
+                type = "sine";
                 break;
-            case 'DARIO':
+            case "DARIO":
                 pitch = 150;
-                type = 'sawtooth';
+                type = "sawtooth";
                 break;
-            case 'OMBRA':
+            case "OMBRA":
                 pitch = 100;
-                type = 'sawtooth';
+                type = "sawtooth";
                 break;
-            case 'BULLO':
+            case "BULLO":
                 pitch = 120;
-                type = 'square';
+                type = "square";
                 break;
             default:
                 pitch = 300;
-                type = 'square';
+                type = "square";
                 break;
         }
 

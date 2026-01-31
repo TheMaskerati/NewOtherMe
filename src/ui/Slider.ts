@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 
 /**
  * Reusable Slider component for menus.
@@ -11,17 +11,27 @@ export class Slider extends Phaser.GameObjects.Container {
     private value: number = 0.5;
     private onChange: (value: number) => void;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, text: string, initialValue: number, width: number = 200, onChange: (val: number) => void) {
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        text: string,
+        initialValue: number,
+        width: number = 200,
+        onChange: (val: number) => void,
+    ) {
         super(scene, x, y);
         this.value = initialValue;
         this.onChange = onChange;
 
         /* Label */
-        this.label = scene.add.text(0, -30, text, {
-            fontFamily: 'monospace',
-            fontSize: '18px',
-            color: '#aaaaaa'
-        }).setOrigin(0.5);
+        this.label = scene.add
+            .text(0, -30, text, {
+                fontFamily: "monospace",
+                fontSize: "18px",
+                color: "#aaaaaa",
+            })
+            .setOrigin(0.5);
 
         /* Track */
         this.track = scene.add.rectangle(0, 0, width, 10, 0x333333).setOrigin(0.5);
@@ -40,7 +50,7 @@ export class Slider extends Phaser.GameObjects.Container {
         scene.add.existing(this);
 
         /* Input Events */
-        this.handle.on('drag', (pointer: Phaser.Input.Pointer, dragX: number) => {
+        this.handle.on("drag", (pointer: Phaser.Input.Pointer, dragX: number) => {
             const minX = -width / 2;
             const maxX = width / 2;
             const clampedX = Phaser.Math.Clamp(dragX, minX, maxX);
@@ -51,7 +61,7 @@ export class Slider extends Phaser.GameObjects.Container {
             this.onChange(this.value);
         });
 
-        this.track.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+        this.track.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
             const localX = pointer.x - (this.x + scene.cameras.main.scrollX);
             const minX = -width / 2;
             const maxX = width / 2;

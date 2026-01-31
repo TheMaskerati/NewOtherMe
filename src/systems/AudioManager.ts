@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 
 /**
  * Centralized Audio Manager system.
@@ -15,8 +15,8 @@ export class AudioManager {
     private constructor(scene: Phaser.Scene) {
         this.scene = scene;
         /* Load saved preferences if available */
-        const savedMusic = localStorage.getItem('musicVolume');
-        const savedSfx = localStorage.getItem('sfxVolume');
+        const savedMusic = localStorage.getItem("musicVolume");
+        const savedSfx = localStorage.getItem("sfxVolume");
         if (savedMusic) this.musicVolume = parseFloat(savedMusic);
         if (savedSfx) this.sfxVolume = parseFloat(savedSfx);
     }
@@ -53,7 +53,7 @@ export class AudioManager {
                     duration: 1000,
                     onComplete: () => {
                         current.stop();
-                    }
+                    },
                 });
             }
         }
@@ -70,7 +70,7 @@ export class AudioManager {
         this.scene.tweens.add({
             targets: sound,
             volume: this.musicVolume,
-            duration: 1000
+            duration: 1000,
         });
     }
 
@@ -88,7 +88,7 @@ export class AudioManager {
                     onComplete: () => {
                         current.stop();
                         this.currentMusic = null;
-                    }
+                    },
                 });
             }
         }
@@ -104,7 +104,7 @@ export class AudioManager {
         try {
             this.scene.sound.play(key, { volume });
         } catch (e) {
-            console.warn('SFX Error:', e);
+            console.warn("SFX Error:", e);
         }
     }
 
@@ -112,7 +112,11 @@ export class AudioManager {
      * Plays a procedural audio blip using Web Audio API.
      * Useful for character voices or UI feedback without external assets.
      */
-    public playBlip(pitch: number = 440, type: OscillatorType = 'square', duration: number = 50): void {
+    public playBlip(
+        pitch: number = 440,
+        type: OscillatorType = "square",
+        duration: number = 50,
+    ): void {
         try {
             if (this.scene.sound instanceof Phaser.Sound.NoAudioSoundManager) return;
 
@@ -135,7 +139,7 @@ export class AudioManager {
             osc.start();
             osc.stop(context.currentTime + duration / 1000);
         } catch (e) {
-            console.warn('Web Audio API not supported or error:', e);
+            console.warn("Web Audio API not supported or error:", e);
         }
     }
 
@@ -149,7 +153,7 @@ export class AudioManager {
         /* Score < 0 = Control -> Slower, Lower pitch */
 
         /* Map score -100..100 to rate 0.8..1.2 */
-        const rate = 1.0 + (score / 500);
+        const rate = 1.0 + score / 500;
         this.setRate(Phaser.Math.Clamp(rate, 0.8, 1.5));
     }
 
@@ -170,7 +174,7 @@ export class AudioManager {
      */
     public setMusicVolume(value: number): void {
         this.musicVolume = Phaser.Math.Clamp(value, 0, 1);
-        localStorage.setItem('musicVolume', this.musicVolume.toString());
+        localStorage.setItem("musicVolume", this.musicVolume.toString());
 
         if (this.currentMusic) {
             const current = this.music.get(this.currentMusic);
@@ -186,14 +190,14 @@ export class AudioManager {
      */
     public setSFXVolume(value: number): void {
         this.sfxVolume = Phaser.Math.Clamp(value, 0, 1);
-        localStorage.setItem('sfxVolume', this.sfxVolume.toString());
+        localStorage.setItem("sfxVolume", this.sfxVolume.toString());
     }
 
     /**
      * Cleans up resources.
      */
     public destroy(): void {
-        this.music.forEach(s => s.destroy());
+        this.music.forEach((s) => s.destroy());
         this.music.clear();
     }
 }

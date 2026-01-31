@@ -15,13 +15,13 @@ export class MobileDetector {
      * Checks if the device supports touch events.
      */
     static isTouchDevice(): boolean {
-        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        return "ontouchstart" in window || navigator.maxTouchPoints > 0;
     }
 
     /**
      * Returns true if either mobile UA or touch support is detected.
      */
     static shouldEnableMobileControls(): boolean {
-        return this.isMobile() || this.isTouchDevice();
+        return MobileDetector.isMobile() || MobileDetector.isTouchDevice();
     }
 }

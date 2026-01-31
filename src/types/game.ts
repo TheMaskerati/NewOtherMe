@@ -1,4 +1,4 @@
-export type Direction = 'up' | 'down' | 'left' | 'right';
+export type Direction = "up" | "down" | "left" | "right";
 
 export interface Vector2 {
     x: number;
@@ -6,20 +6,16 @@ export interface Vector2 {
 }
 
 export type SceneKey =
-    | 'BootScene'
-    | 'MenuScene'
-    | 'GameScene'
-    | 'PauseScene'
-    | 'SettingsScene'
-    | 'AchievementsScene'
-    | 'CreditsScene'
-    | 'EndingScene';
+    | "BootScene"
+    | "MenuScene"
+    | "GameScene"
+    | "PauseScene"
+    | "SettingsScene"
+    | "AchievementsScene"
+    | "CreditsScene"
+    | "EndingScene";
 
-export type MapKey =
-    | 'apartment'
-    | 'theater'
-    | 'fatherHouse'
-    | 'naplesAlley';
+export type MapKey = "apartment" | "theater" | "fatherHouse" | "naplesAlley";
 
 export interface SaveData {
     highScore: number;

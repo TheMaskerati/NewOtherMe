@@ -1,5 +1,5 @@
-import { MapKey } from '@/types/game';
-import { Ending } from './KarmaSystem';
+import type { MapKey } from "@/types/game";
+import type { Ending } from "./KarmaSystem";
 
 interface SaveData {
     currentMap: MapKey;
@@ -17,7 +17,7 @@ interface SaveData {
     };
     achievements: string[];
     settings: {
-        language: 'it' | 'en';
+        language: "it" | "en";
         musicVolume: number;
         sfxVolume: number;
         textSpeed: number;
@@ -26,15 +26,15 @@ interface SaveData {
     timestamp: number;
 }
 
-const STORAGE_KEY = 'teatro_ombre_save';
+const STORAGE_KEY = "teatro_ombre_save";
 
 const DEFAULT_SAVE: SaveData = {
-    currentMap: 'apartment',
+    currentMap: "apartment",
     playerPosition: { x: 200, y: 300 },
     completedActs: [],
     defeatedBosses: [],
     seenEndings: [],
-    visitedMaps: ['apartment'],
+    visitedMaps: ["apartment"],
     stats: {
         resistCount: 0,
         fightCount: 0,
@@ -44,10 +44,10 @@ const DEFAULT_SAVE: SaveData = {
     },
     achievements: [],
     settings: {
-        language: 'it',
+        language: "it",
         musicVolume: 0.5,
         sfxVolume: 0.7,
-        textSpeed: 1, /* 0.5=slow, 1=normal, 2=fast */
+        textSpeed: 1 /* 0.5=slow, 1=normal, 2=fast */,
         fullscreen: false,
     },
     timestamp: 0,
@@ -69,15 +69,15 @@ class SaveSystemClass {
                 const parsed = JSON.parse(saved);
 
                 /* Validate essential fields */
-                if (!parsed.currentMap || typeof parsed.timestamp !== 'number') {
-                    console.warn('Corrupted save detected, using backup or default');
+                if (!parsed.currentMap || typeof parsed.timestamp !== "number") {
+                    console.warn("Corrupted save detected, using backup or default");
                     return this.loadBackup();
                 }
 
                 return { ...DEFAULT_SAVE, ...parsed };
             }
         } catch (e) {
-            console.error('Failed to load save:', e);
+            console.error("Failed to load save:", e);
             return this.loadBackup();
         }
         return { ...DEFAULT_SAVE };
@@ -85,10 +85,10 @@ class SaveSystemClass {
 
     private loadBackup(): SaveData {
         try {
-            const backup = localStorage.getItem(STORAGE_KEY + '_backup');
+            const backup = localStorage.getItem(STORAGE_KEY + "_backup");
             if (backup) {
                 const parsed = JSON.parse(backup);
-                console.log('Restored from backup save');
+                console.log("Restored from backup save");
                 return { ...DEFAULT_SAVE, ...parsed };
             }
         } catch (_e) {
@@ -106,12 +106,12 @@ class SaveSystemClass {
             /* Create backup of existing save first */
             const existing = localStorage.getItem(STORAGE_KEY);
             if (existing) {
-                localStorage.setItem(STORAGE_KEY + '_backup', existing);
+                localStorage.setItem(STORAGE_KEY + "_backup", existing);
             }
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
         } catch (e) {
-            console.error('Failed to save:', e);
+            console.error("Failed to save:", e);
         }
     }
 
@@ -200,74 +200,74 @@ class SaveSystemClass {
         const stats = this.data.stats;
 
         /* Dignita: First resist */
-        if (stats.resistCount >= 1 && !this.data.achievements.includes('first_resist')) {
-            this.data.achievements.push('first_resist');
-            newAchievements.push('Dignita');
+        if (stats.resistCount >= 1 && !this.data.achievements.includes("first_resist")) {
+            this.data.achievements.push("first_resist");
+            newAchievements.push("Dignita");
         }
 
         /* Eroe Vero: 3 resists */
-        if (stats.resistCount >= 3 && !this.data.achievements.includes('true_hero')) {
-            this.data.achievements.push('true_hero');
-            newAchievements.push('Eroe Vero');
+        if (stats.resistCount >= 3 && !this.data.achievements.includes("true_hero")) {
+            this.data.achievements.push("true_hero");
+            newAchievements.push("Eroe Vero");
         }
 
         /* Dualita: 2 endings */
-        if (this.data.seenEndings.length >= 2 && !this.data.achievements.includes('duality')) {
-            this.data.achievements.push('duality');
-            newAchievements.push('Dualita');
+        if (this.data.seenEndings.length >= 2 && !this.data.achievements.includes("duality")) {
+            this.data.achievements.push("duality");
+            newAchievements.push("Dualita");
         }
 
         /* Tutti i finali: 3 endings */
-        if (this.data.seenEndings.length >= 3 && !this.data.achievements.includes('all_endings')) {
-            this.data.achievements.push('all_endings');
-            newAchievements.push('Tutti i finali');
+        if (this.data.seenEndings.length >= 3 && !this.data.achievements.includes("all_endings")) {
+            this.data.achievements.push("all_endings");
+            newAchievements.push("Tutti i finali");
         }
 
         /* Devoto: 1 hour playtime */
-        if (stats.playTime >= 3600000 && !this.data.achievements.includes('devoted')) {
-            this.data.achievements.push('devoted');
-            newAchievements.push('Devoto');
+        if (stats.playTime >= 3600000 && !this.data.achievements.includes("devoted")) {
+            this.data.achievements.push("devoted");
+            newAchievements.push("Devoto");
         }
 
         /* Esploratore: Visit all 4 maps */
-        const allMaps: MapKey[] = ['apartment', 'naplesAlley', 'theater', 'fatherHouse'];
-        const visitedAll = allMaps.every(m => this.data.visitedMaps.includes(m));
-        if (visitedAll && !this.data.achievements.includes('explorer')) {
-            this.data.achievements.push('explorer');
-            newAchievements.push('Esploratore');
+        const allMaps: MapKey[] = ["apartment", "naplesAlley", "theater", "fatherHouse"];
+        const visitedAll = allMaps.every((m) => this.data.visitedMaps.includes(m));
+        if (visitedAll && !this.data.achievements.includes("explorer")) {
+            this.data.achievements.push("explorer");
+            newAchievements.push("Esploratore");
         }
 
         /* Checks triggered only on game completion (Endings) */
         if (this.data.seenEndings.length > 0) {
             /* Pacifista: No fights */
-            if (stats.fightCount === 0 && !this.data.achievements.includes('pacifist')) {
-                this.data.achievements.push('pacifist');
-                newAchievements.push('Pacifista');
+            if (stats.fightCount === 0 && !this.data.achievements.includes("pacifist")) {
+                this.data.achievements.push("pacifist");
+                newAchievements.push("Pacifista");
             }
 
             /* Dominatore: No resists (Full mask) */
-            if (stats.resistCount === 0 && !this.data.achievements.includes('dominator')) {
-                this.data.achievements.push('dominator');
-                newAchievements.push('Dominatore');
+            if (stats.resistCount === 0 && !this.data.achievements.includes("dominator")) {
+                this.data.achievements.push("dominator");
+                newAchievements.push("Dominatore");
             }
 
             /* Velocista: < 30 mins (1800000 ms) */
-            if (stats.playTime < 1800000 && !this.data.achievements.includes('speedrun')) {
-                this.data.achievements.push('speedrun');
-                newAchievements.push('Velocista');
+            if (stats.playTime < 1800000 && !this.data.achievements.includes("speedrun")) {
+                this.data.achievements.push("speedrun");
+                newAchievements.push("Velocista");
             }
 
             /* Perfezionista: No minigame failures */
-            if (stats.minigameFailures === 0 && !this.data.achievements.includes('perfectionist')) {
-                this.data.achievements.push('perfectionist');
-                newAchievements.push('Perfezionista');
+            if (stats.minigameFailures === 0 && !this.data.achievements.includes("perfectionist")) {
+                this.data.achievements.push("perfectionist");
+                newAchievements.push("Perfezionista");
             }
         }
 
         return newAchievements;
     }
 
-    getStats(): SaveData['stats'] {
+    getStats(): SaveData["stats"] {
         return { ...this.data.stats };
     }
 
@@ -275,11 +275,11 @@ class SaveSystemClass {
         return [...this.data.achievements];
     }
 
-    getSettings(): SaveData['settings'] {
+    getSettings(): SaveData["settings"] {
         return { ...this.data.settings };
     }
 
-    setLanguage(lang: 'it' | 'en'): void {
+    setLanguage(lang: "it" | "en"): void {
         this.data.settings.language = lang;
         this.save();
     }
@@ -311,23 +311,26 @@ class SaveSystemClass {
         const timeStr = `${hours}h ${mins}m`;
 
         const maps: Record<string, string> = {
-            apartment: 'Casa di Gennaro',
-            theater: 'Teatro Bellini',
-            fatherHouse: 'Casa del Padre',
-            naplesAlley: 'Vicolo di Napoli',
+            apartment: "Casa di Gennaro",
+            theater: "Teatro Bellini",
+            fatherHouse: "Casa del Padre",
+            naplesAlley: "Vicolo di Napoli",
         };
 
         const date = new Date(this.data.timestamp);
-        const lastSaved = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const lastSaved =
+            date.toLocaleDateString() +
+            " " +
+            date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
         const karmaScore = this.data.stats.resistCount - this.data.stats.fightCount;
-        const karmaLabel = karmaScore > 0 ? 'Puro' : (karmaScore < 0 ? 'Corrotto' : 'Neutrale');
+        const karmaLabel = karmaScore > 0 ? "Puro" : karmaScore < 0 ? "Corrotto" : "Neutrale";
 
         return {
             time: timeStr,
-            map: maps[this.data.currentMap] || 'Ignoto',
+            map: maps[this.data.currentMap] || "Ignoto",
             karma: karmaLabel,
-            lastSaved: lastSaved
+            lastSaved: lastSaved,
         };
     }
 }

@@ -1,5 +1,5 @@
-import Phaser from 'phaser';
-import { GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
+import type Phaser from "phaser";
+import { GAME_HEIGHT, GAME_WIDTH } from "@/config/gameConfig";
 
 /**
  * Handles theatrical transitions like curtains.
@@ -15,12 +15,24 @@ export class TransitionManager {
     }
 
     private createCurtains(): void {
-        this.leftCurtain = this.scene.add.rectangle(-GAME_WIDTH / 2, 0, GAME_WIDTH / 2, GAME_HEIGHT, 0x800000);
+        this.leftCurtain = this.scene.add.rectangle(
+            -GAME_WIDTH / 2,
+            0,
+            GAME_WIDTH / 2,
+            GAME_HEIGHT,
+            0x800000,
+        );
         this.leftCurtain.setOrigin(0);
         this.leftCurtain.setDepth(2000);
         this.leftCurtain.setScrollFactor(0);
 
-        this.rightCurtain = this.scene.add.rectangle(GAME_WIDTH, 0, GAME_WIDTH / 2, GAME_HEIGHT, 0x800000);
+        this.rightCurtain = this.scene.add.rectangle(
+            GAME_WIDTH,
+            0,
+            GAME_WIDTH / 2,
+            GAME_HEIGHT,
+            0x800000,
+        );
         this.rightCurtain.setOrigin(0);
         this.rightCurtain.setDepth(2000);
         this.rightCurtain.setScrollFactor(0);
@@ -35,15 +47,15 @@ export class TransitionManager {
                 targets: this.leftCurtain,
                 x: 0,
                 duration,
-                ease: 'Cubic.easeOut'
+                ease: "Cubic.easeOut",
             });
 
             this.scene.tweens.add({
                 targets: this.rightCurtain,
                 x: GAME_WIDTH / 2,
                 duration,
-                ease: 'Cubic.easeOut',
-                onComplete: () => resolve()
+                ease: "Cubic.easeOut",
+                onComplete: () => resolve(),
             });
         });
     }
@@ -57,15 +69,15 @@ export class TransitionManager {
                 targets: this.leftCurtain,
                 x: -GAME_WIDTH / 2,
                 duration,
-                ease: 'Cubic.easeIn'
+                ease: "Cubic.easeIn",
             });
 
             this.scene.tweens.add({
                 targets: this.rightCurtain,
                 x: GAME_WIDTH,
                 duration,
-                ease: 'Cubic.easeIn',
-                onComplete: () => resolve()
+                ease: "Cubic.easeIn",
+                onComplete: () => resolve(),
             });
         });
     }

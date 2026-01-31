@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 
 /**
  * Reusable Toggle switch component.
@@ -10,20 +10,31 @@ export class Toggle extends Phaser.GameObjects.Container {
     private value: boolean;
     private onChange: (value: boolean) => void;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, text: string, initialValue: boolean, onChange: (val: boolean) => void) {
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        text: string,
+        initialValue: boolean,
+        onChange: (val: boolean) => void,
+    ) {
         super(scene, x, y);
         this.value = initialValue;
         this.onChange = onChange;
 
         /* Label */
-        this.label = scene.add.text(0, -30, text, {
-            fontFamily: 'monospace',
-            fontSize: '18px',
-            color: '#aaaaaa'
-        }).setOrigin(0.5);
+        this.label = scene.add
+            .text(0, -30, text, {
+                fontFamily: "monospace",
+                fontSize: "18px",
+                color: "#aaaaaa",
+            })
+            .setOrigin(0.5);
 
         /* Background (Track) */
-        this.background = scene.add.rectangle(0, 0, 60, 30, this.value ? 0xd4af37 : 0x333333, 1).setOrigin(0.5);
+        this.background = scene.add
+            .rectangle(0, 0, 60, 30, this.value ? 0xd4af37 : 0x333333, 1)
+            .setOrigin(0.5);
         this.background.setStrokeStyle(2, 0xffffff);
         this.background.setInteractive({ useHandCursor: true });
 
@@ -34,7 +45,7 @@ export class Toggle extends Phaser.GameObjects.Container {
         scene.add.existing(this);
 
         /* Input Interaction */
-        this.background.on('pointerdown', () => this.toggle());
+        this.background.on("pointerdown", () => this.toggle());
     }
 
     private toggle(): void {
@@ -48,7 +59,7 @@ export class Toggle extends Phaser.GameObjects.Container {
             targets: this.knob,
             x: this.value ? 15 : -15,
             duration: 200,
-            ease: 'Back.out'
+            ease: "Back.out",
         });
 
         this.background.fillColor = this.value ? 0xd4af37 : 0x333333;

@@ -18,7 +18,10 @@
     "electron:build": "npm run build && electron-builder",
     "electron:build:win": "npm run build && electron-builder --win",
     "electron:build:linux": "npm run build && electron-builder --linux",
-    "electron:build:mac": "npm run build && electron-builder --mac"
+    "electron:build:mac": "npm run build && electron-builder --mac",
+    "lint": "biome check ./src",
+    "format": "biome format --write ./src",
+    "check": "biome check --write ./src"
   },
   "build": {
     "appId": "com.maskerati.teatrodelleombre",
@@ -59,6 +62,7 @@
     }
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.3.13",
     "@types/node": "^25.1.0",
     "concurrently": "^9.2.1",
     "electron": "^40.1.0",

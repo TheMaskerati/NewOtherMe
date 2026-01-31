@@ -1,6 +1,6 @@
-import { BaseScene } from './BaseScene';
-import { SCENES, COLORS, GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
-import { AchievementManager, Achievement } from '@/systems/AchievementManager';
+import { COLORS, GAME_HEIGHT, GAME_WIDTH, SCENES } from "@/config/gameConfig";
+import { type Achievement, AchievementManager } from "@/systems/AchievementManager";
+import { BaseScene } from "./BaseScene";
 
 export class AchievementsScene extends BaseScene {
     constructor() {
@@ -30,23 +30,27 @@ export class AchievementsScene extends BaseScene {
             const star = this.add.star(
                 Phaser.Math.Between(50, GAME_WIDTH - 50),
                 Phaser.Math.Between(50, GAME_HEIGHT - 50),
-                5, 3, 6, 0xd4af37, 0.2
+                5,
+                3,
+                6,
+                0xd4af37,
+                0.2,
             );
             this.tweens.add({
                 targets: star,
                 alpha: { from: 0.1, to: 0.4 },
                 duration: Phaser.Math.Between(1000, 3000),
                 yoyo: true,
-                repeat: -1
+                repeat: -1,
             });
         }
     }
 
     private createHeader(): void {
-        const title = this.add.text(GAME_WIDTH / 2, 50, 'TROFEI', {
-            fontFamily: 'Georgia, serif',
-            fontSize: '36px',
-            color: '#d4af37'
+        const title = this.add.text(GAME_WIDTH / 2, 50, "TROFEI", {
+            fontFamily: "Georgia, serif",
+            fontSize: "36px",
+            color: "#d4af37",
         });
         title.setOrigin(0.5);
 
@@ -60,13 +64,20 @@ export class AchievementsScene extends BaseScene {
         const barY = 85;
 
         this.add.rectangle(GAME_WIDTH / 2, barY, barW, barH, 0x333333).setOrigin(0.5);
-        this.add.rectangle(barX, barY - barH / 2, barW * (percentage / 100), barH, 0xd4af37).setOrigin(0, 0);
+        this.add
+            .rectangle(barX, barY - barH / 2, barW * (percentage / 100), barH, 0xd4af37)
+            .setOrigin(0, 0);
 
-        const subtitle = this.add.text(GAME_WIDTH / 2, 110, `${progress.unlocked} / ${progress.total} sbloccati (${percentage}%)`, {
-            fontFamily: 'monospace',
-            fontSize: '14px',
-            color: '#888888'
-        });
+        const subtitle = this.add.text(
+            GAME_WIDTH / 2,
+            110,
+            `${progress.unlocked} / ${progress.total} sbloccati (${percentage}%)`,
+            {
+                fontFamily: "monospace",
+                fontSize: "14px",
+                color: "#888888",
+            },
+        );
         subtitle.setOrigin(0.5);
     }
 
@@ -116,50 +127,64 @@ export class AchievementsScene extends BaseScene {
 
         /* Text */
         const textX = iconX + 50;
-        const titleColor = isUnlocked ? '#ffffff' : '#666666';
-        const descColor = isUnlocked ? '#aaaaaa' : '#444444';
+        const titleColor = isUnlocked ? "#ffffff" : "#666666";
+        const descColor = isUnlocked ? "#aaaaaa" : "#444444";
 
-        const title = this.add.text(textX, -15, ach.hidden && !isUnlocked ? '???' : ach.name, {
-            fontFamily: 'serif',
-            fontSize: '20px',
-            color: titleColor
-        }).setOrigin(0, 0.5);
+        const title = this.add
+            .text(textX, -15, ach.hidden && !isUnlocked ? "???" : ach.name, {
+                fontFamily: "serif",
+                fontSize: "20px",
+                color: titleColor,
+            })
+            .setOrigin(0, 0.5);
 
-        const desc = this.add.text(textX, 15, ach.hidden && !isUnlocked ? 'Segreto' : ach.description, {
-            fontFamily: 'monospace',
-            fontSize: '12px',
-            color: descColor,
-            wordWrap: { width: width - 120 }
-        }).setOrigin(0, 0.5);
+        const desc = this.add
+            .text(textX, 15, ach.hidden && !isUnlocked ? "Segreto" : ach.description, {
+                fontFamily: "monospace",
+                fontSize: "12px",
+                color: descColor,
+                wordWrap: { width: width - 120 },
+            })
+            .setOrigin(0, 0.5);
 
         card.add([title, desc]);
 
         /* Locked / Checkmark overlay */
         if (isUnlocked) {
-            const check = this.add.text(width / 2 - 30, 0, 'SBLOCCATO', {
-                fontSize: '18px',
-                color: '#d4af37',
-                fontFamily: 'monospace'
-            }).setOrigin(1, 0.5);
+            const check = this.add
+                .text(width / 2 - 30, 0, "SBLOCCATO", {
+                    fontSize: "18px",
+                    color: "#d4af37",
+                    fontFamily: "monospace",
+                })
+                .setOrigin(1, 0.5);
             card.add(check);
         } else {
-            const lock = this.add.text(width / 2 - 30, 0, 'BLOCCATO', {
-                fontSize: '18px',
-                color: '#666666',
-                fontFamily: 'monospace'
-            }).setOrigin(1, 0.5);
+            const lock = this.add
+                .text(width / 2 - 30, 0, "BLOCCATO", {
+                    fontSize: "18px",
+                    color: "#666666",
+                    fontFamily: "monospace",
+                })
+                .setOrigin(1, 0.5);
             card.add(lock);
         }
     }
 
-    private drawIcon(container: Phaser.GameObjects.Container, x: number, y: number, type: string, unlocked: boolean): void {
+    private drawIcon(
+        container: Phaser.GameObjects.Container,
+        x: number,
+        y: number,
+        type: string,
+        unlocked: boolean,
+    ): void {
         const g = this.add.graphics();
         const color = unlocked ? 0xd4af37 : 0x555555;
         g.fillStyle(color);
         g.lineStyle(2, color);
 
         switch (type) {
-            case 'shield':
+            case "shield":
                 g.beginPath();
                 g.moveTo(x - 10, y - 10);
                 g.lineTo(x + 10, y - 10);
@@ -169,16 +194,16 @@ export class AchievementsScene extends BaseScene {
                 g.closePath();
                 g.fillPath();
                 break;
-            case 'star':
+            case "star":
                 this.drawStar(g, x, y, 5, 12, 6, color);
                 break;
-            case 'mask':
+            case "mask":
                 g.fillEllipse(x, y, 20, 25);
                 g.fillStyle(0x000000);
                 g.fillCircle(x - 5, y - 2, 2);
                 g.fillCircle(x + 5, y - 2, 2);
                 break;
-            case 'heart':
+            case "heart":
                 g.fillCircle(x - 5, y - 5, 6);
                 g.fillCircle(x + 5, y - 5, 6);
                 g.beginPath();
@@ -187,7 +212,7 @@ export class AchievementsScene extends BaseScene {
                 g.lineTo(x + 11, y - 2);
                 g.fillPath();
                 break;
-            case 'crown':
+            case "crown":
                 g.beginPath();
                 g.moveTo(x - 12, y + 8);
                 g.lineTo(x + 12, y + 8);
@@ -200,10 +225,12 @@ export class AchievementsScene extends BaseScene {
                 g.fillPath();
                 break;
             default: /* Trophy or generic */
-                g.fillRect(x - 8, y + 8, 16, 4); /* Base */
+            /* Base */
+            /* Cup */
+                g.fillRect(x - 8, y + 8, 16, 4);
                 g.moveTo(x - 10, y - 8);
                 g.lineTo(x, y + 8);
-                g.lineTo(x + 10, y - 8); /* Cup */
+                g.lineTo(x + 10, y - 8);
                 g.strokePath();
                 g.fillCircle(x, y - 10, 8);
                 break;
@@ -212,14 +239,22 @@ export class AchievementsScene extends BaseScene {
         container.add(g);
     }
 
-    private drawStar(g: Phaser.GameObjects.Graphics, x: number, y: number, points: number, outer: number, inner: number, color: number): void {
+    private drawStar(
+        g: Phaser.GameObjects.Graphics,
+        x: number,
+        y: number,
+        points: number,
+        outer: number,
+        inner: number,
+        color: number,
+    ): void {
         g.fillStyle(color);
         g.beginPath();
         const step = Math.PI / points;
         let angle = -Math.PI / 2;
 
         for (let i = 0; i < points * 2; i++) {
-            const rad = (i % 2 === 0) ? outer : inner;
+            const rad = i % 2 === 0 ? outer : inner;
             const px = x + Math.cos(angle) * rad;
             const py = y + Math.sin(angle) * rad;
             if (i === 0) g.moveTo(px, py);
@@ -231,17 +266,20 @@ export class AchievementsScene extends BaseScene {
     }
 
     private setupScrollInput(): void {
-        this.input.on('wheel', (pointer: Phaser.Input.Pointer, gameObjects: any, deltaX: number, deltaY: number) => {
-            this.updateScroll(deltaY * 0.5);
-        });
+        this.input.on(
+            "wheel",
+            (pointer: Phaser.Input.Pointer, gameObjects: any, deltaX: number, deltaY: number) => {
+                this.updateScroll(deltaY * 0.5);
+            },
+        );
 
         /* Simple drag support */
         let startY = 0;
-        this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+        this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
             startY = pointer.y;
         });
 
-        this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+        this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             if (pointer.isDown) {
                 const diff = startY - pointer.y;
                 this.updateScroll(diff);
@@ -256,14 +294,14 @@ export class AchievementsScene extends BaseScene {
     }
 
     private createBackButton(): void {
-        const btn = this.add.text(50, GAME_HEIGHT - 40, '< INDIETRO', {
-            fontFamily: 'monospace',
-            fontSize: '16px',
-            color: '#888888'
+        const btn = this.add.text(50, GAME_HEIGHT - 40, "< INDIETRO", {
+            fontFamily: "monospace",
+            fontSize: "16px",
+            color: "#888888",
         });
         btn.setInteractive({ useHandCursor: true })
-            .on('pointerover', () => btn.setColor('#ffffff'))
-            .on('pointerout', () => btn.setColor('#888888'))
-            .on('pointerdown', () => this.scene.start(SCENES.MENU));
+            .on("pointerover", () => btn.setColor("#ffffff"))
+            .on("pointerout", () => btn.setColor("#888888"))
+            .on("pointerdown", () => this.scene.start(SCENES.MENU));
     }
 }

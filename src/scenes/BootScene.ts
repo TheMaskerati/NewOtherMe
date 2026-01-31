@@ -1,6 +1,6 @@
-import { SCENES, COLORS, GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
-import { ErrorHandler } from '@/systems/ErrorHandler';
-import { SaveSystem } from '@/systems/SaveSystem';
+import { COLORS, GAME_HEIGHT, GAME_WIDTH, SCENES } from "@/config/gameConfig";
+import { ErrorHandler } from "@/systems/ErrorHandler";
+import { SaveSystem } from "@/systems/SaveSystem";
 
 /**
  * Boot Scene
@@ -17,7 +17,7 @@ export class BootScene extends Phaser.Scene {
      */
     shutdown(): void {
         this.textures.each((texture: Phaser.Textures.Texture) => {
-            if (texture.key.startsWith('furn_') || texture.key.startsWith('tile_')) {
+            if (texture.key.startsWith("furn_") || texture.key.startsWith("tile_")) {
                 texture.destroy();
             }
         }, this);
@@ -28,17 +28,17 @@ export class BootScene extends Phaser.Scene {
         this.createLoadingBar();
 
         /* Audio loading */
-        this.load.path = 'assets/audio/';
+        this.load.path = "assets/audio/";
 
-        const musicTracks = ['apartment', 'theater', 'naplesAlley', 'fatherHouse'];
-        musicTracks.forEach(track => {
+        const musicTracks = ["apartment", "theater", "naplesAlley", "fatherHouse"];
+        musicTracks.forEach((track) => {
             this.load.audio(`bgm_${track}`, [`bgm_${track}.mp3`, `bgm_${track}.ogg`]);
         });
 
-        this.load.image('background_shadow', '../background_shadow.png');
-        this.load.path = '';
+        this.load.image("background_shadow", "../background_shadow.png");
+        this.load.path = "";
 
-        this.load.on('complete', () => {
+        this.load.on("complete", () => {
             /* Defer generation slightly to ensure scene is fully ready */
             this.time.delayedCall(100, () => {
                 this.generatePlaceholderAssets();
@@ -56,8 +56,8 @@ export class BootScene extends Phaser.Scene {
         });
 
         /* Safe Audio Fallback: logs warnings instead of crashing on 404 */
-        this.load.on('loaderror', (fileObj: Phaser.Loader.File) => {
-            if (fileObj.type === 'audio') {
+        this.load.on("loaderror", (fileObj: Phaser.Loader.File) => {
+            if (fileObj.type === "audio") {
                 console.warn(`Audio missing: ${fileObj.key}. Game will continue silent.`);
             }
         });
@@ -69,18 +69,18 @@ export class BootScene extends Phaser.Scene {
         const loadingText = this.add.text(
             GAME_WIDTH / 2,
             GAME_HEIGHT / 2 + 50,
-            'Caricamento completato...',
+            "Caricamento completato...",
             {
-                fontFamily: 'monospace',
-                fontSize: '16px',
-                color: '#ffffff',
-            }
+                fontFamily: "monospace",
+                fontSize: "16px",
+                color: "#ffffff",
+            },
         );
         loadingText.setOrigin(0.5);
 
         this.time.delayedCall(500, () => {
             this.cameras.main.fadeOut(300, 0, 0, 0);
-            this.cameras.main.once('camerafadeoutcomplete', () => {
+            this.cameras.main.once("camerafadeoutcomplete", () => {
                 this.scene.start(SCENES.MENU);
             });
         });
@@ -99,10 +99,10 @@ export class BootScene extends Phaser.Scene {
 
         this.add.rectangle(width / 2, height / 2, width, height, COLORS.black);
 
-        const title = this.add.text(width / 2, y - 60, 'IL TEATRO DELLE OMBRE', {
-            fontFamily: 'monospace',
-            fontSize: '24px',
-            color: '#e0d5c0',
+        const title = this.add.text(width / 2, y - 60, "IL TEATRO DELLE OMBRE", {
+            fontFamily: "monospace",
+            fontSize: "24px",
+            color: "#e0d5c0",
         });
         title.setOrigin(0.5);
 
@@ -112,7 +112,7 @@ export class BootScene extends Phaser.Scene {
         const bar = this.add.rectangle(x, y, 0, barHeight, COLORS.purple);
         bar.setOrigin(0, 0.5);
 
-        this.load.on('progress', (value: number) => {
+        this.load.on("progress", (value: number) => {
             bar.width = barWidth * value;
         });
     }
@@ -123,71 +123,71 @@ export class BootScene extends Phaser.Scene {
      */
     private generatePlaceholderAssets(): void {
         /* Characters */
-        this.generateCharacterAssets('player', {
+        this.generateCharacterAssets("player", {
             body: 0xe0d5c0,
             hair: 0x4a3728,
-            hairStyle: 'short'
+            hairStyle: "short",
         });
 
-        this.generateCharacterAssets('dario', {
+        this.generateCharacterAssets("dario", {
             body: 0xffdbac,
             hair: 0x2a1a0f,
-            hairStyle: 'messy',
-            shirt: 0xcc3333
+            hairStyle: "messy",
+            shirt: 0xcc3333,
         });
 
-        this.generateCharacterAssets('elisa', {
+        this.generateCharacterAssets("elisa", {
             body: 0xffd5c0,
             hair: 0x8b4513,
-            hairStyle: 'long',
-            lips: 0xff6b9d
+            hairStyle: "long",
+            lips: 0xff6b9d,
         });
 
-        this.generateCharacterAssets('shadow', {
+        this.generateCharacterAssets("shadow", {
             body: 0x3a3a3a,
             hair: 0x1a1a1a,
-            hairStyle: 'hood',
-            shirt: 0x1a1a1a
+            hairStyle: "hood",
+            shirt: 0x1a1a1a,
         });
 
-        this.generateCharacterAssets('bully', {
+        this.generateCharacterAssets("bully", {
             body: 0xf0c0a0,
             hair: 0x6b4423,
-            hairStyle: 'bald',
+            hairStyle: "bald",
             beard: 0x6b4423,
-            shirt: 0x444444
+            shirt: 0x444444,
         });
 
         /* Furniture & Environment */
-        this.generateSprite('mask', 16, 16, 0xf5f5dc);
+        this.generateSprite("mask", 16, 16, 0xf5f5dc);
         this.generateFurnitureAssets();
         this.generateTileset();
     }
 
     private generateFurnitureAssets(): void {
         /* Apartment */
-        this.generateFurnitureSprite('furn_bed', 80, 64, 0x654321, 'bed');
-        this.generateFurnitureSprite('furn_tv', 64, 48, 0x333333, 'tv');
-        this.generateFurnitureSprite('furn_table', 64, 48, 0x5a4a3a, 'table');
-        this.generateFurnitureSprite('furn_fridge', 48, 48, 0xe0e0e0, 'fridge');
+        this.generateFurnitureSprite("furn_bed", 80, 64, 0x654321, "bed");
+        this.generateFurnitureSprite("furn_tv", 64, 48, 0x333333, "tv");
+        this.generateFurnitureSprite("furn_table", 64, 48, 0x5a4a3a, "table");
+        this.generateFurnitureSprite("furn_fridge", 48, 48, 0xe0e0e0, "fridge");
 
         /* Theater */
-        this.generateFurnitureSprite('furn_stage', 160, 96, 0x4a2652, 'stage');
-        this.generateFurnitureSprite('furn_mask', 64, 32, 0xd4af37, 'mask_obj');
+        this.generateFurnitureSprite("furn_stage", 160, 96, 0x4a2652, "stage");
+        this.generateFurnitureSprite("furn_mask", 64, 32, 0xd4af37, "mask_obj");
 
         /* Alley */
-        this.generateFurnitureSprite('furn_building', 128, 96, 0x4a4a4a, 'building');
-        this.generateFurnitureSprite('furn_wall', 96, 128, 0x3a3a3a, 'wall');
-        this.generateFurnitureSprite('furn_bench', 96, 48, 0x8b5a2b, 'bench');
-        this.generateFurnitureSprite('furn_shop', 80, 64, 0x5a3a2a, 'shop');
+        this.generateFurnitureSprite("furn_building", 128, 96, 0x4a4a4a, "building");
+        this.generateFurnitureSprite("furn_wall", 96, 128, 0x3a3a3a, "wall");
+        this.generateFurnitureSprite("furn_bench", 96, 48, 0x8b5a2b, "bench");
+        this.generateFurnitureSprite("furn_shop", 80, 64, 0x5a3a2a, "shop");
 
         /* House */
-        this.generateFurnitureSprite('furn_sofa', 96, 64, 0x4a3a3a, 'sofa');
-        this.generateFurnitureSprite('furn_bookshelf', 64, 48, 0x2a2a3a, 'bookshelf');
-        this.generateFurnitureSprite('furn_photo', 48, 48, 0xffffdd, 'photo');
+        this.generateFurnitureSprite("furn_sofa", 96, 64, 0x4a3a3a, "sofa");
+        this.generateFurnitureSprite("furn_bookshelf", 64, 48, 0x2a2a3a, "bookshelf");
+        this.generateFurnitureSprite("furn_photo", 48, 48, 0xffffdd, "photo");
 
         /* Generic */
-        this.generateFurnitureSprite('furn_generic', 32, 32, 0x555555, 'box');
+        this.generateFurnitureSprite("furn_generic", 32, 32, 0x555555, "box");
     }
 
     /* -------------------------------------------------------------------------- */
@@ -211,7 +211,7 @@ export class BootScene extends Phaser.Scene {
 
         /* Remove existing animations for this key to prevent stale frame references */
         for (let row = 0; row < rows; row++) {
-            const dir = ['down', 'up', 'left', 'right'][row];
+            const dir = ["down", "up", "left", "right"][row];
             if (this.anims.exists(`${key}_idle_${dir}`)) this.anims.remove(`${key}_idle_${dir}`);
             if (this.anims.exists(`${key}_walk_${dir}`)) this.anims.remove(`${key}_walk_${dir}`);
         }
@@ -219,7 +219,7 @@ export class BootScene extends Phaser.Scene {
         /* Create Canvas Texture safely */
         let texture = this.textures.get(key);
 
-        if (texture && texture.key !== '__MISSING') {
+        if (texture && texture.key !== "__MISSING") {
             this.textures.remove(key);
         }
 
@@ -246,7 +246,7 @@ export class BootScene extends Phaser.Scene {
             return;
         }
 
-        const ctx = source.getContext('2d');
+        const ctx = source.getContext("2d");
         if (!ctx) {
             console.error(`Failed to get context for ${key}`);
             return;
@@ -260,10 +260,10 @@ export class BootScene extends Phaser.Scene {
                 const isWalk = col > 0;
                 const walkPhase = col === 1 ? 1 : -1;
                 /* Calc direction */
-                let dir: 'down' | 'up' | 'left' | 'right' = 'down';
-                if (row === 1) dir = 'up';
-                if (row === 2) dir = 'left';
-                if (row === 3) dir = 'right';
+                let dir: "down" | "up" | "left" | "right" = "down";
+                if (row === 1) dir = "up";
+                if (row === 2) dir = "left";
+                if (row === 3) dir = "right";
 
                 this.drawCharacterFrameContext(ctx, x, y, features, dir, isWalk ? walkPhase : 0);
             }
@@ -276,10 +276,10 @@ export class BootScene extends Phaser.Scene {
 
         /* 4. Define Frames & Animations */
         for (let row = 0; row < rows; row++) {
-            let dir = 'down';
-            if (row === 1) dir = 'up';
-            if (row === 2) dir = 'left';
-            if (row === 3) dir = 'right';
+            let dir = "down";
+            if (row === 1) dir = "up";
+            if (row === 2) dir = "left";
+            if (row === 3) dir = "right";
 
             const addFrame = (name: string, x: number, y: number) => {
                 if (!texture.has(name)) texture.add(name, 0, x, y, frameW, frameH);
@@ -296,7 +296,7 @@ export class BootScene extends Phaser.Scene {
                 this.anims.create({
                     key: idleKey,
                     frames: [{ key, frame: `${dir}_idle` }],
-                    frameRate: 1
+                    frameRate: 1,
                 });
             }
             if (!this.anims.exists(walkKey)) {
@@ -306,10 +306,10 @@ export class BootScene extends Phaser.Scene {
                         { key, frame: `${dir}_walk1` },
                         { key, frame: `${dir}_idle` },
                         { key, frame: `${dir}_walk2` },
-                        { key, frame: `${dir}_idle` }
+                        { key, frame: `${dir}_idle` },
                     ],
                     frameRate: 8,
-                    repeat: -1
+                    repeat: -1,
                 });
             }
         }
@@ -320,11 +320,13 @@ export class BootScene extends Phaser.Scene {
         x: number,
         y: number,
         f: any,
-        dir: 'down' | 'up' | 'left' | 'right',
-        walk: number
+        dir: "down" | "up" | "left" | "right",
+        walk: number,
     ): void {
         const shirtColor = this.hexToCSS(f.shirt || this.darkenColorInt(f.body, 0.8));
-        const pantsColor = this.hexToCSS(f.shirt ? this.darkenColorInt(f.shirt, 0.6) : this.darkenColorInt(f.body, 0.7));
+        const pantsColor = this.hexToCSS(
+            f.shirt ? this.darkenColorInt(f.shirt, 0.6) : this.darkenColorInt(f.body, 0.7),
+        );
         const bodyColor = this.hexToCSS(f.body);
         const hairColor = this.hexToCSS(f.hair);
 
@@ -345,7 +347,7 @@ export class BootScene extends Phaser.Scene {
         ctx.fillRect(x + 4, y + 2, 8, 8);
 
         /* Features based on direction */
-        if (dir === 'down' || dir === 'left' || dir === 'right') {
+        if (dir === "down" || dir === "left" || dir === "right") {
             /* Face */
             if (f.beard) {
                 ctx.fillStyle = this.hexToCSS(this.darkenColorInt(f.hair, 0.9));
@@ -356,26 +358,26 @@ export class BootScene extends Phaser.Scene {
         /* Arms */
         ctx.fillStyle = shirtColor;
         const armY = y + 11;
-        if (dir === 'down') {
-            ctx.fillRect(x + 2, armY + (walk * 2), 2, 6);
-            ctx.fillRect(x + 12, armY - (walk * 2), 2, 6);
-        } else if (dir === 'up') {
-            ctx.fillRect(x + 2, armY - (walk * 2), 2, 6);
-            ctx.fillRect(x + 12, armY + (walk * 2), 2, 6);
-        } else if (dir === 'left') {
+        if (dir === "down") {
+            ctx.fillRect(x + 2, armY + walk * 2, 2, 6);
+            ctx.fillRect(x + 12, armY - walk * 2, 2, 6);
+        } else if (dir === "up") {
+            ctx.fillRect(x + 2, armY - walk * 2, 2, 6);
+            ctx.fillRect(x + 12, armY + walk * 2, 2, 6);
+        } else if (dir === "left") {
             ctx.fillRect(x + 6, armY, 4, 6);
-        } else if (dir === 'right') {
+        } else if (dir === "right") {
             ctx.fillRect(x + 6, armY, 4, 6);
         }
 
         /* Hair */
         ctx.fillStyle = hairColor;
-        if (f.hairStyle !== 'bald') {
+        if (f.hairStyle !== "bald") {
             ctx.fillRect(x + 3, y, 10, 3);
-            if (dir !== 'up') ctx.fillRect(x + 2, y + 1, 2, 4);
-            if (dir !== 'up') ctx.fillRect(x + 12, y + 1, 2, 4);
+            if (dir !== "up") ctx.fillRect(x + 2, y + 1, 2, 4);
+            if (dir !== "up") ctx.fillRect(x + 12, y + 1, 2, 4);
 
-            if (f.hairStyle === 'long') {
+            if (f.hairStyle === "long") {
                 ctx.fillRect(x + 2, y + 3, 12, 6);
             }
         }
@@ -387,16 +389,16 @@ export class BootScene extends Phaser.Scene {
 
         const texture = this.textures.createCanvas(key, size, size);
         const source = texture.getSourceImage() as HTMLCanvasElement;
-        const ctx = source.getContext('2d');
+        const ctx = source.getContext("2d");
         if (!ctx) return;
 
         /* BG Circle */
-        ctx.fillStyle = 'rgba(51, 51, 51, 0.8)';
+        ctx.fillStyle = "rgba(51, 51, 51, 0.8)";
         ctx.beginPath();
         ctx.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.strokeStyle = '#d4af37';
+        ctx.strokeStyle = "#d4af37";
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -407,7 +409,7 @@ export class BootScene extends Phaser.Scene {
         ctx.fill();
 
         /* Eyes */
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = "#000000";
         ctx.beginPath();
         ctx.arc(size / 2 - 8, size / 2, 2, 0, Math.PI * 2);
         ctx.fill();
@@ -417,16 +419,16 @@ export class BootScene extends Phaser.Scene {
 
         /* Hair */
         ctx.fillStyle = this.hexToCSS(f.hair);
-        if (f.hairStyle === 'long') {
+        if (f.hairStyle === "long") {
             ctx.beginPath();
             ctx.ellipse(size / 2, size / 2 - 10, 25, 15, 0, 0, Math.PI * 2);
             ctx.fill();
             ctx.fillRect(size / 2 - 25, size / 2 - 5, 50, 30);
-        } else if (f.hairStyle === 'short' || f.hairStyle === 'messy') {
+        } else if (f.hairStyle === "short" || f.hairStyle === "messy") {
             ctx.beginPath();
             ctx.ellipse(size / 2, size / 2 - 15, 22, 12, 0, 0, Math.PI * 2);
             ctx.fill();
-        } else if (f.hairStyle === 'hood') {
+        } else if (f.hairStyle === "hood") {
             ctx.strokeStyle = this.hexToCSS(f.shirt || this.darkenColorInt(f.body, 0.8));
             ctx.beginPath();
             ctx.ellipse(size / 2, size / 2 + 2, 25, 30, 0, 0, Math.PI * 2);
@@ -441,7 +443,13 @@ export class BootScene extends Phaser.Scene {
         texture.refresh();
     }
 
-    private generateFurnitureSprite(key: string, width: number, height: number, color: number, type: string): void {
+    private generateFurnitureSprite(
+        key: string,
+        width: number,
+        height: number,
+        color: number,
+        type: string,
+    ): void {
         /* Safety: Remove existing if present to avoid conflicts/leaks */
         if (this.textures.exists(key)) this.textures.remove(key);
 
@@ -449,7 +457,7 @@ export class BootScene extends Phaser.Scene {
         if (!texture) return;
 
         const source = texture.getSourceImage() as HTMLCanvasElement;
-        const ctx = source.getContext('2d');
+        const ctx = source.getContext("2d");
         if (!ctx) return;
 
         /* Base */
@@ -462,70 +470,70 @@ export class BootScene extends Phaser.Scene {
 
         /* Details based on type */
         switch (type) {
-            case 'bed':
-                ctx.fillStyle = '#ffffff';
+            case "bed":
+                ctx.fillStyle = "#ffffff";
                 ctx.fillRect(5, 5, width - 10, 15); /* Pillow */
                 ctx.fillStyle = this.hexToCSS(this.darkenColorInt(color, 1.2));
                 ctx.fillRect(2, 25, width - 4, height - 27); /* Blanket */
                 break;
-            case 'tv':
-                ctx.fillStyle = '#000000';
+            case "tv":
+                ctx.fillStyle = "#000000";
                 ctx.fillRect(4, 4, width - 8, height - 12);
-                ctx.fillStyle = '#171212ff';
+                ctx.fillStyle = "#171212ff";
                 ctx.fillRect(width - 8, height - 6, 4, 4);
                 break;
-            case 'table':
+            case "table":
                 ctx.fillStyle = this.hexToCSS(this.darkenColorInt(color, 1.1));
                 ctx.fillRect(5, 5, width - 10, height - 10);
                 break;
-            case 'fridge':
-                ctx.strokeStyle = '#aaaaaa';
+            case "fridge":
+                ctx.strokeStyle = "#aaaaaa";
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 ctx.moveTo(width / 2, 2);
                 ctx.lineTo(width / 2, height - 2);
                 ctx.stroke();
                 break;
-            case 'stage':
-                ctx.fillStyle = 'rgba(34, 0, 0, 0.5)';
+            case "stage":
+                ctx.fillStyle = "rgba(34, 0, 0, 0.5)";
                 ctx.fillRect(10, 0, width - 20, height);
                 break;
-            case 'mask_obj':
-                ctx.fillStyle = '#000000';
+            case "mask_obj":
+                ctx.fillStyle = "#000000";
                 ctx.fillRect(15, 10, 10, 5);
                 ctx.fillRect(width - 25, 10, 10, 5);
                 break;
-            case 'building':
-                ctx.fillStyle = '#ffffaa';
+            case "building":
+                ctx.fillStyle = "#ffffaa";
                 for (let i = 0; i < 3; i++) {
                     ctx.fillRect(10 + i * 30, 20, 20, 30);
                 }
                 break;
-            case 'bookshelf':
-                ctx.fillStyle = '#ffffff';
+            case "bookshelf":
+                ctx.fillStyle = "#ffffff";
                 for (let i = 0; i < width - 10; i += 5) {
                     ctx.fillRect(5 + i, 10, 3, height - 20);
                 }
                 break;
-            case 'photo':
-                ctx.fillStyle = '#000000';
+            case "photo":
+                ctx.fillStyle = "#000000";
                 ctx.fillRect(5, 5, width - 10, height - 10);
-                ctx.fillStyle = '#ffffff';
+                ctx.fillStyle = "#ffffff";
                 ctx.beginPath();
                 ctx.arc(width / 2, height / 3, 5, 0, Math.PI * 2);
                 ctx.fill();
                 break;
-            case 'bench':
+            case "bench":
                 /* Wood Texture Effect */
-                ctx.fillStyle = '#6b4423';
+                ctx.fillStyle = "#6b4423";
                 ctx.fillRect(0, 0, width, height);
                 /* Slats */
-                ctx.fillStyle = '#5a3a1a';
+                ctx.fillStyle = "#5a3a1a";
                 for (let i = 0; i < width; i += 10) {
                     ctx.fillRect(i, 0, 2, height);
                 }
                 /* Legs */
-                ctx.fillStyle = '#3a2a1a';
+                ctx.fillStyle = "#3a2a1a";
                 ctx.fillRect(5, height - 10, 8, 10);
                 ctx.fillRect(width - 13, height - 10, 8, 10);
                 break;
@@ -541,13 +549,13 @@ export class BootScene extends Phaser.Scene {
         if (!texture) return;
 
         const source = texture.getSourceImage() as HTMLCanvasElement;
-        const ctx = source.getContext('2d');
+        const ctx = source.getContext("2d");
         if (!ctx) return;
 
         ctx.fillStyle = this.hexToCSS(color);
         ctx.fillRect(0, 0, width, height);
 
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = "#000000";
         ctx.fillRect(4, 6, 3, 3);
         ctx.fillRect(width - 7, 6, 3, 3);
 
@@ -563,7 +571,7 @@ export class BootScene extends Phaser.Scene {
             if (!texture) return;
 
             const source = texture.getSourceImage() as HTMLCanvasElement;
-            const ctx = source.getContext('2d');
+            const ctx = source.getContext("2d");
             if (ctx) {
                 ctx.fillStyle = this.hexToCSS(color);
                 ctx.fillRect(0, 0, tileSize, tileSize);
@@ -571,16 +579,16 @@ export class BootScene extends Phaser.Scene {
             texture.refresh();
         };
 
-        createTile('tile_floor', 0x4a3728);
-        createTile('tile_wall', 0x2a2a2a);
-        createTile('tile_curtain', 0x6a0d0d);
+        createTile("tile_floor", 0x4a3728);
+        createTile("tile_wall", 0x2a2a2a);
+        createTile("tile_curtain", 0x6a0d0d);
     }
 
     /* Helper: Darken Color (Integer) */
     private darkenColorInt(color: number, factor: number): number {
-        const r = (color >> 16) & 0xFF;
-        const g = (color >> 8) & 0xFF;
-        const b = color & 0xFF;
+        const r = (color >> 16) & 0xff;
+        const g = (color >> 8) & 0xff;
+        const b = color & 0xff;
         const newR = Math.max(0, Math.floor(r * factor));
         const newG = Math.max(0, Math.floor(g * factor));
         const newB = Math.max(0, Math.floor(b * factor));
@@ -589,6 +597,6 @@ export class BootScene extends Phaser.Scene {
 
     /* Helper: Hex ID to CSS String */
     private hexToCSS(color: number): string {
-        return '#' + color.toString(16).padStart(6, '0');
+        return "#" + color.toString(16).padStart(6, "0");
     }
 }
