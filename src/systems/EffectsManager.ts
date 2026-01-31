@@ -101,10 +101,11 @@ export class EffectsManager {
                 this.vignette.setAlpha(VISUALS.ATMOSPHERE.THEATER.vignette);
 
                 this.dustEmitter.setPosition(this.scene.scale.width / 2, this.scene.scale.height / 2);
-                this.dustEmitter.setEmitZone({
-                    source: new Phaser.Geom.Rectangle(0, 0, this.scene.scale.width, this.scene.scale.height),
-                    type: 'random'
-                });
+                this.dustEmitter.setEmitZone(
+                    new Phaser.GameObjects.Particles.Zones.RandomZone(
+                        new Phaser.Geom.Rectangle(0, 0, this.scene.scale.width, this.scene.scale.height)
+                    )
+                );
                 this.dustEmitter.setFrequency(VISUALS.ATMOSPHERE.THEATER.dustFreq);
                 this.dustEmitter.start();
                 break;
@@ -160,5 +161,14 @@ export class EffectsManager {
             duration: DURATION,
             onComplete: () => echo.destroy()
         });
+    }
+
+    /**
+     * Creates a screen flash effect.
+     * @param color Flash color (default white)
+     * @param duration Flash duration
+     */
+    public flash(color: number = 0xffffff, duration: number = 200): void {
+        this.scene.cameras.main.flash(duration, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
     }
 }
