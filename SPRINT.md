@@ -36,9 +36,9 @@
 - Teatro (drammatica, crescendo)
 - Vicolo (tesa, inquietante)
 - Casa del padre (malinconica)
-- [ ] Effetti sonori:
+- [x] Effetti sonori:
 - Dialoghi (typewriter tick)
-- Selezione menu (click elegante)
+- [x] Selezione menu (click elegante)
 - Minigame (feedback successo/fallimento)
 - Transizioni tra mappe (whoosh)
 - Passi del personaggio
