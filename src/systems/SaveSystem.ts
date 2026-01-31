@@ -16,6 +16,10 @@ interface SaveData {
         minigameFailures: number;
     };
     achievements: string[];
+    narrative: {
+        collectedMemories: string[];
+        discoveredLore: string[];
+    };
     settings: {
         language: "it" | "en";
         musicVolume: number;
@@ -43,6 +47,10 @@ const DEFAULT_SAVE: SaveData = {
         minigameFailures: 0,
     },
     achievements: [],
+    narrative: {
+        collectedMemories: [],
+        discoveredLore: [],
+    },
     settings: {
         language: "it",
         musicVolume: 0.5,
@@ -193,6 +201,28 @@ class SaveSystemClass {
     incrementMinigameFailure(): void {
         this.data.stats.minigameFailures++;
         this.save();
+    }
+
+    collectMemory(memoryId: string): void {
+        if (!this.data.narrative.collectedMemories.includes(memoryId)) {
+            this.data.narrative.collectedMemories.push(memoryId);
+            this.save();
+        }
+    }
+
+    isMemoryCollected(memoryId: string): boolean {
+        return this.data.narrative.collectedMemories.includes(memoryId);
+    }
+
+    discoverLore(loreId: string): void {
+        if (!this.data.narrative.discoveredLore.includes(loreId)) {
+            this.data.narrative.discoveredLore.push(loreId);
+            this.save();
+        }
+    }
+
+    getCollectedMemories(): string[] {
+        return [...this.data.narrative.collectedMemories];
     }
 
     private checkAchievements(): string[] {

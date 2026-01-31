@@ -193,4 +193,13 @@ export class EffectsManager {
             onComplete: () => echo.destroy(),
         });
     }
+
+    /**
+     * Creates a screen flash effect.
+     * @param color Flash color (default white)
+     * @param duration Flash duration
+     */
+    public flash(color: number = 0xffffff, duration: number = 200): void {
+        this.scene.cameras.main.flash(duration, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+    }
 }
