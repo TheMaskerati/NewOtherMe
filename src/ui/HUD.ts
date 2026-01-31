@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { TimeManager, TimeOfDay } from '@/systems/TimeManager';
+import { LOCALE } from '@/config/locale';
 
 /* *
  * HUD System
@@ -59,7 +60,7 @@ export class HUD {
         }).setOrigin(0.5, 0);
 
         /* OBJECTIVE (Bottom Center) */
-        this.objectiveText = this.scene.add.text(this.scene.cameras.main.width / 2, this.scene.cameras.main.height - 40, 'OBIETTIVO: ???', {
+        this.objectiveText = this.scene.add.text(this.scene.cameras.main.width / 2, this.scene.cameras.main.height - 40, LOCALE.UI.OBJECTIVE_PREFIX + '???', {
             fontFamily: 'monospace', fontSize: '18px', color: '#ffd700',
             backgroundColor: '#000000aa', padding: { x: 15, y: 8 }
         }).setOrigin(0.5);
@@ -88,10 +89,10 @@ export class HUD {
 
     private updateTimeDisplay(time: TimeOfDay): void {
         const labels: Record<TimeOfDay, string> = {
-            morning: 'MATTINA',
-            afternoon: 'POMERIGGIO',
-            evening: 'SERA',
-            night: 'NOTTE'
+            morning: LOCALE.TIME.MORNING,
+            afternoon: LOCALE.TIME.AFTERNOON,
+            evening: LOCALE.TIME.EVENING,
+            night: LOCALE.TIME.NIGHT
         };
         const colors: Record<TimeOfDay, number> = {
             morning: 0xffdd99,
@@ -129,7 +130,7 @@ export class HUD {
 
         /*  Update Objective  */
         if (data.objective) {
-            this.objectiveText.setText(`OBIETTIVO: ${data.objective.toUpperCase()}`);
+            this.objectiveText.setText(LOCALE.UI.OBJECTIVE_PREFIX + data.objective.toUpperCase());
         }
     }
 

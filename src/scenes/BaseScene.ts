@@ -8,6 +8,8 @@ export abstract class BaseScene extends Phaser.Scene {
         A: Phaser.Input.Keyboard.Key;
         S: Phaser.Input.Keyboard.Key;
         D: Phaser.Input.Keyboard.Key;
+        E: Phaser.Input.Keyboard.Key;
+        ESC: Phaser.Input.Keyboard.Key;
         SPACE: Phaser.Input.Keyboard.Key;
         ENTER: Phaser.Input.Keyboard.Key;
         UP: Phaser.Input.Keyboard.Key;
@@ -34,6 +36,8 @@ export abstract class BaseScene extends Phaser.Scene {
             A: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
             S: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
             D: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+            E: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+            ESC: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
             SPACE: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
             ENTER: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER),
             UP: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),

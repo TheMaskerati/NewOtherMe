@@ -34,10 +34,11 @@ export class VirtualJoystick {
     }
 
     private create(): void {
-        this.base = this.scene.add.circle(this.x, this.y, this.radius, 0x888888, 0.5)
+        this.base = this.scene.add.circle(this.x, this.y, this.radius, 0x000000, 0.5)
             .setScrollFactor(0).setDepth(1000).setInteractive();
+        this.base.setStrokeStyle(2, 0xd4af37);
 
-        this.thumb = this.scene.add.circle(this.x, this.y, this.thumbRadius, 0xcccccc, 0.8)
+        this.thumb = this.scene.add.circle(this.x, this.y, this.thumbRadius, 0xd4af37, 0.8)
             .setScrollFactor(0).setDepth(1001);
 
         this.scene.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {

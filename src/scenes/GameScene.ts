@@ -141,9 +141,14 @@ export class GameScene extends BaseScene {
     }
 
     private setupPauseMenu(): void {
+        /* Checked in update loop via JustDown usually, but listener is fine too.
+           Refactoring to use Input Manager for consistency if desired, or keep logic simple. */
+        /* Keeping listener for global interruption but using the key reference */
         this.input.keyboard.on('keydown-ESC', () => {
-            this.scene.pause();
-            this.scene.launch(SCENES.PAUSE);
+            if (!this.scene.isPaused(SCENES.GAME)) {
+                this.scene.pause();
+                this.scene.launch(SCENES.PAUSE);
+            }
         });
     }
 
@@ -229,7 +234,7 @@ export class GameScene extends BaseScene {
             if (this.joystick.down) input.y = 1;
         }
 
-        const interactPressed = Phaser.Input.Keyboard.JustDown(this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E));
+        const interactPressed = Phaser.Input.Keyboard.JustDown(this.keys.E);
         /* Mobile Touch Interaction (Simple tap on prompt region) */
 
         this.player.update(input, delta);
