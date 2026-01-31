@@ -1,5 +1,5 @@
-import Phaser from 'phaser';
-import { GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
+import type Phaser from "phaser";
+import { GAME_HEIGHT, GAME_WIDTH } from "@/config/gameConfig";
 
 interface ErrorLog {
     timestamp: number;
@@ -18,12 +18,12 @@ class ErrorHandlerClass {
         this.scene = scene;
 
         /* Global error handlers */
-        window.addEventListener('error', (event) => {
-            this.captureError(event.error || event.message, 'Global Error');
+        window.addEventListener("error", (event) => {
+            this.captureError(event.error || event.message, "Global Error");
         });
 
-        window.addEventListener('unhandledrejection', (event) => {
-            this.captureError(event.reason, 'Unhandled Promise Rejection');
+        window.addEventListener("unhandledrejection", (event) => {
+            this.captureError(event.reason, "Unhandled Promise Rejection");
         });
     }
 
@@ -35,7 +35,7 @@ class ErrorHandlerClass {
             timestamp: Date.now(),
             message,
             stack,
-            context
+            context,
         };
 
         this.logs.push(log);
@@ -43,12 +43,12 @@ class ErrorHandlerClass {
             this.logs.shift();
         }
 
-        console.error(`[ErrorHandler] ${context || 'Error'}:`, message);
+        console.error(`[ErrorHandler] ${context || "Error"}:`, message);
         if (stack) console.error(stack);
 
         /* Store in localStorage for persistence */
         try {
-            localStorage.setItem('teatro_error_logs', JSON.stringify(this.logs.slice(-10)));
+            localStorage.setItem("teatro_error_logs", JSON.stringify(this.logs.slice(-10)));
         } catch (_e) {
             /* Ignore storage errors */
         }
@@ -65,34 +65,47 @@ class ErrorHandlerClass {
         this.errorOverlay.setDepth(9999);
         this.errorOverlay.setScrollFactor(0);
 
-        const bg = this.scene.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, 0x1a0000, 0.95);
+        const bg = this.scene.add.rectangle(
+            GAME_WIDTH / 2,
+            GAME_HEIGHT / 2,
+            GAME_WIDTH,
+            GAME_HEIGHT,
+            0x1a0000,
+            0.95,
+        );
 
-        const title = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 80, 'ERRORE', {
-            fontFamily: 'Georgia, serif',
-            fontSize: '36px',
-            color: '#ff4444'
-        }).setOrigin(0.5);
+        const title = this.scene.add
+            .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 80, "ERRORE", {
+                fontFamily: "Georgia, serif",
+                fontSize: "36px",
+                color: "#ff4444",
+            })
+            .setOrigin(0.5);
 
-        const text = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2, message, {
-            fontFamily: 'monospace',
-            fontSize: '16px',
-            color: '#ffffff',
-            align: 'center',
-            wordWrap: { width: GAME_WIDTH - 100 }
-        }).setOrigin(0.5);
+        const text = this.scene.add
+            .text(GAME_WIDTH / 2, GAME_HEIGHT / 2, message, {
+                fontFamily: "monospace",
+                fontSize: "16px",
+                color: "#ffffff",
+                align: "center",
+                wordWrap: { width: GAME_WIDTH - 100 },
+            })
+            .setOrigin(0.5);
 
         this.errorOverlay.add([bg, title, text]);
 
         if (recoverable) {
-            const retryBtn = this.scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 80, '[PREMI SPAZIO PER RIPROVARE]', {
-                fontFamily: 'monospace',
-                fontSize: '14px',
-                color: '#888888'
-            }).setOrigin(0.5);
+            const retryBtn = this.scene.add
+                .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 80, "[PREMI SPAZIO PER RIPROVARE]", {
+                    fontFamily: "monospace",
+                    fontSize: "14px",
+                    color: "#888888",
+                })
+                .setOrigin(0.5);
 
             this.errorOverlay.add(retryBtn);
 
-            this.scene.input.keyboard?.once('keydown-SPACE', () => {
+            this.scene.input.keyboard?.once("keydown-SPACE", () => {
                 this.hideErrorScreen();
             });
         }
@@ -112,8 +125,10 @@ class ErrorHandlerClass {
     clearLogs(): void {
         this.logs = [];
         try {
-            localStorage.removeItem('teatro_error_logs');
-        } catch (_e) { /* Ignore */ }
+            localStorage.removeItem("teatro_error_logs");
+        } catch (_e) {
+            /* Ignore */
+        }
     }
 
     /**

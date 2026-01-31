@@ -1,5 +1,5 @@
-import { BaseScene } from './BaseScene';
-import { SCENES, COLORS, GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
+import { COLORS, GAME_HEIGHT, GAME_WIDTH, SCENES } from "@/config/gameConfig";
+import { BaseScene } from "./BaseScene";
 
 export class CreditsScene extends BaseScene {
     private scrollingText!: Phaser.GameObjects.Container;
@@ -19,11 +19,15 @@ export class CreditsScene extends BaseScene {
         this.cameras.main.fadeIn(1000, 0, 0, 0);
 
         /* Skip hint */
-        const skip = this.add.text(GAME_WIDTH - 20, GAME_HEIGHT - 20, '[ESC] Torna al Menu', {
-            fontFamily: 'monospace', fontSize: '12px', color: '#666666'
-        }).setOrigin(1);
+        const skip = this.add
+            .text(GAME_WIDTH - 20, GAME_HEIGHT - 20, "[ESC] Torna al Menu", {
+                fontFamily: "monospace",
+                fontSize: "12px",
+                color: "#666666",
+            })
+            .setOrigin(1);
 
-        this.input.keyboard.on('keydown-ESC', () => this.returnToMenu());
+        this.input.keyboard.on("keydown-ESC", () => this.returnToMenu());
     }
 
     private createBackground(): void {
@@ -36,7 +40,7 @@ export class CreditsScene extends BaseScene {
                 Phaser.Math.Between(0, GAME_HEIGHT),
                 Phaser.Math.FloatBetween(0.5, 1.5),
                 0xffffff,
-                Phaser.Math.FloatBetween(0.1, 0.5)
+                Phaser.Math.FloatBetween(0.1, 0.5),
             );
         }
     }
@@ -45,62 +49,75 @@ export class CreditsScene extends BaseScene {
         this.scrollingText = this.add.container(GAME_WIDTH / 2, GAME_HEIGHT + 50);
 
         const content = [
-            { text: 'Il teatro delle ombre', style: 'title' },
-            { text: '', style: 'spacer' },
-            { text: 'Un gioco creato per', style: 'subtitle' },
-            { text: 'Global Game Jam 2026', style: 'normal' },
-            { text: '', style: 'spacer' },
-            { text: 'The Maskerati', style: 'section' },
-            { text: '', style: 'spacer' },
-            { text: 'Alessio Attilio', style: 'name' },
-            { text: 'Francesco Pio Russo', style: 'name' },
-            { text: 'Francesco Zeno', style: 'name' },
-            { text: 'José Emanuel Galiero', style: 'name' },
-            { text: 'Martina Cozzolino', style: 'name' },
-            { text: '', style: 'spacer' },
-            { text: 'Tech stack', style: 'section' },
-            { text: '', style: 'spacer' },
-            { text: 'Electron e Vite', style: 'normal' },
-            { text: 'Phaser.js', style: 'normal' },
-            { text: 'Typescript', style: 'normal' },
-            { text: '', style: 'spacer' },
-            { text: 'Grazie per aver giocato.', style: 'final' },
+            { text: "Il teatro delle ombre", style: "title" },
+            { text: "", style: "spacer" },
+            { text: "Un gioco creato per", style: "subtitle" },
+            { text: "Global Game Jam 2026", style: "normal" },
+            { text: "", style: "spacer" },
+            { text: "The Maskerati", style: "section" },
+            { text: "", style: "spacer" },
+            { text: "Alessio Attilio", style: "name" },
+            { text: "Francesco Pio Russo", style: "name" },
+            { text: "Francesco Zeno", style: "name" },
+            { text: "José Emanuel Galiero", style: "name" },
+            { text: "Martina Cozzolino", style: "name" },
+            { text: "", style: "spacer" },
+            { text: "Tech stack", style: "section" },
+            { text: "", style: "spacer" },
+            { text: "Electron e Vite", style: "normal" },
+            { text: "Phaser.js", style: "normal" },
+            { text: "Typescript", style: "normal" },
+            { text: "", style: "spacer" },
+            { text: "Grazie per aver giocato.", style: "final" },
         ];
 
         let y = 0;
         const styles: Record<string, Phaser.Types.GameObjects.Text.TextStyle> = {
-            title: { fontFamily: 'Georgia', fontSize: '32px', color: '#d4af37', fontStyle: 'bold' },
-            subtitle: { fontFamily: 'monospace', fontSize: '14px', color: '#888888' },
-            section: { fontFamily: 'monospace', fontSize: '20px', color: '#c41e3a', fontStyle: 'bold' },
-            role: { fontFamily: 'monospace', fontSize: '12px', color: '#aaaaaa' },
-            name: { fontFamily: 'Georgia', fontSize: '18px', color: '#ffffff' },
-            normal: { fontFamily: 'monospace', fontSize: '14px', color: '#cccccc' },
-            final: { fontFamily: 'Georgia', fontSize: '24px', color: '#ffffff', fontStyle: 'italic' },
-            spacer: { fontSize: '20px' }
+            title: { fontFamily: "Georgia", fontSize: "32px", color: "#d4af37", fontStyle: "bold" },
+            subtitle: { fontFamily: "monospace", fontSize: "14px", color: "#888888" },
+            section: {
+                fontFamily: "monospace",
+                fontSize: "20px",
+                color: "#c41e3a",
+                fontStyle: "bold",
+            },
+            role: { fontFamily: "monospace", fontSize: "12px", color: "#aaaaaa" },
+            name: { fontFamily: "Georgia", fontSize: "18px", color: "#ffffff" },
+            normal: { fontFamily: "monospace", fontSize: "14px", color: "#cccccc" },
+            final: {
+                fontFamily: "Georgia",
+                fontSize: "24px",
+                color: "#ffffff",
+                fontStyle: "italic",
+            },
+            spacer: { fontSize: "20px" },
         };
 
-        content.forEach(item => {
-            if (item.style !== 'spacer') {
+        content.forEach((item) => {
+            if (item.style !== "spacer") {
                 const text = this.add.text(0, y, item.text, styles[item.style]).setOrigin(0.5);
                 this.scrollingText.add(text);
             }
-            y += item.style === 'spacer' ? 30 : 40;
+            y += item.style === "spacer" ? 30 : 40;
         });
     }
 
     private createBackButton(): void {
-        const btn = this.add.text(20, 20, '< MENU', {
-            fontFamily: 'monospace', fontSize: '16px', color: '#ffffff'
-        })
+        const btn = this.add
+            .text(20, 20, "< MENU", {
+                fontFamily: "monospace",
+                fontSize: "16px",
+                color: "#ffffff",
+            })
             .setInteractive({ useHandCursor: true })
-            .on('pointerdown', () => this.returnToMenu())
-            .on('pointerover', () => btn.setColor('#d4af37'))
-            .on('pointerout', () => btn.setColor('#ffffff'));
+            .on("pointerdown", () => this.returnToMenu())
+            .on("pointerover", () => btn.setColor("#d4af37"))
+            .on("pointerout", () => btn.setColor("#ffffff"));
     }
 
     private returnToMenu(): void {
         this.cameras.main.fadeOut(500, 0, 0, 0);
-        this.cameras.main.once('camerafadeoutcomplete', () => {
+        this.cameras.main.once("camerafadeoutcomplete", () => {
             this.scene.start(SCENES.MENU);
         });
     }

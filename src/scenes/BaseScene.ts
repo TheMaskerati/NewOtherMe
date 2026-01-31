@@ -1,5 +1,5 @@
-import Phaser from 'phaser';
-import { COLORS } from '@/config/gameConfig';
+import Phaser from "phaser";
+import { COLORS } from "@/config/gameConfig";
 
 export abstract class BaseScene extends Phaser.Scene {
     protected cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -52,9 +52,9 @@ export abstract class BaseScene extends Phaser.Scene {
     }
 
     protected fadeOut(duration = 500): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             this.cameras.main.fadeOut(duration, 0, 0, 0);
-            this.cameras.main.once('camerafadeoutcomplete', resolve);
+            this.cameras.main.once("camerafadeoutcomplete", resolve);
         });
     }
 

@@ -1,5 +1,5 @@
-import Phaser from 'phaser';
-import { VISUALS } from '@/config/visualConfig';
+import Phaser from "phaser";
+import { VISUALS } from "@/config/visualConfig";
 
 /**
  * Effects Manager
@@ -24,7 +24,14 @@ export class EffectsManager {
 
     private createSystems(): void {
         /* 1. Lighting System */
-        this.ambientLayer = this.scene.add.rectangle(0, 0, this.scene.scale.width, this.scene.scale.height, VISUALS.COLORS.AMBIENT.DEFAULT, 0);
+        this.ambientLayer = this.scene.add.rectangle(
+            0,
+            0,
+            this.scene.scale.width,
+            this.scene.scale.height,
+            VISUALS.COLORS.AMBIENT.DEFAULT,
+            0,
+        );
         this.ambientLayer.setOrigin(0);
         this.ambientLayer.setScrollFactor(0);
         this.ambientLayer.setDepth(900);
@@ -44,14 +51,14 @@ export class EffectsManager {
         this.vignette.setVisible(false);
 
         /* 2. Particle System */
-        const texture = this.scene.textures.exists('star') ? 'star' : 'particle';
+        const texture = this.scene.textures.exists("star") ? "star" : "particle";
         if (!this.scene.textures.exists(texture)) {
-            const canvas = this.scene.textures.createCanvas('particle', 4, 4);
+            const canvas = this.scene.textures.createCanvas("particle", 4, 4);
             const source = canvas.getSourceImage();
             if (source instanceof HTMLCanvasElement) {
-                const ctx = source.getContext('2d');
+                const ctx = source.getContext("2d");
                 if (ctx) {
-                    ctx.fillStyle = '#ffffff';
+                    ctx.fillStyle = "#ffffff";
                     ctx.fillRect(0, 0, 4, 4);
                 }
             }
@@ -67,8 +74,8 @@ export class EffectsManager {
             speed: { min: 10, max: 30 },
             angle: { min: 0, max: 360 },
             frequency: -1,
-            blendMode: 'ADD',
-            emitting: false
+            blendMode: "ADD",
+            emitting: false,
         });
         this.dustEmitter.setDepth(899);
 
@@ -81,8 +88,8 @@ export class EffectsManager {
             speedY: { min: 300, max: 500 },
             speedX: { min: -10, max: 10 },
             frequency: -1,
-            blendMode: 'NORMAL',
-            emitting: false
+            blendMode: "NORMAL",
+            emitting: false,
         });
         this.rainEmitter.setDepth(899);
     }
@@ -95,45 +102,64 @@ export class EffectsManager {
         this.ambientLayer.setFillStyle(VISUALS.COLORS.AMBIENT.DEFAULT, 0);
 
         switch (mapId) {
-            case 'theater':
-                this.ambientLayer.setFillStyle(VISUALS.COLORS.AMBIENT.THEATER, VISUALS.ATMOSPHERE.THEATER.alpha);
+            case "theater":
+                this.ambientLayer.setFillStyle(
+                    VISUALS.COLORS.AMBIENT.THEATER,
+                    VISUALS.ATMOSPHERE.THEATER.alpha,
+                );
                 this.vignette.setVisible(true);
                 this.vignette.setAlpha(VISUALS.ATMOSPHERE.THEATER.vignette);
 
-                this.dustEmitter.setPosition(this.scene.scale.width / 2, this.scene.scale.height / 2);
-                this.dustEmitter.setEmitZone(
-                    new Phaser.GameObjects.Particles.Zones.RandomZone(
-                        new Phaser.Geom.Rectangle(0, 0, this.scene.scale.width, this.scene.scale.height)
-                    )
+                this.dustEmitter.setPosition(
+                    this.scene.scale.width / 2,
+                    this.scene.scale.height / 2,
                 );
+                this.dustEmitter.setEmitZone({
+                    source: new Phaser.Geom.Rectangle(
+                        0,
+                        0,
+                        this.scene.scale.width,
+                        this.scene.scale.height,
+                    ),
+                    type: "random",
+                });
                 this.dustEmitter.setFrequency(VISUALS.ATMOSPHERE.THEATER.dustFreq);
                 this.dustEmitter.start();
                 break;
 
-            case 'naplesAlley':
-                this.ambientLayer.setFillStyle(VISUALS.COLORS.AMBIENT.NAPLES_ALLEY, VISUALS.ATMOSPHERE.NAPLES_ALLEY.alpha);
+            case "naplesAlley":
+                this.ambientLayer.setFillStyle(
+                    VISUALS.COLORS.AMBIENT.NAPLES_ALLEY,
+                    VISUALS.ATMOSPHERE.NAPLES_ALLEY.alpha,
+                );
                 this.vignette.setVisible(true);
                 this.vignette.setAlpha(VISUALS.ATMOSPHERE.NAPLES_ALLEY.vignette);
 
                 this.rainEmitter.setPosition(this.scene.scale.width / 2, -10);
                 this.rainEmitter.setEmitZone(
                     new Phaser.GameObjects.Particles.Zones.RandomZone(
-                        new Phaser.Geom.Rectangle(0, 0, this.scene.scale.width, 1)
-                    )
+                        new Phaser.Geom.Rectangle(0, 0, this.scene.scale.width, 1),
+                    ),
                 );
                 this.rainEmitter.setFrequency(VISUALS.ATMOSPHERE.NAPLES_ALLEY.rainFreq);
                 this.rainEmitter.start();
                 break;
 
-            case 'fatherHouse':
-                this.ambientLayer.setFillStyle(VISUALS.COLORS.AMBIENT.FATHER_HOUSE, VISUALS.ATMOSPHERE.FATHER_HOUSE.alpha);
+            case "fatherHouse":
+                this.ambientLayer.setFillStyle(
+                    VISUALS.COLORS.AMBIENT.FATHER_HOUSE,
+                    VISUALS.ATMOSPHERE.FATHER_HOUSE.alpha,
+                );
                 this.vignette.setVisible(true);
                 this.vignette.setAlpha(VISUALS.ATMOSPHERE.FATHER_HOUSE.vignette);
                 break;
 
-            case 'apartment':
+            case "apartment":
             default:
-                this.ambientLayer.setFillStyle(VISUALS.COLORS.AMBIENT.APARTMENT, VISUALS.ATMOSPHERE.DEFAULT.alpha);
+                this.ambientLayer.setFillStyle(
+                    VISUALS.COLORS.AMBIENT.APARTMENT,
+                    VISUALS.ATMOSPHERE.DEFAULT.alpha,
+                );
                 break;
         }
     }
@@ -149,7 +175,12 @@ export class EffectsManager {
 
     private createShadowEcho(target: Phaser.Physics.Arcade.Sprite): void {
         const { DURATION, ALPHA, SCALE } = VISUALS.SHADOW_TRAIL;
-        const echo = this.scene.add.sprite(target.x, target.y, target.texture.key, target.frame.name);
+        const echo = this.scene.add.sprite(
+            target.x,
+            target.y,
+            target.texture.key,
+            target.frame.name,
+        );
         echo.setTint(0x000000);
         echo.setAlpha(ALPHA);
         echo.setDepth(target.depth - 1);
@@ -159,7 +190,7 @@ export class EffectsManager {
             alpha: 0,
             scale: SCALE,
             duration: DURATION,
-            onComplete: () => echo.destroy()
+            onComplete: () => echo.destroy(),
         });
     }
 

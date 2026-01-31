@@ -1,7 +1,7 @@
-import { BaseScene } from './BaseScene';
-import { SCENES, COLORS, GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
-import { DIALOGS } from '@/config/constants';
-import { Dialog, DialogChoice } from '@/types/dialog';
+import { DIALOGS } from "@/config/constants";
+import { COLORS, GAME_HEIGHT, GAME_WIDTH, SCENES } from "@/config/gameConfig";
+import type { Dialog, DialogChoice } from "@/types/dialog";
+import { BaseScene } from "./BaseScene";
 
 interface DialogSceneData {
     dialogId: string;
@@ -10,9 +10,9 @@ interface DialogSceneData {
 export class DialogScene extends Phaser.Scene {
     private dialog!: Dialog;
     private lineIndex = 0;
-    private displayedText = '';
+    private displayedText = "";
     private isTyping = false;
-    private fullText = '';
+    private fullText = "";
     private typewriterTimer?: Phaser.Time.TimerEvent;
 
     private dialogBox!: Phaser.GameObjects.Container;
@@ -31,7 +31,7 @@ export class DialogScene extends Phaser.Scene {
     init(data: DialogSceneData): void {
         this.dialog = DIALOGS[data.dialogId];
         this.lineIndex = 0;
-        this.displayedText = '';
+        this.displayedText = "";
         this.isTyping = false;
         this.selectedChoice = 0;
         this.choiceTexts = [];
@@ -64,24 +64,24 @@ export class DialogScene extends Phaser.Scene {
         const bg = this.add.rectangle(0, 0, GAME_WIDTH - 40, boxHeight, 0x000000);
         bg.setStrokeStyle(3, 0xffffff);
 
-        this.speakerText = this.add.text(-GAME_WIDTH / 2 + 40, -boxHeight / 2 + 15, '', {
-            fontFamily: 'monospace',
-            fontSize: '16px',
-            color: '#ffd700',
+        this.speakerText = this.add.text(-GAME_WIDTH / 2 + 40, -boxHeight / 2 + 15, "", {
+            fontFamily: "monospace",
+            fontSize: "16px",
+            color: "#ffd700",
         });
 
-        this.contentText = this.add.text(-GAME_WIDTH / 2 + 40, -boxHeight / 2 + 45, '', {
-            fontFamily: 'monospace',
-            fontSize: '18px',
-            color: '#ffffff',
+        this.contentText = this.add.text(-GAME_WIDTH / 2 + 40, -boxHeight / 2 + 45, "", {
+            fontFamily: "monospace",
+            fontSize: "18px",
+            color: "#ffffff",
             wordWrap: { width: GAME_WIDTH - 100 },
             lineSpacing: 8,
         });
 
-        this.continuePrompt = this.add.text(GAME_WIDTH / 2 - 60, boxHeight / 2 - 25, '[SPAZIO]', {
-            fontFamily: 'monospace',
-            fontSize: '12px',
-            color: '#888888',
+        this.continuePrompt = this.add.text(GAME_WIDTH / 2 - 60, boxHeight / 2 - 25, "[SPAZIO]", {
+            fontFamily: "monospace",
+            fontSize: "12px",
+            color: "#888888",
         });
 
         this.tweens.add({
@@ -107,10 +107,10 @@ export class DialogScene extends Phaser.Scene {
         }
 
         const line = this.dialog.lines[this.lineIndex];
-        this.speakerText.setText(line.speaker || '');
+        this.speakerText.setText(line.speaker || "");
         this.fullText = line.text;
-        this.displayedText = '';
-        this.contentText.setText('');
+        this.displayedText = "";
+        this.contentText.setText("");
         this.isTyping = true;
         this.continuePrompt.setVisible(false);
 
@@ -136,15 +136,15 @@ export class DialogScene extends Phaser.Scene {
         if (!this.dialog.choices) return;
 
         this.continuePrompt.setVisible(false);
-        this.speakerText.setText('');
-        this.contentText.setText('Scegli:');
+        this.speakerText.setText("");
+        this.contentText.setText("Scegli:");
 
         this.dialog.choices.forEach((choice: DialogChoice, index: number) => {
             const y = -30 + index * 35;
             const text = this.add.text(-GAME_WIDTH / 2 + 60, y, choice.text, {
-                fontFamily: 'monospace',
-                fontSize: '18px',
-                color: index === 0 ? '#ffd700' : '#ffffff',
+                fontFamily: "monospace",
+                fontSize: "18px",
+                color: index === 0 ? "#ffd700" : "#ffffff",
             });
             this.dialogBox.add(text);
             this.choiceTexts.push(text);
@@ -156,11 +156,11 @@ export class DialogScene extends Phaser.Scene {
     private updateChoiceSelection(): void {
         this.choiceTexts.forEach((text, index) => {
             if (index === this.selectedChoice) {
-                text.setColor('#ffd700');
-                text.setText('> ' + this.dialog.choices![index].text);
+                text.setColor("#ffd700");
+                text.setText("> " + this.dialog.choices![index].text);
             } else {
-                text.setColor('#ffffff');
-                text.setText('  ' + this.dialog.choices![index].text);
+                text.setColor("#ffffff");
+                text.setText("  " + this.dialog.choices![index].text);
             }
         });
     }
@@ -171,7 +171,7 @@ export class DialogScene extends Phaser.Scene {
         if (choice.nextDialogId) {
             this.dialog = DIALOGS[choice.nextDialogId];
             this.lineIndex = 0;
-            this.choiceTexts.forEach(t => t.destroy());
+            this.choiceTexts.forEach((t) => t.destroy());
             this.choiceTexts = [];
             this.showCurrentLine();
         } else {
@@ -181,10 +181,10 @@ export class DialogScene extends Phaser.Scene {
 
     private endDialog(): void {
         this.scene.stop();
-        this.scene.get(SCENES.GAME).events.emit('dialogComplete');
+        this.scene.get(SCENES.GAME).events.emit("dialogComplete");
 
         if (this.dialog.onComplete) {
-            this.scene.get(SCENES.GAME).events.emit('dialogAction', this.dialog.onComplete);
+            this.scene.get(SCENES.GAME).events.emit("dialogAction", this.dialog.onComplete);
         }
     }
 
@@ -194,12 +194,21 @@ export class DialogScene extends Phaser.Scene {
             Phaser.Input.Keyboard.JustDown(this.keys.ENTER);
 
         if (this.choiceTexts.length > 0) {
-            if (Phaser.Input.Keyboard.JustDown(this.keys.UP) || Phaser.Input.Keyboard.JustDown(this.keys.W)) {
+            if (
+                Phaser.Input.Keyboard.JustDown(this.keys.UP) ||
+                Phaser.Input.Keyboard.JustDown(this.keys.W)
+            ) {
                 this.selectedChoice = Math.max(0, this.selectedChoice - 1);
                 this.updateChoiceSelection();
             }
-            if (Phaser.Input.Keyboard.JustDown(this.keys.DOWN) || Phaser.Input.Keyboard.JustDown(this.keys.S)) {
-                this.selectedChoice = Math.min(this.dialog.choices!.length - 1, this.selectedChoice + 1);
+            if (
+                Phaser.Input.Keyboard.JustDown(this.keys.DOWN) ||
+                Phaser.Input.Keyboard.JustDown(this.keys.S)
+            ) {
+                this.selectedChoice = Math.min(
+                    this.dialog.choices!.length - 1,
+                    this.selectedChoice + 1,
+                );
                 this.updateChoiceSelection();
             }
             if (actionPressed) {

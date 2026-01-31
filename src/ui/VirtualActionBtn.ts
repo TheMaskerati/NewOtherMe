@@ -1,6 +1,6 @@
-import Phaser from 'phaser';
-import { MobileDetector } from '@/utils/MobileDetector';
-import { GAME_HEIGHT, GAME_WIDTH } from '@/config/gameConfig';
+import type Phaser from "phaser";
+import { GAME_HEIGHT, GAME_WIDTH } from "@/config/gameConfig";
+import { MobileDetector } from "@/utils/MobileDetector";
 
 /**
  * Virtual Action Button for mobile controls.
@@ -28,7 +28,8 @@ export class VirtualActionBtn {
 
     private create(): void {
         /* Base Circle */
-        this.base = this.scene.add.circle(this.x, this.y, this.radius, 0x000000, 0.5)
+        this.base = this.scene.add
+            .circle(this.x, this.y, this.radius, 0x000000, 0.5)
             .setScrollFactor(0)
             .setDepth(1000)
             .setInteractive();
@@ -36,41 +37,45 @@ export class VirtualActionBtn {
         this.base.setStrokeStyle(4, 0xd4af37);
 
         /* Icon/Text */
-        this.text = this.scene.add.text(this.x, this.y, 'E', {
-            fontFamily: 'monospace',
-            fontSize: '32px',
-            color: '#d4af37',
-            fontStyle: 'bold'
-        }).setOrigin(0.5).setScrollFactor(0).setDepth(1001);
+        this.text = this.scene.add
+            .text(this.x, this.y, "E", {
+                fontFamily: "monospace",
+                fontSize: "32px",
+                color: "#d4af37",
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5)
+            .setScrollFactor(0)
+            .setDepth(1001);
 
         /* Input Events */
-        this.base.on('pointerdown', () => {
+        this.base.on("pointerdown", () => {
             this.pressed = true;
             this.base.setFillStyle(0xd4af37, 0.5);
-            this.text.setColor('#000000');
+            this.text.setColor("#000000");
             this.scene.tweens.add({
                 targets: [this.base, this.text],
                 scale: 0.9,
-                duration: 50
+                duration: 50,
             });
         });
 
-        this.base.on('pointerup', () => {
+        this.base.on("pointerup", () => {
             this.pressed = false;
             this.base.setFillStyle(0x000000, 0.5);
-            this.text.setColor('#d4af37');
+            this.text.setColor("#d4af37");
             this.scene.tweens.add({
                 targets: [this.base, this.text],
                 scale: 1.0,
-                duration: 50
+                duration: 50,
             });
         });
 
-        this.base.on('pointerout', () => {
+        this.base.on("pointerout", () => {
             if (this.pressed) {
                 this.pressed = false;
                 this.base.setFillStyle(0x000000, 0.5);
-                this.text.setColor('#d4af37');
+                this.text.setColor("#d4af37");
                 this.base.setScale(1);
                 this.text.setScale(1);
             }

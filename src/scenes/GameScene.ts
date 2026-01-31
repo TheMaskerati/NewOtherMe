@@ -1,32 +1,38 @@
-import { BaseScene } from './BaseScene';
-import { SCENES, GAME_WIDTH, GAME_HEIGHT, TILE_SIZE, SCALE, BATTLE_CONFIG, COLORS } from '@/config/gameConfig';
-import { LOCALE } from '@/config/locale';
-import { ENEMIES, SPAWN_POINTS } from '@/config/constants';
-import { Player } from '@/entities/Player';
-import { LORE_ITEMS } from '@/config/loreConfig';
-import { LoreItem } from '@/types/lore';
-import { NPC } from '@/entities/NPC';
-import { MapManager, DoorConfig } from '@/systems/MapManager';
-import { DialogManager } from '@/systems/DialogManager';
-import { MaskSystem } from '@/systems/MaskSystem';
-import { MinigameManager } from '@/systems/MinigameManager';
-import { MapKey } from '@/types/game';
-import { AudioManager } from '@/systems/AudioManager';
-import { HUD } from '@/ui/HUD';
-import { KarmaSystem } from '@/systems/KarmaSystem';
-import { EffectsManager } from '@/systems/EffectsManager';
-import { TransitionManager } from '@/effects/TransitionManager';
-import { TimeManager } from '@/systems/TimeManager';
-import { VirtualJoystick } from '@/ui/VirtualJoystick';
-import { VirtualActionBtn } from '@/ui/VirtualActionBtn';
-import { SaveSystem } from '@/systems/SaveSystem';
-import { ObjectiveManager } from '@/systems/ObjectiveManager';
+import { ENEMIES, SPAWN_POINTS } from "@/config/constants";
+import {
+    BATTLE_CONFIG,
+    COLORS,
+    GAME_HEIGHT,
+    GAME_WIDTH,
+    SCALE,
+    SCENES,
+    TILE_SIZE,
+} from "@/config/gameConfig";
+import { LOCALE } from "@/config/locale";
+import { TransitionManager } from "@/effects/TransitionManager";
+import { NPC } from "@/entities/NPC";
+import { Player } from "@/entities/Player";
+import { AudioManager } from "@/systems/AudioManager";
+import { DialogManager } from "@/systems/DialogManager";
+import { EffectsManager } from "@/systems/EffectsManager";
+import { KarmaSystem } from "@/systems/KarmaSystem";
+import { type DoorConfig, MapManager } from "@/systems/MapManager";
+import { MaskSystem } from "@/systems/MaskSystem";
+import { MinigameManager } from "@/systems/MinigameManager";
+import { ObjectiveManager } from "@/systems/ObjectiveManager";
+import { SaveSystem } from "@/systems/SaveSystem";
+import { TimeManager } from "@/systems/TimeManager";
+import type { MapKey } from "@/types/game";
+import { HUD } from "@/ui/HUD";
+import { VirtualActionBtn } from "@/ui/VirtualActionBtn";
+import { VirtualJoystick } from "@/ui/VirtualJoystick";
+import { BaseScene } from "./BaseScene";
 
 interface GameSceneData {
     map?: MapKey;
     playerX?: number;
     playerY?: number;
-    stage?: number; /** Tracks current round */
+    stage?: number /** Tracks current round */;
 }
 
 /**
@@ -55,7 +61,7 @@ export class GameScene extends BaseScene {
     private static tutorialDone = false;
 
     /** Cycle of maps for Endless Mode progression */
-    private readonly MAP_CYCLE: MapKey[] = ['theater', 'naplesAlley', 'fatherHouse'];
+    private readonly MAP_CYCLE: MapKey[] = ["theater", "naplesAlley", "fatherHouse"];
 
     public static resetState(): void {
         GameScene.tutorialDone = false;
@@ -71,7 +77,7 @@ export class GameScene extends BaseScene {
      */
     init(data?: GameSceneData): void {
         super.init();
-        this.currentMap = data?.map || 'apartment';
+        this.currentMap = data?.map || "apartment";
         this.stage = data?.stage || 1;
         this.npcs = [];
     }
@@ -85,14 +91,15 @@ export class GameScene extends BaseScene {
         const startPos = this.getStartPosition(data);
 
         /** Add Atmospheric Background (Seamless) */
-        this.add.tileSprite(0, 0, GAME_WIDTH, GAME_HEIGHT, 'background_shadow')
+        this.add
+            .tileSprite(0, 0, GAME_WIDTH, GAME_HEIGHT, "background_shadow")
             .setOrigin(0)
             .setScrollFactor(0)
             .setDepth(-1000)
             .setAlpha(0.6); // Slightly see-through to blend with black if needed, or opaque
 
-        if (!this.textures.exists('player')) {
-            console.error('CRITICAL: Player texture missing in GameScene! Returning to BootScene.');
+        if (!this.textures.exists("player")) {
+            console.error("CRITICAL: Player texture missing in GameScene! Returning to BootScene.");
             this.scene.start(SCENES.BOOT);
             return;
         }
@@ -121,7 +128,7 @@ export class GameScene extends BaseScene {
         this.setupDoorTriggers();
         this.setupCamera(mapWidth, mapHeight);
 
-        if (this.currentMap === 'apartment' && !GameScene.tutorialDone) {
+        if (this.currentMap === "apartment" && !GameScene.tutorialDone) {
             this.startTutorial();
         } else {
             this.showMapName();
@@ -133,16 +140,10 @@ export class GameScene extends BaseScene {
 
         /** Day/Night Cycle Handling */
         TimeManager.onTimeChange((time) => {
-            this.npcs.forEach(npc => npc.checkAvailability(time));
+            this.npcs.forEach((npc) => npc.checkAvailability(time));
         });
         /* Initial check */
-        this.npcs.forEach(npc => npc.checkAvailability(TimeManager.getCurrentTime()));
-
-        this.loadCurrentLoreItems();
-    }
-
-    private loadCurrentLoreItems(): void {
-        this.currentLoreItems = Object.values(LORE_ITEMS).filter(item => item.map === this.currentMap);
+        this.npcs.forEach((npc) => npc.checkAvailability(TimeManager.getCurrentTime()));
     }
 
     private setupAudio(): void {
@@ -161,7 +162,7 @@ export class GameScene extends BaseScene {
         /* Checked in update loop via JustDown usually, but listener is fine too.
            Refactoring to use Input Manager for consistency if desired, or keep logic simple. */
         /* Keeping listener for global interruption but using the key reference */
-        this.input.keyboard.on('keydown-ESC', () => {
+        this.input.keyboard.on("keydown-ESC", () => {
             if (!this.scene.isPaused(SCENES.GAME)) {
                 this.scene.pause();
                 this.scene.launch(SCENES.PAUSE);
@@ -175,10 +176,10 @@ export class GameScene extends BaseScene {
         }
         const defaults: Record<string, { x: number; y: number }> = {};
 
-        Object.keys(SPAWN_POINTS).forEach(key => {
+        Object.keys(SPAWN_POINTS).forEach((key) => {
             defaults[key] = {
                 x: SPAWN_POINTS[key].x * TILE_SIZE * SCALE,
-                y: SPAWN_POINTS[key].y * TILE_SIZE * SCALE
+                y: SPAWN_POINTS[key].y * TILE_SIZE * SCALE,
             };
         });
 
@@ -188,7 +189,7 @@ export class GameScene extends BaseScene {
     private createNPCs(): void {
         const npcIds = this.mapManager.getNPCIds();
 
-        npcIds.forEach(id => {
+        npcIds.forEach((id) => {
             /** Simplification: Spawn only if defined in ENEMIES */
             if (ENEMIES[id]) {
                 const npc = new NPC(this, ENEMIES[id]);
@@ -199,11 +200,21 @@ export class GameScene extends BaseScene {
 
     private createUI(): void {
         /** Prompt */
-        this.interactionPrompt = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 80, LOCALE.UI.INTERACTION_PROMPT, {
-            fontFamily: 'monospace', fontSize: '20px', fontStyle: 'bold',
-            color: '#ffd700', backgroundColor: '#000000ee', padding: { x: 16, y: 8 },
-            stroke: '#000000', strokeThickness: 4
-        }).setOrigin(0.5).setScrollFactor(0).setDepth(500).setVisible(false);
+        this.interactionPrompt = this.add
+            .text(GAME_WIDTH / 2, GAME_HEIGHT - 80, LOCALE.UI.INTERACTION_PROMPT, {
+                fontFamily: "monospace",
+                fontSize: "20px",
+                fontStyle: "bold",
+                color: "#ffd700",
+                backgroundColor: "#000000ee",
+                padding: { x: 16, y: 8 },
+                stroke: "#000000",
+                strokeThickness: 4,
+            })
+            .setOrigin(0.5)
+            .setScrollFactor(0)
+            .setDepth(500)
+            .setVisible(false);
 
         /** Pulse Animation */
         this.tweens.add({
@@ -212,28 +223,41 @@ export class GameScene extends BaseScene {
             scaleY: 1.1,
             duration: 600,
             yoyo: true,
-            repeat: -1
+            repeat: -1,
         });
 
         /** Map Name */
-        this.mapNameText = this.add.text(GAME_WIDTH / 2, 30, '', {
-            fontFamily: 'monospace', fontSize: '20px',
-            color: '#ffd700', backgroundColor: '#000000aa', padding: { x: 20, y: 10 }
-        }).setOrigin(0.5).setScrollFactor(0).setDepth(500).setAlpha(0);
-
+        this.mapNameText = this.add
+            .text(GAME_WIDTH / 2, 30, "", {
+                fontFamily: "monospace",
+                fontSize: "20px",
+                color: "#ffd700",
+                backgroundColor: "#000000aa",
+                padding: { x: 20, y: 10 },
+            })
+            .setOrigin(0.5)
+            .setScrollFactor(0)
+            .setDepth(500)
+            .setAlpha(0);
     }
 
     private showMapName(): void {
         const name = LOCALE.MAP_NAMES[this.currentMap] || this.currentMap;
         this.mapNameText.setText(`${name}${LOCALE.UI.MAP_NAME_SEPARATOR}${this.stage}`);
-        this.tweens.add({ targets: this.mapNameText, alpha: 1, duration: 500, hold: 2000, yoyo: true });
+        this.tweens.add({
+            targets: this.mapNameText,
+            alpha: 1,
+            duration: 500,
+            hold: 2000,
+            yoyo: true,
+        });
     }
 
     private startTutorial(): void {
         this.time.delayedCall(1000, () => {
-            this.dialogManager.show('intro_apartment', () => {
+            this.dialogManager.show("intro_apartment", () => {
                 GameScene.tutorialDone = true;
-                ObjectiveManager.getInstance().trigger('tutorial_complete');
+                ObjectiveManager.getInstance().trigger("tutorial_complete");
             });
         });
     }
@@ -254,21 +278,32 @@ export class GameScene extends BaseScene {
             if (this.joystick.down) input.y = 1;
         }
 
-        const interactPressed = Phaser.Input.Keyboard.JustDown(this.keys.E) || (this.actionBtn && this.actionBtn.isActionActive());
+        const interactPressed =
+            Phaser.Input.Keyboard.JustDown(this.keys.E) ||
+            (this.actionBtn && this.actionBtn.isActionActive());
 
         /* Mobile Touch Interaction Handled by ActionBtn now */
 
         this.player.update(input, delta);
-        this.effectsManager.update(time, delta, this.player.getSprite() as Phaser.Physics.Arcade.Sprite);
-        this.npcs.forEach(npc => npc.update(delta, this.player.getPosition()));
+        this.effectsManager.update(
+            time,
+            delta,
+            this.player.getSprite() as Phaser.Physics.Arcade.Sprite,
+        );
+        this.npcs.forEach((npc) => npc.update(delta, this.player.getPosition()));
 
         /* Interactions */
         let nearTarget = false;
 
-        this.npcs.forEach(npc => {
-            if (Phaser.Math.Distance.BetweenPoints(this.player.getPosition(), npc.getPosition()) < 50) {
+        this.npcs.forEach((npc) => {
+            if (
+                Phaser.Math.Distance.BetweenPoints(this.player.getPosition(), npc.getPosition()) <
+                50
+            ) {
                 nearTarget = true;
-                this.interactionPrompt.setText(LOCALE.UI.CHALLENGE_PROMPT + npc.getName()).setVisible(true);
+                this.interactionPrompt
+                    .setText(LOCALE.UI.CHALLENGE_PROMPT + npc.getName())
+                    .setVisible(true);
                 /** Trigger objective when near NPC */
                 ObjectiveManager.getInstance().onNearNPC(npc.getId());
                 if (interactPressed) this.startEncounter(npc);
@@ -277,11 +312,19 @@ export class GameScene extends BaseScene {
 
         if (!nearTarget) {
             const doors = this.mapManager.getDoors();
-            doors.forEach(door => {
-                if (Phaser.Math.Distance.Between(this.player.getPosition().x, this.player.getPosition().y,
-                    door.x * TILE_SIZE * SCALE, door.y * TILE_SIZE * SCALE) < 50) {
+            doors.forEach((door) => {
+                if (
+                    Phaser.Math.Distance.Between(
+                        this.player.getPosition().x,
+                        this.player.getPosition().y,
+                        door.x * TILE_SIZE * SCALE,
+                        door.y * TILE_SIZE * SCALE,
+                    ) < 50
+                ) {
                     nearTarget = true;
-                    this.interactionPrompt.setText(`[E] ${door.label || LOCALE.UI.DOOR_DEFAULT_LABEL}`).setVisible(true);
+                    this.interactionPrompt
+                        .setText(`[E] ${door.label || LOCALE.UI.DOOR_DEFAULT_LABEL}`)
+                        .setVisible(true);
                     if (interactPressed) this.handleDoor(door);
                 }
             });
@@ -321,7 +364,7 @@ export class GameScene extends BaseScene {
                 karma: KarmaSystem.getKarmaScore(),
                 maskScore: MaskSystem.getInstance().getScore(),
                 stage: this.stage,
-                objective: ObjectiveManager.getInstance().getObjective()
+                objective: ObjectiveManager.getInstance().getObjective(),
             });
         }
     }
@@ -333,37 +376,43 @@ export class GameScene extends BaseScene {
         const dialogId = npc.getDialogId();
         this.dialogManager.show(dialogId, (action) => {
             /** Handle dialog choices actions */
-            if (action?.includes('battle_') || action === 'start_minigame' || npc.isBoss()) {
-                const difficulty = 1.0 + (this.stage * BATTLE_CONFIG.difficultyScaling);
+            if (action?.includes("battle_") || action === "start_minigame" || npc.isBoss()) {
+                const difficulty = 1.0 + this.stage * BATTLE_CONFIG.difficultyScaling;
 
                 /* Determina il tipo di minigame in base alla scelta */
-                let minigameType: 'dodge' | 'timing' | 'mash' = 'dodge';
+                let minigameType: "dodge" | "timing" | "mash" = "dodge";
 
-                if (action?.includes('_calm') || action?.includes('_peaceful')) {
-                    minigameType = 'timing'; /* Approccio pacifico = timing preciso */
-                } else if (action?.includes('_rage') || action?.includes('_aggressive')) {
-                    minigameType = 'mash'; /* Approccio aggressivo = button mashing */
+                if (action?.includes("_calm") || action?.includes("_peaceful")) {
+                    minigameType = "timing"; /* Approccio pacifico = timing preciso */
+                } else if (action?.includes("_rage") || action?.includes("_aggressive")) {
+                    minigameType = "mash"; /* Approccio aggressivo = button mashing */
                 } else {
-                    minigameType = 'dodge'; /* Default = schivare */
+                    minigameType = "dodge"; /* Default = schivare */
                 }
 
-                ObjectiveManager.getInstance().setObjective(`SCONFIGGI ${npc.getName().toUpperCase()}`);
+                ObjectiveManager.getInstance().setObjective(
+                    `SCONFIGGI ${npc.getName().toUpperCase()}`,
+                );
 
                 this.minigameManager.start(minigameType, difficulty, (success) => {
                     if (success) {
                         /* Record Karma based on approach */
-                        if (minigameType === 'timing') {
-                            KarmaSystem.recordBattleAction('resist');
-                        } else if (minigameType === 'mash') {
-                            KarmaSystem.recordBattleAction('fight');
+                        if (minigameType === "timing") {
+                            KarmaSystem.recordBattleAction("resist");
+                        } else if (minigameType === "mash") {
+                            KarmaSystem.recordBattleAction("fight");
                         }
 
                         /* Determine Win Dialog */
-                        let winDialogId = 'minigame_win';
-                        if (npc.getId() === 'father_shadow') {
-                            winDialogId = minigameType === 'timing' ? 'father_defeated_resist' : 'father_defeated_mask';
-                        } else if (npc.getId() === 'dario') {
-                            winDialogId = minigameType === 'timing' ? 'dario_defeated' : 'dario_victory_mask';
+                        let winDialogId = "minigame_win";
+                        if (npc.getId() === "father_shadow") {
+                            winDialogId =
+                                minigameType === "timing"
+                                    ? "father_defeated_resist"
+                                    : "father_defeated_mask";
+                        } else if (npc.getId() === "dario") {
+                            winDialogId =
+                                minigameType === "timing" ? "dario_defeated" : "dario_victory_mask";
                         }
 
                         this.dialogManager.show(winDialogId, () => {
@@ -373,7 +422,7 @@ export class GameScene extends BaseScene {
                             ObjectiveManager.getInstance().onEnemyDefeated(npc.getId());
                         });
                     } else {
-                        this.dialogManager.show('minigame_loss', () => {
+                        this.dialogManager.show("minigame_loss", () => {
                             this.player.unfreeze();
                         });
                     }
@@ -399,12 +448,12 @@ export class GameScene extends BaseScene {
         /* Increment stage if returning to Theater from the last map in the cycle */
         /* Cycle: theater -> naplesAlley -> fatherHouse -> naplesAlley -> theater */
         /* If we are entering theater and we are not coming from apartment */
-        if (nextMap === 'theater' && this.currentMap !== 'apartment') {
+        if (nextMap === "theater" && this.currentMap !== "apartment") {
             this.stage++;
         }
 
         /* Check for Ending Condition */
-        if (this.currentMap === 'fatherHouse' && SaveSystem.isBossDefeated('father_shadow')) {
+        if (this.currentMap === "fatherHouse" && SaveSystem.isBossDefeated("father_shadow")) {
             this.scene.start(SCENES.ENDING);
             return;
         }
@@ -419,15 +468,17 @@ export class GameScene extends BaseScene {
                 map: nextMap,
                 stage: this.stage,
                 playerX: x,
-                playerY: y
+                playerY: y,
             });
         });
     }
 
     private setupNPCCollisions(): void {
-        this.npcs.forEach(npc => this.physics.add.collider(this.player.getSprite(), npc.getSprite()));
+        this.npcs.forEach((npc) =>
+            this.physics.add.collider(this.player.getSprite(), npc.getSprite()),
+        );
     }
-    private setupDoorTriggers(): void { }
+    private setupDoorTriggers(): void {}
     private setupCamera(w: number, h: number): void {
         this.cameras.main.setBounds(0, 0, w, h);
         this.cameras.main.startFollow(this.player.getSprite(), true, 0.1, 0.1);

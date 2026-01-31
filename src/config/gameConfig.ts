@@ -1,5 +1,5 @@
-import Phaser from 'phaser';
-import { SceneKey, MapKey } from '@/types/game';
+import Phaser from "phaser";
+import type { MapKey, SceneKey } from "@/types/game";
 
 export const GAME_WIDTH = 800;
 export const GAME_HEIGHT = 600;
@@ -7,20 +7,20 @@ export const TILE_SIZE = 16;
 export const SCALE = 3;
 
 export const SCENES: Record<string, SceneKey> = {
-    BOOT: 'BootScene',
-    MENU: 'MenuScene',
-    GAME: 'GameScene',
-    PAUSE: 'PauseScene',
-    SETTINGS: 'SettingsScene',
-    ACHIEVEMENTS: 'AchievementsScene',
-    CREDITS: 'CreditsScene',
+    BOOT: "BootScene",
+    MENU: "MenuScene",
+    GAME: "GameScene",
+    PAUSE: "PauseScene",
+    SETTINGS: "SettingsScene",
+    ACHIEVEMENTS: "AchievementsScene",
+    CREDITS: "CreditsScene",
 };
 
 export const MAPS: Record<string, MapKey> = {
-    APARTMENT: 'apartment',
-    THEATER: 'theater',
-    FATHER_HOUSE: 'fatherHouse',
-    NAPLES_ALLEY: 'naplesAlley',
+    APARTMENT: "apartment",
+    THEATER: "theater",
+    FATHER_HOUSE: "fatherHouse",
+    NAPLES_ALLEY: "naplesAlley",
 };
 
 export const COLORS = {
@@ -72,7 +72,7 @@ export const PHASER_CONFIG: Phaser.Types.Core.GameConfig = {
     pixelArt: true,
     roundPixels: true,
     physics: {
-        default: 'arcade',
+        default: "arcade",
         arcade: {
             gravity: { x: 0, y: 0 },
             debug: false,

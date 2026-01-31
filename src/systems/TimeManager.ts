@@ -1,7 +1,7 @@
-import Phaser from 'phaser';
-import { GAME_WIDTH, GAME_HEIGHT } from '@/config/gameConfig';
+import Phaser from "phaser";
+import { GAME_HEIGHT, GAME_WIDTH } from "@/config/gameConfig";
 
-export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
+export type TimeOfDay = "morning" | "afternoon" | "evening" | "night";
 
 interface TimeConfig {
     tint: number;
@@ -13,35 +13,33 @@ const TIME_CONFIGS: Record<TimeOfDay, TimeConfig> = {
     morning: {
         tint: 0xfff5e6,
         ambientAlpha: 0.1,
-        lightColor: 0xffdd99
+        lightColor: 0xffdd99,
     },
     afternoon: {
         tint: 0xffffff,
         ambientAlpha: 0,
-        lightColor: 0xffffff
+        lightColor: 0xffffff,
     },
     evening: {
         tint: 0xffaa66,
         ambientAlpha: 0.2,
-        lightColor: 0xff8844
+        lightColor: 0xff8844,
     },
     night: {
         tint: 0x3355aa,
         ambientAlpha: 0.5,
-        lightColor: 0x4466cc
-    }
+        lightColor: 0x4466cc,
+    },
 };
 
 class TimeManagerClass {
-    private currentTime: TimeOfDay = 'afternoon';
+    private currentTime: TimeOfDay = "afternoon";
     private progressionIndex: number = 0;
     private overlay: Phaser.GameObjects.Rectangle | null = null;
     private scene: Phaser.Scene | null = null;
     private listeners: ((time: TimeOfDay) => void)[] = [];
 
-    private readonly PROGRESSION: TimeOfDay[] = [
-        'morning', 'afternoon', 'evening', 'night'
-    ];
+    private readonly PROGRESSION: TimeOfDay[] = ["morning", "afternoon", "evening", "night"];
 
     initialize(scene: Phaser.Scene): void {
         this.scene = scene;
@@ -54,7 +52,7 @@ class TimeManagerClass {
             GAME_WIDTH,
             GAME_HEIGHT,
             0x000000,
-            0
+            0,
         );
         this.overlay.setDepth(900);
         this.overlay.setScrollFactor(0);
@@ -99,7 +97,7 @@ class TimeManagerClass {
             targets: this.overlay,
             fillAlpha: config.ambientAlpha,
             duration: 1000,
-            ease: 'Sine.easeInOut'
+            ease: "Sine.easeInOut",
         });
 
         /* Update overlay color */
@@ -119,7 +117,7 @@ class TimeManagerClass {
     }
 
     isNight(): boolean {
-        return this.currentTime === 'night';
+        return this.currentTime === "night";
     }
 
     getAmbientAlpha(): number {

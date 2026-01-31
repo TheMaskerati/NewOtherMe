@@ -1,7 +1,7 @@
-import Phaser from 'phaser';
-import { Direction, Vector2 } from '@/types/game';
-import { NPCConfig } from '@/types/entities';
-import { SCALE, TILE_SIZE } from '@/config/gameConfig';
+import Phaser from "phaser";
+import { SCALE, TILE_SIZE } from "@/config/gameConfig";
+import type { NPCConfig } from "@/types/entities";
+import type { Direction, Vector2 } from "@/types/game";
 
 export class NPC {
     private scene: Phaser.Scene;
@@ -39,20 +39,20 @@ export class NPC {
         (this.interactionZone.body as Phaser.Physics.Arcade.Body).setAllowGravity(false);
 
         this.nameTag = scene.add.text(x, y - 35, config.name, {
-            fontFamily: 'monospace',
-            fontSize: '11px',
-            color: '#ffffff',
-            backgroundColor: '#000000aa',
+            fontFamily: "monospace",
+            fontSize: "11px",
+            color: "#ffffff",
+            backgroundColor: "#000000aa",
             padding: { x: 6, y: 3 },
         });
         this.nameTag.setOrigin(0.5);
         this.nameTag.setDepth(100);
         this.nameTag.setVisible(false);
 
-        this.exclamation = scene.add.text(x, y - 50, '!', {
-            fontFamily: 'monospace',
-            fontSize: '20px',
-            color: '#ffd700',
+        this.exclamation = scene.add.text(x, y - 50, "!", {
+            fontFamily: "monospace",
+            fontSize: "20px",
+            color: "#ffd700",
         });
         this.exclamation.setOrigin(0.5);
         this.exclamation.setDepth(101);
@@ -66,10 +66,17 @@ export class NPC {
     }
 
     private createShadow(x: number, y: number): void {
-        const shadow = this.scene.add.ellipse(x, y + 12 * SCALE, 14 * SCALE, 5 * SCALE, 0x000000, 0.25);
+        const shadow = this.scene.add.ellipse(
+            x,
+            y + 12 * SCALE,
+            14 * SCALE,
+            5 * SCALE,
+            0x000000,
+            0.25,
+        );
         shadow.setDepth(8);
 
-        this.scene.events.on('update', () => {
+        this.scene.events.on("update", () => {
             shadow.setPosition(this.sprite.x, this.sprite.y + 12 * SCALE);
         });
     }
@@ -80,8 +87,10 @@ export class NPC {
         this.interactionZone.setPosition(this.sprite.x, this.sprite.y);
 
         const dist = Phaser.Math.Distance.Between(
-            playerPos.x, playerPos.y,
-            this.sprite.x, this.sprite.y
+            playerPos.x,
+            playerPos.y,
+            this.sprite.x,
+            this.sprite.y,
         );
 
         if (dist < TILE_SIZE * SCALE * 4 && !this.isDefeated) {
@@ -108,7 +117,7 @@ export class NPC {
 
             if (this.idleTimer > 3000 && !this.config.isBoss) {
                 this.idleTimer = 0;
-                const directions: Direction[] = ['up', 'down', 'left', 'right'];
+                const directions: Direction[] = ["up", "down", "left", "right"];
                 this.lookDirection = directions[Math.floor(Math.random() * 4)];
             }
         }
@@ -168,9 +177,9 @@ export class NPC {
         const dy = playerPos.y - this.sprite.y;
 
         if (Math.abs(dx) > Math.abs(dy)) {
-            this.direction = dx > 0 ? 'right' : 'left';
+            this.direction = dx > 0 ? "right" : "left";
         } else {
-            this.direction = dy > 0 ? 'down' : 'up';
+            this.direction = dy > 0 ? "down" : "up";
         }
     }
 
@@ -195,7 +204,7 @@ export class NPC {
                 y: this.sprite.y - 55,
                 yoyo: true,
                 duration: 500,
-                repeat: -1
+                repeat: -1,
             });
         } else if (!show) {
             this.exclamation.setVisible(false);
@@ -203,7 +212,7 @@ export class NPC {
         }
     }
 
-    public checkAvailability(time: 'morning' | 'afternoon' | 'evening' | 'night'): void {
+    public checkAvailability(time: "morning" | "afternoon" | "evening" | "night"): void {
         if (!this.config.availableTime) return;
 
         const isAvailable = this.config.availableTime.includes(time);
