@@ -115,22 +115,22 @@
 
 #### UI Mancante
 
-- [ ] Barra della salute/energia (se implementi sistema vita)
+- [x] Barra della salute/energia (se implementi sistema vita)
 - [x] **Indicatore Karma visuale** (medaglione che cambia colore)
 - Bianco/dorato = karma positivo
 - Grigio/nero = karma negativo
 - [x] Animazione pulse quando cambia
-- [ ] Contatore stage/round migliorato
+- [x] Contatore stage/round migliorato
 - [ ] Minimappa (opzionale)
 
 #### Effetti da aggiungere
 
 - [x] Shake camera quando prendi danno
 - [x] Flash schermo per eventi importanti
-- [ ] Particelle quando vinci minigame
+- [x] Particelle quando vinci minigame
 - [ ] Trail/ombra quando corri veloce
-- [ ] Glow sui personaggi interattivi
-- [ ] Indicatore "!" sopra NPC con nuovi dialoghi
+- [x] Glow sui personaggi interattivi
+- [x] Indicatore "!" sopra NPC con nuovi dialoghi
 
 #### Files da modificare/creare
 
@@ -210,12 +210,12 @@
 ─────────────────────────────────────────
 ```
 
-- [ ] Barra vita (se implementi sistema combattimento con HP)
+- [x] Barra vita (se implementi sistema combattimento con HP)
 - [x] Indicatore karma con icona
 - [x] Barra controllo maschera (tentazione)
 - [x] Testo mappa corrente
 - [x] Obiettivo attuale
-- [ ] Mini-icone per stati (es: "Sotto effetto maschera")
+- [x] Mini-icone per stati (es: "Sotto effetto maschera")
 
 #### Files da creare
 
@@ -308,7 +308,7 @@
 - [x] **Scelte con timer** (10 secondi per decidere)
 - [x] **Memoria delle scelte** (NPC ricordano cosa hai detto)
 - [ ] **Branching più complesso** (albero decisionale profondo)
-- [ ] **Voice blips** (suoni per ogni personaggio)
+- [x] **Voice blips** (suoni per ogni personaggio)
 
 #### Files da modificare
 
