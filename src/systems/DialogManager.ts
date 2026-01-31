@@ -101,18 +101,27 @@ export class DialogManager {
     }
 
     /**
-     * Starts a dialogue sequence.
+     * Starts a dialogue sequence by ID.
      * @param dialogId The ID of the dialogue to show.
-     * @param onComplete Optional callback when dialogue ends, receiving the final action string.
+     * @param onComplete Optional callback when dialogue ends.
      */
     show(dialogId: string, onComplete?: (action?: string) => void): void {
-        this.currentDialog = DIALOGS[dialogId];
-        if (!this.currentDialog) {
+        const dialog = DIALOGS[dialogId];
+        if (!dialog) {
             console.error(`Dialog not found: ${dialogId}`);
             onComplete?.();
             return;
         }
+        this.showDialogRaw(dialog, onComplete);
+    }
 
+    /**
+     * Shows a dialogue using a raw Dialog object.
+     * @param dialog The Dialog object to display.
+     * @param onComplete Optional callback when dialogue ends.
+     */
+    showDialogRaw(dialog: Dialog, onComplete?: (action?: string) => void): void {
+        this.currentDialog = dialog;
         this.onComplete = onComplete || null;
         this.lineIndex = 0;
         this.selectedChoice = 0;

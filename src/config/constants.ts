@@ -8,12 +8,12 @@ export const DIALOGS: Record<string, Dialog> = {
     intro_apartment: {
         id: 'intro_apartment',
         lines: [
-            { text: 'Napoli. Un monolocale al quinto piano.' },
-            { text: 'Piatti sporchi. Caffe freddo. Insonnia.' },
-            { speaker: 'GENNARO', text: '...Ancora quel sogno.' },
-            { text: 'Gennaro Esposito, 45 anni. Magazziniere.' },
-            { text: 'La sera, comparsa al Teatro San Carlo.' },
-            { speaker: 'GENNARO', text: 'Meglio alzarsi. Stasera ho lo spettacolo.' },
+            { text: 'Napoli, ore 6:00. Un monolocale che puzza di muffa e sogni andati a male.' },
+            { text: 'Piatti sporchi nella piluccia. Caffè freddo da ieri. Un orologio che batte i secondi come chiodi.' },
+            { speaker: 'GENNARO', text: '...Ancora quella faccia. Pulcinella che ride mentre affogo.' },
+            { text: 'Gennaro Esposito. Quarantacinque anni di invisibilità.' },
+            { text: 'Magazziniere di giorno, ombra che cammina al Teatro San Carlo di sera.' },
+            { speaker: 'GENNARO', text: 'Susu, Gennà. Alzati. La scena non aspetta, anche se sei solo una comparsa.' },
         ],
     },
 
@@ -47,15 +47,15 @@ export const DIALOGS: Record<string, Dialog> = {
     dario_intro: {
         id: 'dario_intro',
         lines: [
-            { speaker: 'DARIO', text: 'Esposito! Ancora in ritardo.' },
-            { speaker: 'DARIO', text: 'Sai qual è il tuo problema?' },
-            { speaker: 'DARIO', text: 'Non hai TALENTO. Solo ambizioni vuote.' },
-            { speaker: 'GENNARO', text: '...' },
-            { speaker: 'DARIO', text: 'Lascia che ti insegni il tuo posto!' },
+            { speaker: 'DARIO', text: 'Esposito! Pure stasera in ritardo? Ma che tieni in quel cranio, la segatura?' },
+            { speaker: 'DARIO', text: 'Sai qual è la tragedia? Che credi pure di essere un artista.' },
+            { speaker: 'DARIO', text: 'Ma guardati. Sei solo un vuoto a perdere. Una macchia sul palcoscenico del San Carlo.' },
+            { speaker: 'GENNARO', text: '...Sto solo cercando di fare il mio lavoro, Direttò.' },
+            { speaker: 'DARIO', text: 'Il tuo lavoro è sparire! E se non sai sparire da solo, ti cancello io!' },
         ],
         choices: [
-            { text: 'Mantieni la calma e rispondi con dignità', action: 'battle_dario_calm', karmaEffect: 1 },
-            { text: 'Lascia che la rabbia prenda il controllo', action: 'battle_dario_rage', karmaEffect: -1 },
+            { text: 'Abbassa lo sguardo e ingoia il veleno (Dignità)', action: 'battle_dario_calm', karmaEffect: 1 },
+            { text: 'Sputagli in faccia tutta la tua rabbia (Vera Natura)', action: 'battle_dario_rage', karmaEffect: -1 },
         ],
     },
 
@@ -80,15 +80,15 @@ export const DIALOGS: Record<string, Dialog> = {
     elisa_meet: {
         id: 'elisa_meet',
         lines: [
-            { speaker: 'ELISA', text: 'Gennaro? Sei tu?' },
-            { speaker: 'GENNARO', text: 'Elisa... Quanto tempo.' },
-            { speaker: 'ELISA', text: 'Ho pensato spesso a te. Come stai?' },
-            { speaker: 'GENNARO', text: 'Sopravvivo. Come sempre.' },
-            { speaker: 'ELISA', text: 'Senti... Stasera sono libera.' },
+            { speaker: 'ELISA', text: 'Gennaro? Ma overo si tu?' },
+            { speaker: 'GENNARO', text: 'Elisa... Gesù, sono passati vent\'anni.' },
+            { speaker: 'ELISA', text: 'Ti ho cercato, sai? Ma sei diventato un fantasma. Ti sono rimasti solo gli occhi di allora.' },
+            { speaker: 'GENNARO', text: 'Quelli sono l\'unica cosa che non sono riusciti a vendermi.' },
+            { speaker: 'ELISA', text: 'Vieni a prenderti un caffè. Per ricordare chi eravamo prima di diventare così.' },
         ],
         choices: [
-            { text: 'Accetta con un sorriso', nextDialogId: 'elisa_accept', karmaEffect: 1 },
-            { text: 'Rifiuta freddamente', nextDialogId: 'elisa_refuse', karmaEffect: -1 },
+            { text: 'Sorridi e prova a sentire di nuovo (Umanità)', nextDialogId: 'elisa_accept', karmaEffect: 1 },
+            { text: 'Chiudi la porta al passato (Freddezza)', nextDialogId: 'elisa_refuse', karmaEffect: -1 },
         ],
     },
 
@@ -158,16 +158,16 @@ export const DIALOGS: Record<string, Dialog> = {
     father_confrontation: {
         id: 'father_confrontation',
         lines: [
-            { speaker: 'OMBRA', text: 'Alla fine sei tornato.' },
-            { speaker: 'GENNARO', text: 'Papa...?' },
-            { speaker: 'OMBRA', text: 'Sempre la stessa delusione.' },
-            { speaker: 'OMBRA', text: 'Non sei mai stato abbastanza.' },
-            { speaker: 'GENNARO', text: 'Io...' },
-            { speaker: 'OMBRA', text: 'Lascia che ti mostri la verita!' },
+            { speaker: 'OMBRA', text: 'Bentornato a casa, fallito.' },
+            { speaker: 'GENNARO', text: 'Sei solo un fantasma nella mia testa. Papà è morto da un pezzo.' },
+            { speaker: 'OMBRA', text: 'Ma io vivo dentro di te. Ogni volta che hai paura, ogni volta che ti senti una nullità... quello sono io.' },
+            { speaker: 'OMBRA', text: 'Sei il mio capolavoro di delusione. Non vali nemmeno la polvere su queste foto.' },
+            { speaker: 'GENNARO', text: 'Oggi... oggi deve finire.' },
+            { speaker: 'OMBRA', text: 'Allora muori come sei vissuto: nell\'ombra!' },
         ],
         choices: [
-            { text: 'Affronta con compassione e perdono', action: 'battle_father_peaceful', karmaEffect: 1 },
-            { text: 'Lascia emergere tutto il tuo rancore', action: 'battle_father_aggressive', karmaEffect: -1 },
+            { text: 'Perdona il ricordo per liberare te stesso (Luce)', action: 'battle_father_peaceful', karmaEffect: 1 },
+            { text: 'Diventa il mostro che lui ha creato (Ombra)', action: 'battle_father_aggressive', karmaEffect: -1 },
         ],
     },
 

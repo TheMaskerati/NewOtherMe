@@ -3,6 +3,8 @@ import { SCENES, GAME_WIDTH, GAME_HEIGHT, TILE_SIZE, SCALE, BATTLE_CONFIG, COLOR
 import { LOCALE } from '@/config/locale';
 import { ENEMIES, SPAWN_POINTS } from '@/config/constants';
 import { Player } from '@/entities/Player';
+import { LORE_ITEMS } from '@/config/loreConfig';
+import { LoreItem } from '@/types/lore';
 import { NPC } from '@/entities/NPC';
 import { MapManager, DoorConfig } from '@/systems/MapManager';
 import { DialogManager } from '@/systems/DialogManager';
@@ -47,6 +49,7 @@ export class GameScene extends BaseScene {
     private mapNameText!: Phaser.GameObjects.Text;
     private joystick?: VirtualJoystick;
     private actionBtn?: VirtualActionBtn;
+    private currentLoreItems: LoreItem[] = [];
 
     private stage: number = 1;
     private static tutorialDone = false;
@@ -134,6 +137,12 @@ export class GameScene extends BaseScene {
         });
         /* Initial check */
         this.npcs.forEach(npc => npc.checkAvailability(TimeManager.getCurrentTime()));
+
+        this.loadCurrentLoreItems();
+    }
+
+    private loadCurrentLoreItems(): void {
+        this.currentLoreItems = Object.values(LORE_ITEMS).filter(item => item.map === this.currentMap);
     }
 
     private setupAudio(): void {
@@ -278,6 +287,18 @@ export class GameScene extends BaseScene {
             });
         }
 
+        if (!nearTarget) {
+            this.currentLoreItems.forEach(item => {
+                const loreX = item.x * TILE_SIZE * SCALE;
+                const loreY = item.y * TILE_SIZE * SCALE;
+                if (Phaser.Math.Distance.Between(this.player.getPosition().x, this.player.getPosition().y, loreX, loreY) < 60) {
+                    nearTarget = true;
+                    this.interactionPrompt.setText(LOCALE.UI.INTERACTION_PROMPT).setVisible(true);
+                    if (interactPressed) this.showLore(item);
+                }
+            });
+        }
+
         if (!nearTarget) this.interactionPrompt.setVisible(false);
 
         /* Visual Madness (Endless Mode) */
@@ -410,5 +431,25 @@ export class GameScene extends BaseScene {
     private setupCamera(w: number, h: number): void {
         this.cameras.main.setBounds(0, 0, w, h);
         this.cameras.main.startFollow(this.player.getSprite(), true, 0.1, 0.1);
+    }
+
+    private showLore(item: LoreItem): void {
+        this.player.freeze();
+        this.interactionPrompt.setVisible(false);
+
+        const lines = item.description.map(text => ({ text }));
+        this.dialogManager.showDialogRaw({
+            id: item.id,
+            lines: lines
+        }, () => {
+            this.player.unfreeze();
+            SaveSystem.discoverLore(item.id);
+            if (item.isMemory) {
+                SaveSystem.collectMemory(item.id);
+                /* Add a visual/audio cue here later */
+                this.effectsManager.flash();
+                this.audioManager.playSFX('pickup'); // Assuming pickup exists
+            }
+        });
     }
 }
