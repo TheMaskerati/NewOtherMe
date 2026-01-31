@@ -1,4 +1,5 @@
 import { InventoryItem } from '@/types/game';
+import { LOCALE } from '@/config/locale';
 
 export interface ItemEffect {
     type: 'heal' | 'temptation_reduce' | 'damage_boost' | 'defense';
@@ -20,8 +21,8 @@ export interface ItemDefinition {
 export const ITEM_DEFINITIONS: Record<string, ItemDefinition> = {
     caffe: {
         id: 'caffe',
-        name: 'Caffè Napoletano',
-        description: 'Restaura 30 HP. Il sapore di casa.',
+        name: LOCALE.ITEMS.caffe.name,
+        description: LOCALE.ITEMS.caffe.description,
         effect: { type: 'heal', value: 30 },
         usableInBattle: true,
         usableInExploration: true,
@@ -30,8 +31,8 @@ export const ITEM_DEFINITIONS: Record<string, ItemDefinition> = {
     },
     sfogliatella: {
         id: 'sfogliatella',
-        name: 'Sfogliatella',
-        description: 'Restaura 50 HP. Croccante fuori, morbida dentro.',
+        name: LOCALE.ITEMS.sfogliatella.name,
+        description: LOCALE.ITEMS.sfogliatella.description,
         effect: { type: 'heal', value: 50 },
         usableInBattle: true,
         usableInExploration: true,
@@ -40,8 +41,8 @@ export const ITEM_DEFINITIONS: Record<string, ItemDefinition> = {
     },
     limoncello: {
         id: 'limoncello',
-        name: 'Limoncello',
-        description: 'Riduce la Tentazione di 20. Il gusto della costa.',
+        name: LOCALE.ITEMS.limoncello.name,
+        description: LOCALE.ITEMS.limoncello.description,
         effect: { type: 'temptation_reduce', value: 20 },
         usableInBattle: true,
         usableInExploration: false,
@@ -50,8 +51,8 @@ export const ITEM_DEFINITIONS: Record<string, ItemDefinition> = {
     },
     amuleto: {
         id: 'amuleto',
-        name: 'Corno Portafortuna',
-        description: 'Riduce la Tentazione di 40. Protezione antica.',
+        name: LOCALE.ITEMS.amuleto.name,
+        description: LOCALE.ITEMS.amuleto.description,
         effect: { type: 'temptation_reduce', value: 40 },
         usableInBattle: true,
         usableInExploration: false,
@@ -60,8 +61,8 @@ export const ITEM_DEFINITIONS: Record<string, ItemDefinition> = {
     },
     foto_mamma: {
         id: 'foto_mamma',
-        name: 'Foto della Mamma',
-        description: 'Restaura 80 HP e riduce Tentazione di 30. Ricordi felici.',
+        name: LOCALE.ITEMS.foto_mamma.name,
+        description: LOCALE.ITEMS.foto_mamma.description,
         effect: { type: 'heal', value: 80 },
         usableInBattle: true,
         usableInExploration: true,
@@ -70,8 +71,8 @@ export const ITEM_DEFINITIONS: Record<string, ItemDefinition> = {
     },
     biglietto_teatro: {
         id: 'biglietto_teatro',
-        name: 'Biglietto del Teatro',
-        description: 'Un ricordo dei bei tempi. +20 HP.',
+        name: LOCALE.ITEMS.biglietto_teatro.name,
+        description: LOCALE.ITEMS.biglietto_teatro.description,
         effect: { type: 'heal', value: 20 },
         usableInBattle: true,
         usableInExploration: true,

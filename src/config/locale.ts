@@ -54,4 +54,48 @@ export const LOCALE = {
     DIALOG: {
         CHOICE_QUESTION: 'Cosa fai?',
     },
+    MENU: {
+        TITLE: 'IL TEATRO\nDELLE OMBRE',
+        SUBTITLE: 'Un viaggio nei sogni di Gennaro',
+        NEW_GAME: 'NUOVA PARTITA',
+        CONTINUE: 'CONTINUA',
+        LOAD: 'CARICA',
+        SETTINGS: 'IMPOSTAZIONI',
+        ACHIEVEMENTS: 'TROFEI',
+        CREDITS: 'CREDITI',
+        SAVE_TITLE: 'ULTIMO SALVATAGGIO',
+        SAVE_MAP: 'Mappa: ',
+        SAVE_TIME: 'Tempo: ',
+        SAVE_KARMA: 'Anima: ',
+        SAVE_DATE: 'Data: ',
+        STATS_CHALLENGES: 'Sfide: ',
+        STATS_ACHIEVEMENTS: 'Achievements: ',
+        FOOTER_CREDITS: 'Global Game Jam 2026 | The Maskerati',
+    },
+    ITEMS: {
+        caffe: {
+            name: 'Caffè Napoletano',
+            description: 'Restaura 30 HP. Il sapore di casa.',
+        },
+        sfogliatella: {
+            name: 'Sfogliatella',
+            description: 'Restaura 50 HP. Croccante fuori, morbida dentro.',
+        },
+        limoncello: {
+            name: 'Limoncello',
+            description: 'Riduce la Tentazione di 20. Il gusto della costa.',
+        },
+        amuleto: {
+            name: 'Corno Portafortuna',
+            description: 'Riduce la Tentazione di 40. Protezione antica.',
+        },
+        foto_mamma: {
+            name: 'Foto della Mamma',
+            description: 'Restaura 80 HP e riduce Tentazione di 30. Ricordi felici.',
+        },
+        biglietto_teatro: {
+            name: 'Biglietto del Teatro',
+            description: 'Un ricordo dei bei tempi. +20 HP.',
+        },
+    },
 };
