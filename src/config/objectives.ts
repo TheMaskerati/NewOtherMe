@@ -1,9 +1,5 @@
 import { MapKey } from '@/types/game';
-
-/**
- * Objective definitions for each map and game phase.
- * Each map can have multiple objectives that trigger based on game events.
- */
+import { LOCALE } from '@/config/locale';
 
 export interface MapObjectives {
     initial: string;
@@ -12,56 +8,45 @@ export interface MapObjectives {
 
 export const OBJECTIVES: Record<MapKey | string, MapObjectives> = {
     apartment: {
-        initial: 'ALZATI DAL LETTO',
-        afterTutorial: 'VAI AL TEATRO SAN CARLO',
-        nearDoor: 'ESCI DI CASA',
+        initial: LOCALE.OBJECTIVES.apartment.initial,
+        afterTutorial: LOCALE.OBJECTIVES.apartment.afterTutorial,
+        nearDoor: LOCALE.OBJECTIVES.apartment.nearDoor
     },
     theater: {
-        initial: 'ESPLORA IL TEATRO',
-        nearDario: 'AFFRONTA DARIO',
-        defeatedDario: 'ESCI DAL TEATRO',
-        talked_dario: 'LASCIA IL TEATRO',
+        initial: LOCALE.OBJECTIVES.theater.initial,
+        nearDario: LOCALE.OBJECTIVES.theater.nearDario,
+        defeatedDario: LOCALE.OBJECTIVES.theater.defeatedDario,
+        talked_dario: LOCALE.OBJECTIVES.theater.talked_dario
     },
     naplesAlley: {
-        initial: 'ATTRAVERSA I VICOLI DI NAPOLI',
-        nearBully: 'SUPERA I TEPPISTI',
-        nearElisa: 'PARLA CON ELISA',
-        talked_elisa: 'RIFLETTI SULLE PAROLE DI ELISA',
-        defeatedBully: 'PROSEGUI VERSO CASA',
-        afterAll: 'TROVA LA CASA DEL PADRE',
+        initial: LOCALE.OBJECTIVES.naplesAlley.initial,
+        nearBully: LOCALE.OBJECTIVES.naplesAlley.nearBully,
+        nearElisa: LOCALE.OBJECTIVES.naplesAlley.nearElisa,
+        talked_elisa: LOCALE.OBJECTIVES.naplesAlley.talked_elisa,
+        defeatedBully: LOCALE.OBJECTIVES.naplesAlley.defeatedBully,
+        afterAll: LOCALE.OBJECTIVES.naplesAlley.afterAll
     },
     fatherHouse: {
-        initial: 'ENTRA NELLA CASA DEI RICORDI',
-        exploring: 'ESPLORA LA CASA',
-        nearFather: 'AFFRONTA L\'OMBRA DEL PADRE',
-        talked_father_shadow: 'FAI I CONTI CON IL PASSATO',
-        defeatedFather: 'TROVA LA PACE INTERIORE',
-    },
+        initial: LOCALE.OBJECTIVES.fatherHouse.initial,
+        exploring: LOCALE.OBJECTIVES.fatherHouse.exploring,
+        nearFather: LOCALE.OBJECTIVES.fatherHouse.nearFather,
+        talked_father_shadow: LOCALE.OBJECTIVES.fatherHouse.talked_father_shadow,
+        defeatedFather: LOCALE.OBJECTIVES.fatherHouse.defeatedFather
+    }
 };
 
-/**
- * Trigger conditions for automatic objective updates.
- * Maps event types to the objective key in OBJECTIVES.
- */
 export const OBJECTIVE_TRIGGERS: Record<string, { map: string; objectiveKey: string }> = {
-    /* Tutorial e appartamento */
     'tutorial_complete': { map: 'apartment', objectiveKey: 'afterTutorial' },
     'near_door': { map: 'apartment', objectiveKey: 'nearDoor' },
-
-    /* Teatro */
     'near_dario': { map: 'theater', objectiveKey: 'nearDario' },
     'defeated_dario': { map: 'theater', objectiveKey: 'defeatedDario' },
     'talked_dario': { map: 'theater', objectiveKey: 'talked_dario' },
-
-    /* Vicoli di Napoli */
     'near_bully': { map: 'naplesAlley', objectiveKey: 'nearBully' },
     'near_bully1': { map: 'naplesAlley', objectiveKey: 'nearBully' },
     'near_elisa': { map: 'naplesAlley', objectiveKey: 'nearElisa' },
     'talked_elisa': { map: 'naplesAlley', objectiveKey: 'talked_elisa' },
     'defeated_bully1': { map: 'naplesAlley', objectiveKey: 'defeatedBully' },
-
-    /* Casa del padre */
     'near_father_shadow': { map: 'fatherHouse', objectiveKey: 'nearFather' },
     'talked_father_shadow': { map: 'fatherHouse', objectiveKey: 'talked_father_shadow' },
-    'defeated_father_shadow': { map: 'fatherHouse', objectiveKey: 'defeatedFather' },
+    'defeated_father_shadow': { map: 'fatherHouse', objectiveKey: 'defeatedFather' }
 };
