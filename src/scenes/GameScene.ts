@@ -12,6 +12,7 @@ import { MapKey } from '@/types/game';
 import { AudioManager } from '@/systems/AudioManager';
 import { HUD } from '@/ui/HUD';
 import { KarmaSystem } from '@/systems/KarmaSystem';
+import { EffectsManager } from '@/systems/EffectsManager';
 import { TransitionManager } from '@/effects/TransitionManager';
 import { TimeManager } from '@/systems/TimeManager';
 import { VirtualJoystick } from '@/ui/VirtualJoystick';
@@ -40,6 +41,7 @@ export class GameScene extends BaseScene {
     private audioManager!: AudioManager;
     private hud!: HUD;
     private transitionManager!: TransitionManager;
+    private effectsManager!: EffectsManager;
     private interactionPrompt!: Phaser.GameObjects.Text;
     private mapNameText!: Phaser.GameObjects.Text;
     private joystick!: VirtualJoystick;
@@ -100,6 +102,9 @@ export class GameScene extends BaseScene {
         this.audioManager = AudioManager.getInstance(this);
         this.hud = new HUD(this);
         this.transitionManager = new TransitionManager(this);
+        this.effectsManager = new EffectsManager(this);
+        this.effectsManager.setAtmosphere(this.currentMap);
+
         this.transitionManager.open();
         MaskSystem.getInstance().init(this);
         TimeManager.initialize(this);
@@ -238,6 +243,7 @@ export class GameScene extends BaseScene {
         /* Mobile Touch Interaction (Simple tap on prompt region) */
 
         this.player.update(input, delta);
+        this.effectsManager.update(time, delta, this.player.getSprite() as Phaser.Physics.Arcade.Sprite);
         this.npcs.forEach(npc => npc.update(delta, this.player.getPosition()));
 
         /* Interactions */

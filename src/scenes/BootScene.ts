@@ -27,8 +27,16 @@ export class BootScene extends Phaser.Scene {
         ErrorHandler.initialize(this);
         this.createLoadingBar();
 
-        /* Audio loading is disabled for prototype stability. */
-        this.load.image('background_shadow', 'assets/background_shadow.png');
+        /* Audio loading */
+        this.load.path = 'assets/audio/';
+
+        const musicTracks = ['apartment', 'theater', 'naplesAlley', 'fatherHouse'];
+        musicTracks.forEach(track => {
+            this.load.audio(`bgm_${track}`, [`bgm_${track}.mp3`, `bgm_${track}.ogg`]);
+        });
+
+        this.load.image('background_shadow', '../background_shadow.png');
+        this.load.path = '';
 
         this.load.on('complete', () => {
             /* Defer generation slightly to ensure scene is fully ready */
@@ -46,6 +54,14 @@ export class BootScene extends Phaser.Scene {
                 this.startGame();
             });
         });
+
+        /* Safe Audio Fallback: logs warnings instead of crashing on 404 */
+        this.load.on('loaderror', (fileObj: Phaser.Loader.File) => {
+            if (fileObj.type === 'audio') {
+                console.warn(`Audio missing: ${fileObj.key}. Game will continue silent.`);
+            }
+        });
+
         this.load.start();
     }
 
